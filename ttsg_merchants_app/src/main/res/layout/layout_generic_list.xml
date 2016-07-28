@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.strangedog.weylen.mthc.view.SpringView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/springView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <com.strangedog.weylen.mthc.view.ZRecyclerView
+        android:id="@+id/recyclerView"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.strangedog.weylen.mthc.view.ZRecyclerView>
+</com.strangedog.weylen.mthc.view.SpringView>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/item_padding_horizontal"
+    android:paddingRight="@dimen/item_padding_horizontal"
+    android:paddingBottom="@dimen/item_padding_vertical"
+    android:paddingTop="@dimen/item_padding_vertical"
+    android:gravity="center_vertical"
+    >
+
+
+    <ImageView
+        android:id="@+id/itemImage"
+        style="@style/Generic_ImageView"
+        android:src="@mipmap/img_default"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="@dimen/item_padding_horizontal"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1.0"
+        >
+
+        <TextView
+            android:id="@+id/itemTitle"
+            style="@style/ContentTextView"
+            android:text="老坛酸菜牛肉面"
+            android:textColor="@color/blackText"
+            />
+
+        <TextView
+            android:id="@+id/itemUnit"
+            style="@style/SmallTextView"
+            android:text="规格：桶"
+            android:textColor="@color/grayText"
+            android:layout_marginTop="2dp"
+            />
+
+        <TextView
+            android:id="@+id/itemPrice"
+            style="@style/SmallTextView"
+            android:text="单价：￥4.5"
+            android:textColor="@color/colorAccent"
+            android:layout_marginTop="2dp"
+            />
+
+        <TextView
+            android:id="@+id/itemPromotion"
+            style="@style/SmallTextView"
+            android:text="促销：暂无"
+            android:textColor="@color/grayText"
+            android:layout_marginTop="2dp"
+            />
+
+    </LinearLayout>
+
+    <com.rey.material.widget.CheckBox
+        android:id="@+id/itemChecked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        />
+
+</LinearLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/GenericItem"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/orderStatusView"
+            style="@style/TitleTextView"
+            android:textColor="@color/colorAccent"
+            android:text="订单进行中"
+            android:textSize="@dimen/size_14"
+            />
+
+        <com.rey.material.widget.TextView
+            android:id="@+id/orderTimeView"
+            style="@style/ContentTextView"
+            android:text="2016-07-02 12:23"
+            android:textColor="@color/grayText"
+            android:layout_toRightOf="@id/orderStatusView"
+            android:paddingLeft="10dp"
+            />
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/divider"/>
+
+    <TextView
+        android:id="@+id/orderContentView"
+        style="@style/ContentTextView"
+        android:text="矿泉水    x1\n康师傅红烧牛肉面 x2"
+        android:textColor="@color/grayText"
+        android:lineSpacingExtra="1dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/divider"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
+        >
+
+        <TextView
+            android:id="@+id/orderAddrView"
+            style="@style/ContentTextView"
+            android:text="地址：8栋2单元1103"
+            android:textColor="@color/grayText"
+            android:layout_weight="1.0"
+            />
+
+
+        <TextView
+            style="@style/SmallTextView"
+            android:text="实付："
+            android:textColor="@color/grayText"
+            />
+
+        <TextView
+            android:id="@+id/orderPriceView"
+            style="@style/ContentTextView"
+            android:text="￥14.88"
+            android:textColor="@color/blackText"
+            android:textStyle="bold"
+
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

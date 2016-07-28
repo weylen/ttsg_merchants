@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_order"
+            android:icon="@mipmap/ic_menu_order"
+            android:title="@string/Order"
+            app:actionLayout="@layout/layout_badge"
+            />
+        <item
+            android:id="@+id/nav_sales"
+            android:icon="@mipmap/ic_menu_sale"
+            android:title="@string/Sales" />
+        <item
+            android:id="@+id/nav_products"
+            android:icon="@mipmap/ic_menu_product"
+            android:title="@string/Products" />
+        <item
+            android:id="@+id/nav_addProducts"
+            android:icon="@mipmap/ic_menu_addproduct"
+            android:title="@string/AddProducts" />
+    </group>
+
+    <group android:id="@+id/groupAction">
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@mipmap/ic_menu_logout"
+            android:title="@string/Logout" />
+    </group>
+
+</menu>

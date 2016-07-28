@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grayBg"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@drawable/abc_title_search"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        >
+
+        <ImageView
+            android:id="@+id/action_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_arrow_back_black"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:minWidth="?attr/actionBarSize"
+            android:scaleType="centerInside"
+            android:background="?attr/actionBarItemBackground"
+            android:layout_margin="3dp"
+            />
+
+        <EditText
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:hint="商品关键字"
+            android:paddingLeft="10dp"
+            android:background="@color/transparent"
+            android:imeOptions="actionSearch"
+            />
+
+        <ImageView
+            android:id="@+id/action_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_action_search"
+            android:background="@drawable/abc_generic_pressed"
+            android:minWidth="?attr/actionBarSize"
+            android:scaleType="centerInside"
+            android:layout_margin="3dp"
+            />
+
+    </LinearLayout>
+
+    <include layout="@layout/fragment_swipe_recyler"
+        />
+
+</LinearLayout>
