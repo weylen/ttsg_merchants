@@ -50,4 +50,15 @@ public interface AddGoodsView extends BaseView<AddGoodsPresenter>{
      * @return
      */
     boolean isActive();
+
+    /**
+     * 开始添加商品
+     */
+    void onStartUpload();
+
+    void onUploadFailure();
+
+    void onUpLoadSuccess();
+
+    void onUploadDepartFailure();
 }

@@ -30,8 +30,14 @@ public interface HttpService {
      */
     @FormUrlEncoded
     @POST("cpma-")
-    Observable<String> getInSellingGoods(
+    Observable<JsonObject> getInSellingGoods(
             @Field("key") String key,
             @Field("pageNum") int pageNum
+    );
+
+    @FormUrlEncoded
+    @POST("cpma-store")
+    Observable<JsonObject> addProducts(
+            @Field("cbList") String cb
     );
 }

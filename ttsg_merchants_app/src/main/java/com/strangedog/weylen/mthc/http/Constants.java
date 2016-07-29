@@ -5,5 +5,7 @@ package com.strangedog.weylen.mthc.http;
  */
 public class Constants {
 
-    public static final String BASE_URL = "http://s-280082.gotocdn.com/";
+    // ceshi
+//    public static final String BASE_URL = "http://s-280082.gotocdn.com/";
+    public static final String BASE_URL = "http://192.168.1.167:8080/cs_app/";
 }

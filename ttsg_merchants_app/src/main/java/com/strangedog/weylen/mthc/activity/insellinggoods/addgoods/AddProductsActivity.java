@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.rey.material.widget.Button;
 import com.rey.material.widget.RadioButton;
@@ -25,16 +26,16 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 添加商品
  */
 public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
-    @Bind(R.id.recyclerView)
-    ZRecyclerView mRecyclerView;
+    @Bind(R.id.recyclerView) ZRecyclerView mRecyclerView;
     @Bind(R.id.checkedAllView) RadioButton mCheckedAllView;
-    @Bind(R.id.addProductsView) Button mAddProductsView;
+    @Bind(R.id.containerView) View containerView;
 
     private AddProductsAdapter adapter;
     private AddGoodsPresenter presenter;
@@ -55,19 +56,17 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         int divider = getResources().getColor(R.color.divider);
         mRecyclerView.addItemDecoration(new ItemDividerDecoration().setSize(DimensUtil.dp2px(this, 0.3f)).setColor(divider));
 
-        adapter = new AddProductsAdapter(LayoutInflater.from(this), initData());
+        adapter = new AddProductsAdapter(LayoutInflater.from(this), null);
         adapter.setItemClickListener((o, position) -> startActivity(new Intent(AddProductsActivity.this, ProductsDetailsActivity.class)));
         mRecyclerView.setAdapter(adapter);
 
         presenter = new AddGoodsPresenter(this);
         setPresenter(presenter);
     }
-    private List<AddProductsEntity> initData() {
-        List<AddProductsEntity> data = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            data.add(new AddProductsEntity());
-        }
-        return data;
+
+    @OnClick(R.id.addProductsView)
+    public void addProductsClick(){
+        presenter.addProducts(adapter.getData());
     }
 
     @Override
@@ -110,6 +109,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     @Override
     public void onLoadSuccessful(List<ProductsEntity> data, boolean isComplete) {
         dismissProgressDialog();
+        adapter.setData(data);
     }
 
     @Override
@@ -129,7 +129,28 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     @Override
     public boolean isActive() {
-        return false;
+        return !isFinishing();
+    }
+
+    @Override
+    public void onStartUpload() {
+        showProgressDialog("提交数据中");
+    }
+
+    @Override
+    public void onUploadFailure() {
+        dismissProgressDialog();
+        showSnakeBar(containerView, "添加数据失败，请重新操作");
+    }
+
+    @Override
+    public void onUpLoadSuccess() {
+        dismissProgressDialog();
+    }
+
+    @Override // 部分商品价格未设置或为0,添加失败
+    public void onUploadDepartFailure() {
+        dismissProgressDialog();
     }
 
     @Override
