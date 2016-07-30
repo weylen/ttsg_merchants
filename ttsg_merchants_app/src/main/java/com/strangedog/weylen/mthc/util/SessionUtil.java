@@ -3,7 +3,7 @@ package com.strangedog.weylen.mthc.util;
 import android.text.TextUtils;
 
 import com.strangedog.weylen.mthc.entity.AccountEntity;
-import com.strangedog.weylen.mthc.login.LoginData;
+import com.strangedog.weylen.mthc.activity.login.LoginData;
 
 /**
  * Created by weylen on 2016-07-28.

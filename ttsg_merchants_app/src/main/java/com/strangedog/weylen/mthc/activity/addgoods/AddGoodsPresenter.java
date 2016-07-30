@@ -1,4 +1,4 @@
-package com.strangedog.weylen.mthc.activity.insellinggoods.addgoods;
+package com.strangedog.weylen.mthc.activity.addgoods;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -11,17 +11,12 @@ import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
-import com.strangedog.weylen.mthc.util.SessionUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -44,10 +39,30 @@ public class AddGoodsPresenter implements BasePresenter {
      * @param keyword 商品搜索关键字 不传则获取默认的商品列表
      */
     public void onLoad(String keyword){
+        // 保存当前搜索关键字
+        AddGoodsData.INSTANCE.keyword = keyword;
         addGoodsView.onStartLoading();
         getRemoteData(keyword == null ? "" : keyword, 1);
     }
 
+    /**
+     * 刷新
+     */
+    public void refresh(){
+        getRemoteData(AddGoodsData.INSTANCE.keyword, 1);
+    }
+
+    /**
+     * 加载更多
+     */
+    public void loadMore(){
+        getRemoteData(AddGoodsData.INSTANCE.keyword, AddGoodsData.INSTANCE.pageNum + 1);
+    }
+
+    /**
+     * 添加商品
+     * @param data
+     */
     public void addProducts(List<ProductsEntity> data){
         addGoodsView.onStartUpload();
         Observable.just(data)
@@ -58,14 +73,19 @@ public class AddGoodsPresenter implements BasePresenter {
 
     }
 
+    /**
+     * 转换成json
+     * @param data
+     * @return
+     */
     private String toJson(List<ProductsEntity> data){
         JsonArray array = new JsonArray();
         for (ProductsEntity entity : data){
             JsonObject object = new JsonObject();
             object.addProperty("id", entity.getId());
-            object.addProperty("buyPrice", "3");
-            object.addProperty("salePrice", "3");
-            object.addProperty("stock", "0");
+            object.addProperty("buyPrice", entity.getBuyPrice());
+            object.addProperty("salePrice", entity.getSalePrice());
+            object.addProperty("stock", entity.getStock());
             object.addProperty("promote", entity.getPromote());
             object.addProperty("begin", entity.getBegin());
             object.addProperty("end", entity.getEnd());
@@ -76,6 +96,10 @@ public class AddGoodsPresenter implements BasePresenter {
         return array.toString();
     }
 
+    /**
+     * 上传选择产品
+     * @param uploadInfo
+     */
     private void uploadProducts(String uploadInfo){
         DebugUtil.d("AddGoodsPresenter-uploadProducts uploadInfo:" + uploadInfo);
         RetrofitFactory.getRetrofit()
@@ -112,12 +136,7 @@ public class AddGoodsPresenter implements BasePresenter {
                 });
     }
 
-    /**
-     * 加载更多
-     */
-    public void onLoadmore(){
 
-    }
 
     /**
      * 处理请求错误
@@ -131,6 +150,11 @@ public class AddGoodsPresenter implements BasePresenter {
         }
     }
 
+    /**
+     * 获取产品列表
+     * @param keyword
+     * @param pageNum
+     */
     private void getRemoteData(String keyword, int pageNum){
         RetrofitFactory.getRetrofit().create(HttpService.class)
                 .getInSellingGoods(keyword, pageNum)
@@ -159,11 +183,17 @@ public class AddGoodsPresenter implements BasePresenter {
                 });
     }
 
+    /**
+     * 解析json数据
+     * @param s
+     */
     private void parse(JsonObject s){
         Gson gson = new Gson();
         List<ProductsEntity> data = gson.fromJson(s.get("data").getAsJsonArray(), new TypeToken<List<ProductsEntity>>(){}.getType());
         int maxPage = s.get("maxPage").getAsInt();
         int pageNum = s.get("pageNum").getAsInt();
+        // 保存当前页面
+        AddGoodsData.INSTANCE.pageNum = pageNum;
         if (pageNum > 1){
             addGoodsView.onLoadmoreSuccessful(data, maxPage == pageNum);
         }else{

@@ -21,6 +21,12 @@
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
         <item name="android:actionMenuTextColor">@color/action_menu_text_color</item>
         <item name="android:actionBarItemBackground">@null</item>
+        <item name="android:actionBarWidgetTheme">@style/MyActionTheme</item>
+    </style>
+
+    <style name="MyActionTheme">
+        <item name="android:textColorHint">#CCCCCC</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

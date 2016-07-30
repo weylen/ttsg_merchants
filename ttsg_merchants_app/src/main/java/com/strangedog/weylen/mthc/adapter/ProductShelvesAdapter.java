@@ -49,7 +49,7 @@ public class ProductShelvesAdapter extends WrapperAdapterData<ProductsEntity, Pr
         RxView.clicks(holder.itemView).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
                     if (itemClickListener != null){
-                        itemClickListener.onItemClicked(entity, position);
+                        itemClickListener.onItemClicked(position);
                     }
                 });
 

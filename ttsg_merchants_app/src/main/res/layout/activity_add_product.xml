@@ -35,12 +35,38 @@
             android:gravity="center_horizontal"
             >
 
-            <com.strangedog.weylen.mthc.view.ZRecyclerView
-                android:id="@+id/recyclerView"
+            <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/emptyLayout"
                 android:layout_weight="1.0"
-                />
+                >
+                <com.strangedog.weylen.mthc.view.ZRefreshView
+                    android:id="@+id/refreshView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.strangedog.weylen.mthc.view.ListRecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </com.strangedog.weylen.mthc.view.ZRefreshView>
+
+                <TextView
+                    android:id="@+id/emptyView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@mipmap/ic_empty"
+                    android:drawablePadding="3dp"
+                    android:layout_marginBottom="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="没有数据"
+                    android:visibility="gone"
+                    />
+            </FrameLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
@@ -54,27 +80,43 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 >
 
-                <com.rey.material.widget.RadioButton
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="选中了10件商品"
+                    android:layout_weight="1.0"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="left"
+                    android:textSize="@dimen/size_14"
+                    android:paddingLeft="10dp"
+                    />
+
+                <CheckBox
                     android:id="@+id/checkedAllView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="全选"
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/size_12"
                     android:textColor="@color/grayText"
+                    android:button="@drawable/abc_box_selector"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     />
 
                 <com.rey.material.widget.Button
                     android:id="@+id/addProductsView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    style="@style/LightFlatWaveButtonRippleStyle"
+                    style="@style/LightFlatButtonRippleStyle"
                     android:layout_marginRight="10dp"
                     android:text="添加"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/size_12"
                     android:gravity="center"
+
                     />
 
             </LinearLayout>

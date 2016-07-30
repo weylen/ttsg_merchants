@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
-import com.strangedog.weylen.mthc.iinter.BaseItemViewClickListener;
+import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.iinter.ItemClickListener;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -16,7 +16,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -26,7 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class ProductInTheSaleAdapter extends WrapperAdapterData<ProductsEntity, ProductInTheSaleAdapter.A> {
 
     private ItemClickListener itemClickListener;
-    private BaseItemViewClickListener itemViewClickListener;
+    private ItemViewClickListenerWrapper itemViewClickListener;
 
     public ProductInTheSaleAdapter(LayoutInflater inflater, List<ProductsEntity> data) {
         super(inflater, data);
@@ -36,7 +35,7 @@ public class ProductInTheSaleAdapter extends WrapperAdapterData<ProductsEntity, 
         this.itemClickListener = itemClickListener;
     }
 
-    public void setItemViewClickListener(BaseItemViewClickListener itemViewClickListener) {
+    public void setItemViewClickListener(ItemViewClickListenerWrapper itemViewClickListener) {
         this.itemViewClickListener = itemViewClickListener;
     }
 
@@ -55,7 +54,7 @@ public class ProductInTheSaleAdapter extends WrapperAdapterData<ProductsEntity, 
         RxView.clicks(holder.itemView).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
                     if (itemClickListener != null){
-                        itemClickListener.onItemClicked(entity, position);
+                        itemClickListener.onItemClicked(position);
                     }
                 });
         // 编辑

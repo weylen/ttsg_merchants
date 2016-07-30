@@ -14,7 +14,7 @@ import android.view.View;
 
 import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
-import com.strangedog.weylen.mthc.activity.insellinggoods.addgoods.AddProductsActivity;
+import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.fragment.F_Order_Complete;
 import com.strangedog.weylen.mthc.fragment.F_Order_Doing;

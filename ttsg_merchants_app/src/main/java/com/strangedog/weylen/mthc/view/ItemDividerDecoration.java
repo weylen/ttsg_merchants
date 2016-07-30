@@ -31,6 +31,8 @@ public class ItemDividerDecoration extends RecyclerView.ItemDecoration {
     private int color;
     // 分割线尺寸
     private int size;
+    // FooterView是否显示分割线
+    private boolean isShowFooterDivider = true;
 
     public ItemDividerDecoration() {
         this(VERTICAL);
@@ -38,14 +40,17 @@ public class ItemDividerDecoration extends RecyclerView.ItemDecoration {
 
     public ItemDividerDecoration(int orientation) {
         this.orientation = orientation;
-
         paint = new Paint();
+    }
+
+    public ItemDividerDecoration setShowFooterDivider(boolean isShowFooterDivider){
+        this.isShowFooterDivider = isShowFooterDivider;
+        return this;
     }
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
-
         if (orientation == VERTICAL) {
             drawHorizontal(c, parent);
         } else {
@@ -79,7 +84,8 @@ public class ItemDividerDecoration extends RecyclerView.ItemDecoration {
         final int top = parent.getPaddingTop();
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
 
-        final int childCount = parent.getChildCount();
+        int childCount = parent.getChildCount();
+        childCount = isShowFooterDivider? childCount : childCount - 1;
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -95,7 +101,8 @@ public class ItemDividerDecoration extends RecyclerView.ItemDecoration {
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
 
-        final int childCount = parent.getChildCount();
+        int childCount = parent.getChildCount();
+        childCount = isShowFooterDivider? childCount : childCount - 1;
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();

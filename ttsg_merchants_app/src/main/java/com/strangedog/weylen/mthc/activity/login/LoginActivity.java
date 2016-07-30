@@ -1,4 +1,4 @@
-package com.strangedog.weylen.mthc.login;
+package com.strangedog.weylen.mthc.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,20 +17,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * A login screen that offers login via email/password.
+ * 登录页面
  */
 public class LoginActivity extends BaseActivity implements LoginView {
 
-    @Bind(R.id.account)
-    EditText mAccountView;
-    @Bind(R.id.password)
-    EditText mPasswordView;
-    @Bind(R.id.containerView)
-    LinearLayout containerView;
-    @Bind(R.id.layout_user)
-    TextInputLayout mLayoutUser;
-    @Bind(R.id.layout_password)
-    TextInputLayout mLayoutPassword;
+    @Bind(R.id.account) EditText mAccountView;
+    @Bind(R.id.password) EditText mPasswordView;
+    @Bind(R.id.containerView) LinearLayout containerView;
+    @Bind(R.id.layout_user) TextInputLayout mLayoutUser;
+    @Bind(R.id.layout_password) TextInputLayout mLayoutPassword;
 
     private LoginPresenter loginPresenter;
 
@@ -66,7 +61,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @OnClick(R.id.account_sign_in_button)
     void onLogin() {
-        attemptLogin();
+        Intent intent = new Intent(this, IndexActivity.class);
+        startActivity(intent);
+        finish();
+//        attemptLogin();
     }
 
     /**

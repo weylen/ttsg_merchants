@@ -1,14 +1,9 @@
 package com.strangedog.weylen.mthc.http;
 
 import com.google.gson.JsonObject;
-import com.strangedog.weylen.mthc.login.LoginData;
-
-import org.json.JSONObject;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
 

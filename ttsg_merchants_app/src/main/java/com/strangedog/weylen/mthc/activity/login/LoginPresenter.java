@@ -1,4 +1,4 @@
-package com.strangedog.weylen.mthc.login;
+package com.strangedog.weylen.mthc.activity.login;
 
 import android.support.annotation.NonNull;
 

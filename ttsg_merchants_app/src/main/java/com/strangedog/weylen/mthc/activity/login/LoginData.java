@@ -1,4 +1,4 @@
-package com.strangedog.weylen.mthc.login;
+package com.strangedog.weylen.mthc.activity.login;
 
 import com.strangedog.weylen.mthc.entity.AccountEntity;
 

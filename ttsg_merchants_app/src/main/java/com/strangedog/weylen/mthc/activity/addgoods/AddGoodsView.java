@@ -1,7 +1,6 @@
-package com.strangedog.weylen.mthc.activity.insellinggoods.addgoods;
+package com.strangedog.weylen.mthc.activity.addgoods;
 
 import com.strangedog.weylen.mthc.BaseView;
-import com.strangedog.weylen.mthc.activity.insellinggoods.SellingGoodsPresenter;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 
 import java.util.List;

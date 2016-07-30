@@ -8,15 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.rey.material.app.Dialog;
 import com.rey.material.app.SimpleDialog;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseFragment;
-import com.strangedog.weylen.mthc.adapter.OrderAdapter;
 import com.strangedog.weylen.mthc.adapter.ProductInTheSaleAdapter;
-import com.strangedog.weylen.mthc.entity.OrderEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
-import com.strangedog.weylen.mthc.iinter.BaseItemViewClickListener;
+import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.util.AppPrams;
 import com.strangedog.weylen.mthc.util.DimensUtil;
 import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
@@ -24,7 +21,6 @@ import com.strangedog.weylen.mthc.view.ZEmptyViewHelper;
 import com.strangedog.weylen.mthc.view.ZRecyclerView;
 import com.strangedog.weylen.mthc.view.ZRefreshView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -98,7 +94,7 @@ public class InSellingGoodsFragment extends BaseFragment implements SellingGoods
         ButterKnife.unbind(this);
     }
 
-    private BaseItemViewClickListener itemViewClickListener = new BaseItemViewClickListener(){
+    private ItemViewClickListenerWrapper itemViewClickListener = new ItemViewClickListenerWrapper(){
         @Override // 编辑被点击
         public void onViewClick1(View view, int position) {
 

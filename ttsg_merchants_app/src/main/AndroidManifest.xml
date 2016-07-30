@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.strangedog.weylen.mthc.login.LoginActivity"
+            android:name="com.strangedog.weylen.mthc.activity.login.LoginActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
@@ -59,7 +59,7 @@
         </activity>
 
         <activity
-            android:name="com.strangedog.weylen.mthc.activity.insellinggoods.addgoods.AddProductsActivity"
+            android:name="com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity"
             android:label="@string/AddProducts"
             android:parentActivityName="com.strangedog.weylen.mthc.IndexActivity"
             android:theme="@style/AppTheme.NoActionBar"
