@@ -12,27 +12,9 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         />
 
-    <item
-        android:id="@+id/action_filter_all"
+    <item android:id="@+id/action_flow"
         android:orderInCategory="100"
-        android:title="全部"
-        />
-
-    <item
-        android:id="@+id/action_filter_type1"
-        android:orderInCategory="100"
-        android:title="小吃"
-        />
-
-    <item
-        android:id="@+id/action_filter_type2"
-        android:orderInCategory="100"
-        android:title="饮料"
-        />
-
-    <item
-        android:id="@+id/action_filter_type3"
-        android:orderInCategory="100"
-        android:title="家用商品"
+        android:title=""
+        android:icon="@mipmap/icon_menu_flow"
         />
 </menu>

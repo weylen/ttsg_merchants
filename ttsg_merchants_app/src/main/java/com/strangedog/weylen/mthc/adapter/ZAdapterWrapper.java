@@ -17,15 +17,9 @@ public class ZAdapterWrapper<T extends WrapperAdapterData> extends EndlessRecycl
     private View progressView;
     private TextView finishView;
 
-    public ZAdapterWrapper(Context context, T adapter, LoadmoreListenerWrapper listener, boolean isShowFooterView){
-        super(context, adapter, listener, R.layout.item_loading, true, false, isShowFooterView);
+    public ZAdapterWrapper(Context context, T adapter, LoadmoreListenerWrapper listener){
+        super(context, adapter, listener, R.layout.item_loading, true, false);
         Preconditions.checkNotNull(adapter, "adapter can not be null");
-    }
-
-    public void setShowFooterView(boolean isShowFooterView){
-        ensureView();
-        if (loadingView != null)
-            loadingView.setVisibility(isShowFooterView ? View.VISIBLE : View.GONE);
     }
 
     public void setFinishing(boolean finishing) {

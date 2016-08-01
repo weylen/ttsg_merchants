@@ -26,28 +26,27 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
     private AtomicBoolean keepOnAppendingBefore; //前向是否触发endless
     private AtomicBoolean dataPendingBefore; //前向加载中
     private RequestToLoadMoreListener requestToLoadMoreListener;
-    private boolean isShowFooterView = true;
 
     public EndlessRecyclerViewAdapter(Context context,  Adapter wrapped, RequestToLoadMoreListener requestToLoadMoreListener,
-                                      @LayoutRes int pendingViewResId, boolean keepOnAppendingAfter, boolean keepOnAppendingBefore,
-                                      boolean isShowFooterView) {
+                                      @LayoutRes int pendingViewResId, boolean keepOnAppendingAfter, boolean keepOnAppendingBefore) {
         super(wrapped);
         this.context = context;
         this.requestToLoadMoreListener = requestToLoadMoreListener;
         this.pendingViewResId = pendingViewResId;
         this.keepOnAppendingAfter = new AtomicBoolean(keepOnAppendingAfter);
         this.keepOnAppendingBefore = new AtomicBoolean(keepOnAppendingBefore);
-        this.isShowFooterView = isShowFooterView;
         dataPendingAfter = new AtomicBoolean(false);
         dataPendingBefore = new AtomicBoolean(false);
     }
 
     public EndlessRecyclerViewAdapter(Context context, Adapter wrapped, RequestToLoadMoreListener requestToLoadMoreListener) {
-        this(context, wrapped, requestToLoadMoreListener, R.layout.item_loading, true, true, true);
+        this(context, wrapped, requestToLoadMoreListener, R.layout.item_loading, true, true);
     }
 
     public void setShowFooterView(boolean showFooterView) {
-        isShowFooterView = showFooterView;
+        if (loadingView != null){
+            loadingView.setVisibility(showFooterView ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void stopAppending() {
@@ -130,7 +129,6 @@ public class EndlessRecyclerViewAdapter extends RecyclerViewAdapterWrapper {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_PENDING_AFTER || viewType == TYPE_PENDING_BEFORE) {
             loadingView = getPendingView(parent);
-            loadingView.setVisibility(isShowFooterView ? View.VISIBLE : View.GONE);
             return new PendingViewHolder(loadingView);
         }
         return super.onCreateViewHolder(parent, viewType);

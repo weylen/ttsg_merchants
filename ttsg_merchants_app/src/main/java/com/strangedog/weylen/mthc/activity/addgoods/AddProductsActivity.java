@@ -2,6 +2,8 @@ package com.strangedog.weylen.mthc.activity.addgoods;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -15,8 +17,11 @@ import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.adapter.AddProductsAdapter;
 import com.strangedog.weylen.mthc.adapter.LoadmoreListenerWrapper;
+import com.strangedog.weylen.mthc.adapter.ZAdapterWrapper;
+import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.view.ListBottomSheetDialog;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 import com.strangedog.weylen.mthc.view.ZRefreshView;
 
@@ -39,9 +44,11 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     @Bind(R.id.refreshView) ZRefreshView zRefreshView;
 
     private AddProductsAdapter adapter;
+    private ZAdapterWrapper zAdapterWrapper;
     private AddGoodsPresenter presenter;
     private SearchView searchView;
     private boolean isActive;
+    private BottomSheetBehavior bottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,8 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         setPresenter(presenter);
 
         init();
+
+        presenter.onLoad("");
     }
 
     private void init(){
@@ -73,9 +82,28 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         mListRecylerView.setAdapter(adapter, new LoadmoreListenerWrapper() {
             @Override
             public void onAfterLoadMoreRequested() {
-                presenter.loadMore();
+                if (zAdapterWrapper.getLoadingView().getVisibility() == View.VISIBLE){
+                    DebugUtil.d("AddProductsActivity onAfterLoadMoreRequested loadmore 触发");
+                    presenter.loadMore();
+                }
             }
         });
+        zAdapterWrapper = mListRecylerView.getzAdapterWrapper();
+        zAdapterWrapper.setShowFooterView(false);
+    }
+
+    private ListBottomSheetDialog bottomSheetDialog;
+    private void showBottomSheetDialog(List<KindDataEntity> kindDataEntities) {
+        if (bottomSheetBehavior != null &&
+                bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+
+        bottomSheetDialog = new ListBottomSheetDialog(this);
+        bottomSheetDialog.setItemData(kindDataEntities);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetDialog.getContentView());
+        bottomSheetDialog.setOnDismissListener((d)->{bottomSheetDialog = null;});
+        bottomSheetDialog.show();
     }
 
     @OnClick(R.id.addProductsView)
@@ -150,10 +178,9 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
             finish();
             return true;
         }
-//        if (item.getItemId() == R.id.action_search){
-//            searchView.onActionViewExpanded();
-//        }
-
+        if (item.getItemId() == R.id.action_flow){
+            presenter.loadKindData();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -161,7 +188,6 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     protected void onResume() {
         super.onResume();
         isActive = true;
-        presenter.onLoad("");
     }
 
     @Override
@@ -196,8 +222,8 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     public void onLoadSuccessful(List<ProductsEntity> data, boolean isComplete) {
         if (isActive()){
             dismissProgressDialog();
-            mListRecylerView.setLoadFinishing(isComplete);
             zRefreshView.setRefreshing(false);
+            mListRecylerView.setLoadFinishing(isComplete);
             adapter.setData(data);
         }
     }
@@ -244,20 +270,40 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     }
 
     @Override
-    public void onUpLoadSuccess() {
+    public void onUpLoadSuccess(List<ProductsEntity> uploadData) {
         if (isActive()){
             dismissProgressDialog();
             showSnakeBar(containerView, "添加商品成功");
+            adapter.resetStatus();
+            // 移除已经上传的商品
+            adapter.getData().removeAll(uploadData);
+            adapter.notifyDataSetChanged();
         }
     }
 
-    @Override // 部分商品价格未设置或为0,添加失败
-    public void onUploadDepartFailure() {}
+    @Override
+    public void onStartLoadKind() {
+        showProgressDialog("加载品类中...");
+    }
 
     @Override
-    public void setPresenter(AddGoodsPresenter presenter) {
-
+    public void onLoadKindFailure() {
+        if (isActive()){
+            dismissProgressDialog();
+            showSnakeBar(containerView, "加载品类失败，请重新操作");
+        }
     }
+
+    @Override
+    public void onLoadKindSuccess(List<KindDataEntity> kindData) {
+        if (isActive()){
+            dismissProgressDialog();
+            showBottomSheetDialog(kindData);
+        }
+    }
+
+    @Override
+    public void setPresenter(AddGoodsPresenter presenter) {}
 
     private RecyclerView.AdapterDataObserver adapterDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override

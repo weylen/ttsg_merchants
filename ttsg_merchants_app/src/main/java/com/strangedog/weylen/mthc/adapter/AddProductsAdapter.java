@@ -62,6 +62,15 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
     }
 
     /**
+     * 重置所有的状态
+     */
+    public void resetStatus(){
+        checkedData.clear();
+        checkedStatus.clear();
+        isSelectAll = false;
+    }
+
+    /**
      * 获取选择的数据列表 可能为null
      * @return
      */

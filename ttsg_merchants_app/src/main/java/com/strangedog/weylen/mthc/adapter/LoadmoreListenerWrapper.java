@@ -6,10 +6,8 @@ package com.strangedog.weylen.mthc.adapter;
 public abstract class LoadmoreListenerWrapper implements EndlessRecyclerViewAdapter.RequestToLoadMoreListener{
 
     @Override
-    public abstract void onAfterLoadMoreRequested();
+    public void onAfterLoadMoreRequested(){}
 
     @Override
-    public void onBeforeLoadMoreRequested() {
-
-    }
+    public void onBeforeLoadMoreRequested() {}
 }

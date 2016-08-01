@@ -1,6 +1,7 @@
 package com.strangedog.weylen.mthc.activity.addgoods;
 
 import com.strangedog.weylen.mthc.BaseView;
+import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 
 import java.util.List;
@@ -57,7 +58,20 @@ public interface AddGoodsView extends BaseView<AddGoodsPresenter>{
 
     void onUploadFailure();
 
-    void onUpLoadSuccess();
+    void onUpLoadSuccess(List<ProductsEntity> uploadData);
 
-    void onUploadDepartFailure();
+    /**
+     * 开始加载品种
+     */
+    void onStartLoadKind();
+
+    /**
+     * 加载品种数据失败
+     */
+    void onLoadKindFailure();
+
+    /**
+     * 加载品种数据成功
+     */
+    void onLoadKindSuccess(List<KindDataEntity> kindData);
 }

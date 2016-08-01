@@ -3,7 +3,9 @@ package com.strangedog.weylen.mthc.view;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.adapter.LoadmoreListenerWrapper;
@@ -53,7 +55,7 @@ public class ListRecyclerView extends ZRecyclerView{
      * @param listenerWrapper
      */
     public void setAdapter(WrapperAdapterData adapter, LoadmoreListenerWrapper listenerWrapper) {
-        zAdapterWrapper = new ZAdapterWrapper(getContext(), adapter, listenerWrapper, false);
+        zAdapterWrapper = new ZAdapterWrapper(getContext(), adapter, listenerWrapper);
         super.setAdapter(zAdapterWrapper);
     }
 
