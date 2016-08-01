@@ -59,7 +59,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.rey.material.widget.CheckBox
+    <CheckBox
         android:id="@+id/itemChecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

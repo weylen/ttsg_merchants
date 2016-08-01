@@ -61,10 +61,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @OnClick(R.id.account_sign_in_button)
     void onLogin() {
-        Intent intent = new Intent(this, IndexActivity.class);
-        startActivity(intent);
-        finish();
-//        attemptLogin();
+//        Intent intent = new Intent(this, IndexActivity.class);
+//        startActivity(intent);
+//        finish();
+        attemptLogin();
     }
 
     /**

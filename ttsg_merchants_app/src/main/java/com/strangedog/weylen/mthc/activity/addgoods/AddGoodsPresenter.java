@@ -83,13 +83,8 @@ public class AddGoodsPresenter implements BasePresenter {
         for (ProductsEntity entity : data){
             JsonObject object = new JsonObject();
             object.addProperty("id", entity.getId());
-            object.addProperty("buyPrice", entity.getBuyPrice());
-            object.addProperty("salePrice", entity.getSalePrice());
-            object.addProperty("stock", entity.getStock());
-            object.addProperty("promote", entity.getPromote());
-            object.addProperty("begin", entity.getBegin());
-            object.addProperty("end", entity.getEnd());
-            object.addProperty("info", entity.getInfo());
+            object.addProperty("buyPrice", "0");
+            object.addProperty("salePrice", "0");
             array.add(object);
         }
         DebugUtil.d("AddGoodsPresenter-toJson 参数:" + array.toString());
@@ -124,9 +119,6 @@ public class AddGoodsPresenter implements BasePresenter {
                         switch (ResponseMgr.getStatus(s)){
                             case 1:
                                 addGoodsView.onUpLoadSuccess();
-                                break;
-                            case 2:
-                                addGoodsView.onUploadDepartFailure();
                                 break;
                             default:
                                 addGoodsView.onUploadFailure();
@@ -199,5 +191,12 @@ public class AddGoodsPresenter implements BasePresenter {
         }else{
             addGoodsView.onLoadSuccessful(data, maxPage == pageNum);
         }
+    }
+
+    /**
+     * 加载品种
+     */
+    public void loadKind(){
+
     }
 }

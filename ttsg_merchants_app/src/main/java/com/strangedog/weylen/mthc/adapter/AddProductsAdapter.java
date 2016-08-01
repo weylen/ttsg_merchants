@@ -7,13 +7,14 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.rey.material.widget.CheckBox;
+import com.bumptech.glide.Glide;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
-import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
+import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemClickListener;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by Administrator on 2016-07-02.
@@ -99,6 +99,16 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
         }else{
             holder.priceView.setText("￥" + entity.getSalePrice());
         }
+
+        String imgPath = entity.getImgPath();
+        Glide.with(holder.priceView.getContext())
+                .load(Constants.BASE_URL + imgPath.split(",")[0])
+                .fitCenter()
+                .placeholder(R.mipmap.img_default)
+                .crossFade()
+                .dontAnimate()
+                .error(R.mipmap.img_default)
+                .into(holder.imageView);
     }
 
     public static class A extends RecyclerView.ViewHolder {
@@ -108,6 +118,7 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
         @Bind(R.id.itemPrice) TextView priceView;
         @Bind(R.id.itemPromotion) TextView promotionView;
         @Bind(R.id.itemPromotionPrice) TextView promotionPriceView;
+        @Bind(R.id.itemImage) ImageView imageView;
 
         public A(View itemView, ItemClickListener itemClickListener) {
             super(itemView);

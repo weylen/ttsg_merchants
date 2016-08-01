@@ -1,7 +1,5 @@
 package com.strangedog.weylen.mthc.activity.addgoods;
 
-import android.app.SearchManager;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +13,9 @@ import android.widget.TextView;
 
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
-import com.strangedog.weylen.mthc.ProductsDetailsActivity;
 import com.strangedog.weylen.mthc.adapter.AddProductsAdapter;
 import com.strangedog.weylen.mthc.adapter.LoadmoreListenerWrapper;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
-import com.strangedog.weylen.mthc.iinter.ItemClickListener;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 import com.strangedog.weylen.mthc.view.ZRefreshView;
@@ -45,6 +41,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     private AddProductsAdapter adapter;
     private AddGoodsPresenter presenter;
     private SearchView searchView;
+    private boolean isActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +50,9 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // 设置可无添加商品信息
+        emptyView.setText(R.string.NoAddProducts);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -66,7 +66,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         // 设置下拉刷新事件
         zRefreshView.setOnRefreshListener(()->presenter.refresh());
         // 创建列表适配器
-        adapter = new AddProductsAdapter(LayoutInflater.from(this), itemClickListener);
+        adapter = new AddProductsAdapter(LayoutInflater.from(this), null);
         // 设置数据监听器
         adapter.registerAdapterDataObserver(adapterDataObserver);
         // 设置适配器
@@ -77,10 +77,6 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
             }
         });
     }
-
-    // 列表点击事件
-    private ItemClickListener itemClickListener = (position -> startActivity(new Intent(AddProductsActivity.this,
-            ProductsDetailsActivity.class)));
 
     @OnClick(R.id.addProductsView)
     public void addProductsClick(){
@@ -107,8 +103,6 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
             public boolean onQueryTextSubmit(String query) {
                 doMySearch(query);
                 searchView.clearFocus();
-
-//                searchView.setVisibility(View.GONE);
                 return false;
             }
 
@@ -146,8 +140,8 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     private void doMySearch(String query) {
         DebugUtil.d("AddProductsActivity onClick 搜索条件：" + query);
-//                presenter.onLoad(searchView.getQuery().toString());
-//                searchView.onActionViewCollapsed()
+        presenter.onLoad(query);
+//      searchView.onActionViewCollapsed()
     }
 
     @Override
@@ -166,7 +160,14 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     @Override
     protected void onResume() {
         super.onResume();
+        isActive = true;
         presenter.onLoad("");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isActive = false;
     }
 
     @Override
@@ -183,16 +184,22 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     @Override
     public void onLoadFailure() {
-        dismissProgressDialog();
-        zRefreshView.setRefreshing(false);
-        adapterDataObserver.onChanged();
+        if (isActive()){
+            dismissProgressDialog();
+            zRefreshView.setRefreshing(false);
+            adapter.setData(null);
+            adapterDataObserver.onChanged();
+        }
     }
 
     @Override
     public void onLoadSuccessful(List<ProductsEntity> data, boolean isComplete) {
-        dismissProgressDialog();
-        zRefreshView.setRefreshing(false);
-        adapter.setData(data);
+        if (isActive()){
+            dismissProgressDialog();
+            mListRecylerView.setLoadFinishing(isComplete);
+            zRefreshView.setRefreshing(false);
+            adapter.setData(data);
+        }
     }
 
     @Override
@@ -202,17 +209,25 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     @Override
     public void onLoadmoreFailuer() {
-        dismissProgressDialog();
+        if (isActive()){
+            dismissProgressDialog();
+            showSnakeBar(containerView, "加载更多失败");
+        }
     }
 
     @Override
     public void onLoadmoreSuccessful(List<ProductsEntity> data, boolean isComplete) {
-        dismissProgressDialog();
+        if (isActive()){
+            dismissProgressDialog();
+            mListRecylerView.setLoadFinishing(isComplete);
+            zRefreshView.setRefreshing(false);
+            adapter.addData(data);
+        }
     }
 
     @Override
     public boolean isActive() {
-        return !isFinishing();
+        return isActive;
     }
 
     @Override
@@ -222,19 +237,22 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     @Override
     public void onUploadFailure() {
-        dismissProgressDialog();
-        showSnakeBar(containerView, "添加数据失败，请重新操作");
+        if (isActive()){
+            dismissProgressDialog();
+            showSnakeBar(containerView, "添加数据失败，请重新操作");
+        }
     }
 
     @Override
     public void onUpLoadSuccess() {
-        dismissProgressDialog();
+        if (isActive()){
+            dismissProgressDialog();
+            showSnakeBar(containerView, "添加商品成功");
+        }
     }
 
     @Override // 部分商品价格未设置或为0,添加失败
-    public void onUploadDepartFailure() {
-        dismissProgressDialog();
-    }
+    public void onUploadDepartFailure() {}
 
     @Override
     public void setPresenter(AddGoodsPresenter presenter) {

@@ -16,6 +16,7 @@ import com.strangedog.weylen.mthc.util.DimensUtil;
  */
 public class ListRecyclerView extends ZRecyclerView{
 
+    private ZAdapterWrapper zAdapterWrapper;
     public ListRecyclerView(Context context) {
         super(context);
         init();
@@ -52,7 +53,15 @@ public class ListRecyclerView extends ZRecyclerView{
      * @param listenerWrapper
      */
     public void setAdapter(WrapperAdapterData adapter, LoadmoreListenerWrapper listenerWrapper) {
-        ZAdapterWrapper zAdapterWrapper = new ZAdapterWrapper(getContext(), adapter, listenerWrapper, false);
+        zAdapterWrapper = new ZAdapterWrapper(getContext(), adapter, listenerWrapper, false);
         super.setAdapter(zAdapterWrapper);
+    }
+
+    public ZAdapterWrapper getzAdapterWrapper() {
+        return zAdapterWrapper;
+    }
+
+    public void setLoadFinishing(boolean loadFinishing){
+        zAdapterWrapper.setFinishing(loadFinishing);
     }
 }
