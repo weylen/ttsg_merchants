@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.adapter;
 
+import android.content.Context;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,9 +14,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.strangedog.weylen.mtch.R;
+import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemClickListener;
+import com.strangedog.weylen.mthc.iinter.OnCheckedChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,27 +30,27 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016-07-02.
  * 添加商品适配器
  */
-public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddProductsAdapter.A> {
+public class AddProductsAdapter extends ListBaseAdapter<ProductsEntity> {
 
-    private ItemClickListener itemClickListener;
     private SparseBooleanArray checkedStatus = new SparseBooleanArray();
     private List<ProductsEntity> checkedData = new ArrayList<>();
+    private OnCheckedChangeListener onCheckedChangeListener;
     private boolean isSelectAll;
-
-    public AddProductsAdapter(LayoutInflater inflater, ItemClickListener itemClickListener) {
-        super(inflater, null);
-        setItemClickListener(itemClickListener);
-    }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    private int checkedCount = 0;
+    private LayoutInflater inflate;
+    public AddProductsAdapter(Context context){
+        inflate = LayoutInflater.from(context);
     }
 
     @Override
     public AddProductsAdapter.A onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = getLayoutInflater().inflate(R.layout.item_add_product, parent, false);
-        AddProductsAdapter.A holder = new A(view, itemClickListener);
+        View view = inflate.inflate(R.layout.item_add_product, parent, false);
+        AddProductsAdapter.A holder = new A(view);
         return holder;
+    }
+
+    public void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
+        this.onCheckedChangeListener = onCheckedChangeListener;
     }
 
     /**
@@ -56,9 +59,11 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
      */
     public void selectAll(boolean isSelectAll){
         this.isSelectAll = isSelectAll;
-        checkedData = isSelectAll ? getData() : null;
+        checkedData = isSelectAll ? getDataList() : null;
         checkedStatus.clear();
         notifyDataSetChanged();
+        checkedCount = isSelectAll ? getDataList().size() : 0;
+        onCheckedChange();
     }
 
     /**
@@ -68,6 +73,8 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
         checkedData.clear();
         checkedStatus.clear();
         isSelectAll = false;
+        checkedCount = 0;
+        onCheckedChange();
     }
 
     /**
@@ -79,7 +86,9 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
     }
 
     @Override
-    public void onBindViewHolder(AddProductsAdapter.A holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        A holder = (A) viewHolder;
+
         ProductsEntity entity = getItem(position);
         // 选中
         holder.itemCheckedView.setOnClickListener((v)-> {
@@ -88,10 +97,13 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
             checkedStatus.put(position, isChecked);
             // 添加或移除商品
             if (isChecked){
+                checkedCount++;
                 checkedData.add(entity);
             }else {
+                checkedCount--;
                 checkedData.remove(entity);
             }
+            onCheckedChange();
         });
         // 设置选中效果
         holder.itemCheckedView.setChecked(checkedStatus.get(position, isSelectAll));
@@ -100,10 +112,10 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
         holder.unitView.setText(entity.getStandard());
         String promotePrice = entity.getPromote(); // 促销价
         if (!TextUtils.isEmpty(promotePrice)){
-            holder.priceView.setText(promotePrice);
+            holder.priceView.setText("￥"+promotePrice);
             String info = entity.getBegin() + "~" + entity.getEnd() + " " + entity.getInfo();
             holder.promotionView.setText(info);
-            holder.promotionPriceView.setText(entity.getSalePrice());
+            holder.promotionPriceView.setText("￥"+entity.getSalePrice());
             holder.promotionPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
         }else{
             holder.priceView.setText("￥" + entity.getSalePrice());
@@ -120,6 +132,12 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
                 .into(holder.imageView);
     }
 
+    private void onCheckedChange(){
+        if (onCheckedChangeListener != null){
+            onCheckedChangeListener.onCheckedChange(checkedCount);
+        }
+    }
+
     public static class A extends RecyclerView.ViewHolder {
         @Bind(R.id.itemChecked) CheckBox itemCheckedView;
         @Bind(R.id.itemTitle) TextView titleView;
@@ -129,14 +147,9 @@ public class AddProductsAdapter extends WrapperAdapterData<ProductsEntity, AddPr
         @Bind(R.id.itemPromotionPrice) TextView promotionPriceView;
         @Bind(R.id.itemImage) ImageView imageView;
 
-        public A(View itemView, ItemClickListener itemClickListener) {
+        public A(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(v -> {
-                if (itemClickListener != null){
-                    itemClickListener.onItemClicked(getLayoutPosition());
-                }
-            });
         }
     }
 }

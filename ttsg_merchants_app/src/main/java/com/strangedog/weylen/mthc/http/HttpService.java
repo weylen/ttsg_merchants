@@ -23,14 +23,15 @@ public interface HttpService {
     Observable<JsonObject> getKind();
 
     /**
-     * 获取在售商品
+     * 获取可添加的商品
      * @return
      */
     @FormUrlEncoded
     @POST("cpma-")
-    Observable<JsonObject> getInSellingGoods(
+    Observable<JsonObject> addGoodsList(
             @Field("key") String key,
-            @Field("pageNum") int pageNum
+            @Field("pageNum") int pageNum,
+            @Field("cbList") String typeId
     );
 
     @FormUrlEncoded
@@ -39,5 +40,18 @@ public interface HttpService {
             @Field("cbList") String cb
     );
 
-
+    /**
+     *
+     * @param keyword 查询关键字
+     * @param status 上架是1 下架是2
+     * @param pageNum 页码
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cpma-salableCommodity")
+    Observable<JsonObject> getShopGoods(
+            @Field("key") String keyword,
+            @Field("cbList") int status,
+            @Field("pageNum") int pageNum
+    );
 }

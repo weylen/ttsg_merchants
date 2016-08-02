@@ -40,28 +40,26 @@ public class AddGoodsPresenter implements BasePresenter {
      * 加载数据
      * @param keyword 商品搜索关键字 不传则获取默认的商品列表
      */
-    public void onLoad(String keyword){
-        DebugUtil.d("AddGoodsPresenter onLoad 执行");
+    public void onLoad(String keyword, String typeId){
         // 保存当前搜索关键字
         AddGoodsData.INSTANCE.keyword = keyword;
+        AddGoodsData.INSTANCE.typeId = typeId;
         addGoodsView.onStartLoading();
-        getRemoteData(keyword == null ? "" : keyword, 1);
+        addGoodsList(keyword, 1, typeId);
     }
 
     /**
      * 刷新
      */
     public void refresh(){
-        DebugUtil.d("AddGoodsPresenter refresh 执行");
-        getRemoteData(AddGoodsData.INSTANCE.keyword, 1);
+        addGoodsList(AddGoodsData.INSTANCE.keyword, 1, AddGoodsData.INSTANCE.typeId);
     }
 
     /**
      * 加载更多
      */
     public void loadMore(){
-        DebugUtil.d("AddGoodsPresenter loadMore 执行");
-        getRemoteData(AddGoodsData.INSTANCE.keyword, AddGoodsData.INSTANCE.pageNum + 1);
+        addGoodsList(AddGoodsData.INSTANCE.keyword, AddGoodsData.INSTANCE.pageNum + 1, AddGoodsData.INSTANCE.typeId);
     }
 
     /**
@@ -87,8 +85,8 @@ public class AddGoodsPresenter implements BasePresenter {
         for (ProductsEntity entity : data){
             JsonObject object = new JsonObject();
             object.addProperty("id", entity.getId());
-            object.addProperty("buyPrice", "0");
-            object.addProperty("salePrice", "0");
+            object.addProperty("buyPrice", entity.getBuyPrice());
+            object.addProperty("salePrice", entity.getSalePrice());
             array.add(object);
         }
         return array.toString();
@@ -148,12 +146,11 @@ public class AddGoodsPresenter implements BasePresenter {
 
     /**
      * 获取产品列表
-     * @param keyword
      * @param pageNum
      */
-    private void getRemoteData(String keyword, int pageNum){
+    private void addGoodsList(String keyword, int pageNum, String typeId){
         RetrofitFactory.getRetrofit().create(HttpService.class)
-                .getInSellingGoods(keyword, pageNum)
+                .addGoodsList(keyword, pageNum, typeId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -162,8 +159,6 @@ public class AddGoodsPresenter implements BasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
-                        DebugUtil.d("getRemoteData-->" + e.getMessage() + ",pageNum-->" + pageNum);
                         doError(pageNum);
                     }
 
@@ -204,7 +199,7 @@ public class AddGoodsPresenter implements BasePresenter {
         addGoodsView.onStartLoadKind();
         // 检查缓存
         if (AddGoodsData.INSTANCE.kindData != null){
-            doParseData();
+            doParseKindData();
             return;
         }
 
@@ -218,7 +213,6 @@ public class AddGoodsPresenter implements BasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        DebugUtil.d("AddGoodsPresenter loadKind onError-->" + e.getMessage());
                         addGoodsView.onLoadKindFailure();
                     }
 
@@ -228,7 +222,7 @@ public class AddGoodsPresenter implements BasePresenter {
                             addGoodsView.onLoadKindFailure();
                         }else {
                             AddGoodsData.INSTANCE.kindData = jsonObject;
-                            doParseData();
+                            doParseKindData();
                         }
                     }
                 });
@@ -237,7 +231,7 @@ public class AddGoodsPresenter implements BasePresenter {
     /**
      * 解析大类数据
      */
-    private void doParseData(){
+    private void doParseKindData(){
         JsonObject allKindData = AddGoodsData.INSTANCE.kindData;
         // 获取所有数据中的data字段
         JsonObject allKindDataObject = ResponseMgr.getData(allKindData);
@@ -247,6 +241,31 @@ public class AddGoodsPresenter implements BasePresenter {
         // 解析所有大类的数据
         List<KindDataEntity> kindData = gson.fromJson(largeTypeArray,
                 new TypeToken<List<KindDataEntity>>(){}.getType());
+
+        KindDataEntity allKind = new KindDataEntity();
+        allKind.setName("全部");
+        allKind.setPid("-1");
+        allKind.setId("-1");
+        kindData.add(0, allKind);
         addGoodsView.onLoadKindSuccess(kindData);
     }
+
+    /**
+     * 获取父类里面的所有小类
+     * @param pid
+     */
+    public void getSmallType(String pid){
+        JsonObject allKindData = AddGoodsData.INSTANCE.kindData;
+        // 获取所有数据中的data字段
+        JsonObject allKindDataObject = ResponseMgr.getData(allKindData);
+        // 获取指定父类的所有数据
+        JsonArray largeTypeArray = allKindDataObject.get(pid).getAsJsonArray();
+        Gson gson = new Gson();
+        // 解析所有大类的数据
+        List<KindDataEntity> largeTypeArrayData = gson.fromJson(largeTypeArray,
+                new TypeToken<List<KindDataEntity>>(){}.getType());
+        // 回调数据
+        addGoodsView.onLoadKindSuccess(largeTypeArrayData);
+    }
+
 }

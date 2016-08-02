@@ -3,22 +3,18 @@ package com.strangedog.weylen.mthc.view;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
 
+import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.strangedog.weylen.mtch.R;
-import com.strangedog.weylen.mthc.adapter.LoadmoreListenerWrapper;
-import com.strangedog.weylen.mthc.adapter.WrapperAdapterData;
-import com.strangedog.weylen.mthc.adapter.ZAdapterWrapper;
 import com.strangedog.weylen.mthc.util.DimensUtil;
 
 /**
  * Created by weylen on 2016-07-30.
  */
-public class ListRecyclerView extends ZRecyclerView{
+public class ListRecyclerView extends LRecyclerView{
 
-    private ZAdapterWrapper zAdapterWrapper;
+    private OnRefreshListener onRefreshListener;
     public ListRecyclerView(Context context) {
         super(context);
         init();
@@ -38,6 +34,8 @@ public class ListRecyclerView extends ZRecyclerView{
      * 初始化设置
      */
     private void init(){
+
+
         // 设置布局容器
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -47,23 +45,45 @@ public class ListRecyclerView extends ZRecyclerView{
         int divider = getResources().getColor(R.color.divider);
         addItemDecoration(new ItemDividerDecoration().setSize(DimensUtil.dp2px(getContext(), 0.5f)).setColor(divider)
                 .setShowFooterDivider(false));
+
+        setLScrollListener(new LScrollListener() {
+            @Override
+            public void onRefresh() {
+                if (onRefreshListener != null){
+                    onRefreshListener.onRefresh();
+                }
+            }
+
+            @Override
+            public void onScrollUp() {
+
+            }
+
+            @Override
+            public void onScrollDown() {
+
+            }
+
+            @Override
+            public void onBottom() {
+                if (onRefreshListener != null){
+                    onRefreshListener.onBottom();
+                }
+            }
+
+            @Override
+            public void onScrolled(int distanceX, int distanceY) {
+
+            }
+        });
     }
 
-    /**
-     * 设置适配器
-     * @param adapter
-     * @param listenerWrapper
-     */
-    public void setAdapter(WrapperAdapterData adapter, LoadmoreListenerWrapper listenerWrapper) {
-        zAdapterWrapper = new ZAdapterWrapper(getContext(), adapter, listenerWrapper);
-        super.setAdapter(zAdapterWrapper);
+    public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
+        this.onRefreshListener = onRefreshListener;
     }
 
-    public ZAdapterWrapper getzAdapterWrapper() {
-        return zAdapterWrapper;
-    }
-
-    public void setLoadFinishing(boolean loadFinishing){
-        zAdapterWrapper.setFinishing(loadFinishing);
+    public interface OnRefreshListener{
+        void onRefresh();
+        void onBottom();
     }
 }

@@ -35,7 +35,7 @@
         <TextView
             android:id="@+id/itemPromotion"
             style="@style/SmallTextView"
-            android:textColor="@color/grayText"
+            android:textColor="@color/redText"
             android:layout_marginTop="2dp"
             />
         <LinearLayout
@@ -54,7 +54,9 @@
                 android:id="@+id/itemPromotionPrice"
                 style="@style/SmallTextView"
                 android:textColor="@color/colorAccent"
+                android:textSize="@dimen/size_12"
                 android:layout_marginTop="2dp"
+                android:layout_marginLeft="10dp"
                 />
         </LinearLayout>
     </LinearLayout>

@@ -55,7 +55,7 @@ public class SearchProductActivity extends BaseActivity {
         emptyViewHelper.setOnEmptyViewClickListener(emptyViewClickListener);
         emptyViewHelper.setEmptyText("");
 
-        adapter = new ProductInTheSaleAdapter(LayoutInflater.from(this), null);
+        adapter = new ProductInTheSaleAdapter(this);
         mRecyclerView.setAdapter(adapter);
 
         mRefreshView.setEnabled(false);
@@ -73,23 +73,9 @@ public class SearchProductActivity extends BaseActivity {
         finish();
     }
 
-    private List<ProductsEntity> initData(){
-        List<ProductsEntity> data = new ArrayList<>();
-        for (int i = 0; i < 20; i++){
-            data.add(new ProductsEntity());
-        }
-        return data;
-    }
-
     private ZEmptyViewHelper.OnEmptyViewClickListener emptyViewClickListener = ()->{};
 
     private void refresh(){
-        showProgressDialog("搜索中...");
-        new Handler().postDelayed(()->{
-            dismissProgressDialog();
-            adapter.setData(initData());
-            mRefreshView.setRefreshing(false);
-        }, 3000);
     }
 
     @Override

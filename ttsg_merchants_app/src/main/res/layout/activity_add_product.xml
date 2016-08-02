@@ -42,16 +42,12 @@
                 android:id="@+id/emptyLayout"
                 android:layout_weight="1.0"
                 >
-                <com.strangedog.weylen.mthc.view.ZRefreshView
-                    android:id="@+id/refreshView"
+
+                <com.strangedog.weylen.mthc.view.ListRecyclerView
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <com.strangedog.weylen.mthc.view.ListRecyclerView
-                        android:id="@+id/recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
-                </com.strangedog.weylen.mthc.view.ZRefreshView>
+                    android:layout_height="match_parent"
+                    />
 
                 <TextView
                     android:id="@+id/emptyView"
@@ -81,13 +77,14 @@
                 >
 
                 <TextView
+                    android:id="@+id/text_checked"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="选中了10件商品"
+                    android:text="选中了0件商品"
                     android:layout_weight="1.0"
                     android:layout_gravity="center_vertical"
                     android:gravity="left"
-                    android:textSize="@dimen/size_14"
+                    android:textSize="@dimen/size_12"
                     android:paddingLeft="10dp"
                     />
 

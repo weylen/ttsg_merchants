@@ -33,21 +33,18 @@ public class ListBottomSheetDialog extends BottomSheetDialog {
     private MyArrayAdapter arrayAdapter;
     private List<KindDataEntity> itemDatas;
     private View contentView;
+    private ItemClickListener itemClickListener;
 
     public ListBottomSheetDialog(@NonNull Context context) {
         super(context);
     }
 
-    public ListBottomSheetDialog(@NonNull Context context, @StyleRes int theme) {
-        super(context, theme);
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     public void setItemData(List<KindDataEntity> itemDatas){
         this.itemDatas = itemDatas;
-    }
-
-    public View getContentView() {
-        return contentView;
     }
 
     @Override
@@ -69,7 +66,7 @@ public class ListBottomSheetDialog extends BottomSheetDialog {
         mRecyclerView.setHasFixedSize(true);
 
         arrayAdapter = new MyArrayAdapter(position -> {
-
+            if (itemClickListener != null){itemClickListener.onItemClicked(position);}
         });
         mRecyclerView.setAdapter(arrayAdapter);
     }

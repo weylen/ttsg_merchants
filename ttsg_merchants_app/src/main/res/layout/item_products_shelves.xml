@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +9,6 @@
     android:paddingTop="@dimen/item_padding_vertical"
     android:background="@color/white"
     >
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,52 +20,52 @@
             style="@style/Generic_ImageView"
             android:src="@mipmap/img_default"
             android:layout_gravity="center_horizontal"
+            android:layout_marginRight="@dimen/item_padding_horizontal"
             />
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="@dimen/item_padding_horizontal"
+            android:layout_weight="1.0"
             >
-
             <TextView
                 android:id="@+id/itemTitle"
                 style="@style/ContentTextView"
-                android:text="康师傅红烧牛肉面(桶)"
+                android:textColor="@color/blackText"
+                />
+            <TextView
+                android:id="@+id/itemUnit"
+                style="@style/SmallTextView"
                 android:textColor="@color/grayText"
                 android:layout_marginTop="2dp"
                 />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                >
-
-                <TextView
-                    style="@style/ContentTextView"
-                    android:text="￥"
-                    android:textColor="@color/grayText"
-                    />
-
-                <TextView
-                    android:id="@+id/salesLinesView"
-                    style="@style/TitleTextView"
-                    android:text="4.00"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
-                    android:layout_weight="1.0"
-                    />
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/itemPromotion"
                 style="@style/SmallTextView"
-                android:text="今天限时促销￥3.00"
-                android:textColor="@color/themeColor"
-                android:layout_marginTop="3dp"
+                android:textColor="@color/redText"
+                android:layout_marginTop="2dp"
                 />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/itemPrice"
+                    style="@style/SmallTextView"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginTop="2dp"
+                    android:textSize="@dimen/size_14"
+                    />
+                <TextView
+                    android:id="@+id/itemPromotionPrice"
+                    style="@style/SmallTextView"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/size_12"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="10dp"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -75,12 +73,6 @@
         android:layout_height="0.1dp"
         android:background="@color/divider"
         android:layout_marginTop="@dimen/item_padding_vertical"
-
-        />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
         />
 

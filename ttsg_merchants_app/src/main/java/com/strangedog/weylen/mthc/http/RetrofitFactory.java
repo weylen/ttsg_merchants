@@ -45,7 +45,6 @@ public class RetrofitFactory {
                             .addHeader("Accept", "*/*")
                             .addHeader("Cookie", SessionUtil.getSessionId())
                             .build();
-                    DebugUtil.d("RetrofitFactory genericClient Cookie->" + request.header("Cookie"));
                     return chain.proceed(request);
                 })
                 .connectTimeout(5, TimeUnit.SECONDS)

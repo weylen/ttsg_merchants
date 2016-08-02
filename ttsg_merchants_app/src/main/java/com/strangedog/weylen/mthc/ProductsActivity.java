@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.activity.insellinggoods.InSellingGoodsFragment;
-import com.strangedog.weylen.mthc.fragment.F_Products_Shelves;
+import com.strangedog.weylen.mthc.activity.shelvesgoos.ShelvesGoodsFragment;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
 import butterknife.Bind;
@@ -36,7 +36,7 @@ public class ProductsActivity extends BaseActivity {
 
         final TabPagerAdapter adapter = new TabPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new InSellingGoodsFragment(), "在售");
-        adapter.addFragment(new F_Products_Shelves(), "下架");
+        adapter.addFragment(new ShelvesGoodsFragment(), "下架");
         mViewPager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

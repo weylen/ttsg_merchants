@@ -14,11 +14,12 @@
         android:paddingRight="15dp">
 
         <TextView
+            android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:minHeight="30dp"
-            android:text="选取方式"
+            android:text="分类"
             android:textColor="?attr/colorAccent" />
 
         <com.strangedog.weylen.mthc.view.ZRecyclerView
