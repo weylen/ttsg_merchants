@@ -60,6 +60,8 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         // 设置可无添加商品信息
         emptyView.setText(R.string.NoAddProducts);
 
+        emptyView.setOnClickListener(v->{presenter.refresh();});
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         presenter = new AddGoodsPresenter(this);
@@ -244,7 +246,12 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
             isRefresh = false;
             mListRecylerView.refreshComplete();
             dismissProgressDialog();
+
+
+            RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView,
+                    Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);
             adapter.setDataList(data);
+            mListRecylerView.scrollToPosition(0);
         }
     }
 

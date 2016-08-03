@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by weylen on 2016-08-03.
  */
-public interface ShelvesGoodsView {
+public interface GoodsView {
 
     void onStartLoading();
     void onLoadSuccess(List<ProductsEntity> listData, boolean isComplete);
@@ -16,5 +16,8 @@ public interface ShelvesGoodsView {
     void onLoadMoreFailure();
     void onLoadMoreSuccess(List<ProductsEntity> listData, boolean isComplete);
     void onStartRefresh();
+    void onStartUpGoods();
+    void onUpGoodsFailure();
+    void onUpGoodsSuccess(List<ProductsEntity> upGoodsData);
     boolean isActive();
 }

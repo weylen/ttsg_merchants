@@ -3,6 +3,7 @@ package com.strangedog.weylen.mthc;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,10 @@ public abstract class BaseFragment extends Fragment{
         if (progressDialog != null && progressDialog.isShowing()){
             progressDialog.dismiss();
         }
+    }
+
+    protected void showSnakeView(View containerView, String message){
+        Snackbar.make(containerView, message, Snackbar.LENGTH_SHORT).show();
     }
 
     protected LayoutInflater getLayoutInflater(){

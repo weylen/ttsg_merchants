@@ -12,12 +12,14 @@ public enum ShelvesGoodsData {
     String keyword; // 搜索的关键字
     int status = 2; //  状态值
     int pageNum = 1;
+    boolean isComplete;
 
     void reset(){
         DATA = null;
         keyword = null;
         status = 2;
         pageNum = 1;
+        isComplete = false;
     }
 
 }

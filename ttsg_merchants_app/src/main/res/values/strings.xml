@@ -23,6 +23,8 @@
     <string name="AddProducts">添加商品</string>
     <string name="Logout">注销</string>
     <string name="ProductsDetails">商品详情</string>
-    <string name="NoAddProducts">没有可添加的商品</string>
-    <string name="NoInsellingGoods">没有在售商品</string>
+    <string name="NoAddProducts">没有可添加的商品，点击刷新</string>
+    <string name="NoInsellingGoods">没有在售商品，点击刷新</string>
+    <string name="NoShelvesProducts">没有下架商品，点击刷新</string>
+    <string name="DownGoods">下架</string>
 </resources>

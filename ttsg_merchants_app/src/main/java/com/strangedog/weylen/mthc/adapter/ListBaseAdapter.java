@@ -38,6 +38,11 @@ public abstract class ListBaseAdapter<T> extends RecyclerView.Adapter {
         notifyItemRemoved(position);
     }
 
+    public void removeAll(Collection<T> data){
+        mDataList.removeAll(data);
+        notifyDataSetChanged();
+    }
+
     public void clear() {
         mDataList.clear();
         notifyDataSetChanged();

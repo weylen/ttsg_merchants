@@ -54,4 +54,15 @@ public interface HttpService {
             @Field("cbList") int status,
             @Field("pageNum") int pageNum
     );
+
+    /**
+     * 商品上下架
+     * @param str
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cpma-updown")
+    Observable<JsonObject> upDownGoods(
+            @Field("Key") String str
+    );
 }

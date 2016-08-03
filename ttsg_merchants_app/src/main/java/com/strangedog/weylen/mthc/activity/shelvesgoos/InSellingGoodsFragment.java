@@ -2,19 +2,18 @@ package com.strangedog.weylen.mthc.activity.shelvesgoos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
 import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
+import com.rey.material.widget.Button;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseFragment;
-import com.strangedog.weylen.mthc.adapter.ProductShelvesAdapter;
+import com.strangedog.weylen.mthc.adapter.ProductInTheSaleAdapter;
 import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
@@ -33,20 +32,21 @@ import butterknife.OnClick;
  * Created by weylen on 2016-07-08.
  * 商品-下架
  */
-public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
+public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
 
     @Bind(R.id.recyclerView) ListRecyclerView mListRecyclerView;
     @Bind(R.id.emptyView) TextView emptyView;
     @Bind(R.id.containerView) View containerView;
     @Bind(R.id.text_checked) TextView mTextCheckedView;
     @Bind(R.id.bottom_layout) LinearLayout mBottomLayout;
+    @Bind(R.id.upDownGoodsBtn) Button downGoodsBtn;
 
-    private static final int STATUS = 2;
+    private static final int STATUS = 1;
 
-    private ProductShelvesAdapter adapter;
+    private ProductInTheSaleAdapter adapter;
     private ZWrapperAdapter zWrapperAdapter;
 
-    private ShelvesPresenter presenter;
+    private InSellingPresenter presenter;
 
     private boolean isRefresh;
     private boolean isMultiChooseShow; // 多选是否打开
@@ -66,10 +66,12 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
 
-        emptyView.setText(R.string.NoShelvesProducts);
+        emptyView.setText(R.string.NoInsellingGoods);
         emptyView.setOnClickListener(v-> presenter.refresh());
 
-        presenter = new ShelvesPresenter(this);
+        downGoodsBtn.setText(R.string.DownGoods);
+
+        presenter = new InSellingPresenter(this);
         init();
 
         presenter.load(Constants.EMPTY_STR, STATUS);
@@ -77,7 +79,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
 
     private void init() {
         // 创建列表适配器
-        adapter = new ProductShelvesAdapter(getActivity());
+        adapter = new ProductInTheSaleAdapter(getActivity());
         adapter.setItemViewClickListenerWrapper(itemViewClickListener);
         adapter.setOnCheckedChangeListener(count -> mTextCheckedView.setText("选中了" + count + "件商品"));
         zWrapperAdapter = new ZWrapperAdapter(getActivity(), adapter);
@@ -101,7 +103,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
                 if (isRefresh) {
                     return;
                 }
-                if (ShelvesGoodsData.INSTANCE.isComplete) {
+                if (InSellingData.INSTANCE.isComplete) {
                     RecyclerViewStateUtils.setFooterViewState(getActivity(), mListRecyclerView, Constants.REQUEST_COUNT, LoadingFooter.State.TheEnd, null);
                     return;
                 }
@@ -124,13 +126,13 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
 
 
     @OnClick(R.id.upDownGoodsBtn)
-    public void onUpGoodsBtnClick() {
+    public void onDownGoodsBtnClick() {
         List<ProductsEntity> chooseData = adapter.getCheckedData();
         if (chooseData == null || chooseData.size() == 0){
             showSnakeView(containerView, "没有选中商品");
             return;
         }
-        presenter.upGoods(chooseData);
+        presenter.downGoods(chooseData);
     }
 
     @OnCheckedChanged(R.id.checkedAllView)
@@ -156,11 +158,11 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     }
 
     private ItemViewClickListenerWrapper itemViewClickListener = new ItemViewClickListenerWrapper() {
-        @Override // 上架被点击
+        @Override // 下架被点击
         public void onViewClick1(View view, int position) {
             DebugUtil.d("ShelvesGoodsFragment onViewClick2 position:" + position);
             ProductsEntity entity = adapter.getDataList().get(position);
-            presenter.upGoods(entity);
+            presenter.downGoods(entity);
         }
     };
 
@@ -181,7 +183,8 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
 
     @Override
     public void onLoadSuccess(List<ProductsEntity> listData, boolean isComplete) {
-        DebugUtil.d("ShelvesGoodsFragment onLoadSuccess isComplete:" + isComplete);
+        DebugUtil.d("InSellingFragment onLoadSuccess isComplete:" + isComplete);
+
         if (isActive()) {
             isRefresh = false;
             mListRecyclerView.refreshComplete();
@@ -189,6 +192,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
 
             RecyclerViewStateUtils.setFooterViewState(getActivity(), mListRecyclerView,
                     Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);
+
             adapter.setDataList(listData);
             mListRecyclerView.scrollToPosition(0);
         }
@@ -242,7 +246,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     public void onUpGoodsFailure() {
         if (isActive()) {
             dismissProgressDialog();
-            showSnakeView(containerView, "上架失败，请重新操作");
+            showSnakeView(containerView, "下架失败，请重新操作");
         }
     }
 
@@ -250,7 +254,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     public void onUpGoodsSuccess(List<ProductsEntity> upGoodsData) {
         if (isActive()) {
             dismissProgressDialog();
-            showSnakeView(containerView, "上架成功");
+            showSnakeView(containerView, "下架成功");
             adapter.removeAll(upGoodsData);
         }
     }

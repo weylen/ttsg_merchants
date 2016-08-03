@@ -3,7 +3,6 @@ package com.strangedog.weylen.mthc.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.strangedog.weylen.mtch.R;
-import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
-import com.strangedog.weylen.mthc.iinter.ItemClickListener;
 import com.strangedog.weylen.mthc.iinter.OnCheckedChangeListener;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +68,9 @@ public class AddProductsAdapter extends ListBaseAdapter<ProductsEntity> {
      * 重置所有的状态
      */
     public void resetStatus(){
-        checkedData.clear();
+        if (checkedData != null){
+            checkedData.clear();
+        }
         checkedStatus.clear();
         isSelectAll = false;
         checkedCount = 0;
@@ -111,7 +111,8 @@ public class AddProductsAdapter extends ListBaseAdapter<ProductsEntity> {
         holder.titleView.setText(entity.getName());
         holder.unitView.setText(entity.getStandard());
         String promotePrice = entity.getPromote(); // 促销价
-        if (!TextUtils.isEmpty(promotePrice)){
+        // 是否有促销信息
+        if (LocaleUtil.hasPromotion(promotePrice)){
             holder.priceView.setText("￥"+promotePrice);
             String info = entity.getBegin() + "~" + entity.getEnd() + " " + entity.getInfo();
             holder.promotionView.setText(info);

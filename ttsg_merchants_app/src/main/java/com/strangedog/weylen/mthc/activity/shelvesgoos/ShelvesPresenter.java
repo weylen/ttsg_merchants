@@ -5,15 +5,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.strangedog.weylen.mthc.BasePresenter;
-import com.strangedog.weylen.mthc.activity.insellinggoods.InSellingData;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -21,11 +23,11 @@ import rx.schedulers.Schedulers;
 /**
  * Created by weylen on 2016-08-03.
  */
-public class ShelvesGoodsPresenter implements BasePresenter{
+public class ShelvesPresenter implements BasePresenter{
 
-    private ShelvesGoodsView shelvesGoodsView;
-    public ShelvesGoodsPresenter(ShelvesGoodsView shelvesGoodsView){
-        this.shelvesGoodsView = Preconditions.checkNotNull(shelvesGoodsView);
+    private GoodsView goodsView;
+    public ShelvesPresenter(GoodsView goodsView){
+        this.goodsView = Preconditions.checkNotNull(goodsView);
     }
 
     @Override
@@ -39,9 +41,10 @@ public class ShelvesGoodsPresenter implements BasePresenter{
      * @param status 上架为1 下架为2
      */
     public void load(String keyword, int status){
+        ShelvesGoodsData.INSTANCE.reset();
         ShelvesGoodsData.INSTANCE.keyword = keyword;
         ShelvesGoodsData.INSTANCE.status = status;
-        shelvesGoodsView.onStartLoading();
+        goodsView.onStartLoading();
         getRemoteData(keyword, status, 1);
     }
 
@@ -49,13 +52,13 @@ public class ShelvesGoodsPresenter implements BasePresenter{
      * 加载更多
      */
     public void loadMore(){
-        shelvesGoodsView.onStartLoadMore();
+        goodsView.onStartLoadMore();
         getRemoteData(ShelvesGoodsData.INSTANCE.keyword,  ShelvesGoodsData.INSTANCE.status,
                 ShelvesGoodsData.INSTANCE.pageNum + 1);
     }
 
     public void refresh(){
-        shelvesGoodsView.onStartRefresh();
+        goodsView.onStartRefresh();
         getRemoteData(ShelvesGoodsData.INSTANCE.keyword,  ShelvesGoodsData.INSTANCE.status, 1);
     }
 
@@ -92,9 +95,9 @@ public class ShelvesGoodsPresenter implements BasePresenter{
      */
     private void doError(int pageNum){
         if (pageNum > 1){
-            shelvesGoodsView.onLoadMoreFailure();
+            goodsView.onLoadMoreFailure();
         }else{
-            shelvesGoodsView.onLoadFailure();
+            goodsView.onLoadFailure();
         }
     }
 
@@ -103,14 +106,77 @@ public class ShelvesGoodsPresenter implements BasePresenter{
         List<ProductsEntity> data = gson.fromJson(s.get("data").getAsJsonArray(), new TypeToken<List<ProductsEntity>>(){}.getType());
         int maxPage = s.get("maxPage").getAsInt();
         int pageNum = s.get("pageNum").getAsInt();
+
         // 保存当前页面
         ShelvesGoodsData.INSTANCE.pageNum = pageNum;
+        ShelvesGoodsData.INSTANCE.isComplete = maxPage == pageNum;
         if (pageNum > 1){
-            shelvesGoodsView.onLoadMoreSuccess(data, maxPage == pageNum);
+            goodsView.onLoadMoreSuccess(data, maxPage == pageNum);
         }else{
-            shelvesGoodsView.onLoadSuccess(data, maxPage == pageNum);
+            goodsView.onLoadSuccess(data, maxPage == pageNum);
         }
     }
 
+    /**
+     * 上架商品
+     */
+    public void upGoods(List<ProductsEntity> upGoodsData){
+        // 开始上架商品
+        goodsView.onStartUpGoods();
+        formatUpGoods(upGoodsData, 1);
+    }
 
+    /**
+     * 上传商品
+     * @param entity
+     */
+    public void upGoods(ProductsEntity entity){
+        ArrayList<ProductsEntity> list = new ArrayList<>();
+        list.add(entity);
+        upGoods(list);
+    }
+
+    /**
+     * 转换需要上传的商品数据
+     * @param upGoodsData
+     */
+    private void formatUpGoods(List<ProductsEntity> upGoodsData, int status){
+        Observable.just(upGoodsData)
+                .observeOn(Schedulers.io())
+                .map(productsEntities -> LocaleUtil.formatUpDownStr(status, upGoodsData))
+                .observeOn(Schedulers.io())
+                .subscribe(s -> {
+                    requestUpGoods(upGoodsData, s);
+                });
+    }
+
+    /**
+     * 上传商品
+     * @param upGoodsData
+     * @param param
+     */
+    private void requestUpGoods(List<ProductsEntity> upGoodsData, String param){
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .upDownGoods(param)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        goodsView.onUpGoodsFailure();
+                    }
+
+                    @Override
+                    public void onNext(JsonObject s) {
+                        if (ResponseMgr.getStatus(s) != 1){
+                            goodsView.onUpGoodsFailure();
+                        }else {
+                            goodsView.onUpGoodsSuccess(upGoodsData);
+                        }
+                    }
+                });
+    }
 }

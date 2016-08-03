@@ -8,8 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.strangedog.weylen.mtch.R;
+import com.strangedog.weylen.mthc.activity.shelvesgoos.InSellingGoodsFragment;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
-import com.strangedog.weylen.mthc.activity.insellinggoods.InSellingGoodsFragment;
 import com.strangedog.weylen.mthc.activity.shelvesgoos.ShelvesGoodsFragment;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
@@ -30,7 +30,6 @@ public class ProductsActivity extends BaseActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
