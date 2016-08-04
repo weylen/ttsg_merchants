@@ -14,7 +14,9 @@ public class DoingOrderPresenter {
 
     public void startLoad(){}
 
-    public void refresh(){}
+    public void refresh(){
+        orderView.onLoadFailure();
+    }
 
     public void loadMore(){}
 

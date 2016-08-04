@@ -1,9 +1,10 @@
 package com.strangedog.weylen.mthc.activity.order;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
@@ -11,18 +12,16 @@ import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseFragment;
-import com.strangedog.weylen.mthc.activity.shelvesgoos.ShelvesGoodsData;
-import com.strangedog.weylen.mthc.activity.shelvesgoos.ShelvesPresenter;
 import com.strangedog.weylen.mthc.adapter.DoingOrderAdapter;
-import com.strangedog.weylen.mthc.adapter.OrderAdapter;
-import com.strangedog.weylen.mthc.adapter.ProductShelvesAdapter;
 import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
 import com.strangedog.weylen.mthc.entity.OrderEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.DimensUtil;
+import com.strangedog.weylen.mthc.view.HorizontalDividerItemDecoration;
+import com.strangedog.weylen.mthc.view.ItemDividerDecoration;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
-import com.strangedog.weylen.mthc.view.SpringView;
-import com.strangedog.weylen.mthc.view.ZRecyclerView;
+import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
 
 import java.util.List;
 
@@ -71,6 +70,8 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         mListRecyclerView.setArrowImageView(R.mipmap.icon_arrow_down);
+        mListRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
+        .color(Color.TRANSPARENT).size(DimensUtil.dp2px(getContext(), 10)).build());
         // 设置刷新监听
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
@@ -81,6 +82,10 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
 
             @Override
             public void onBottom() {
+                if (DoingOrderData.INSTANCE.isComplete){
+                    return;
+                }
+
                 if (isRefresh) {
                     return;
                 }
@@ -91,7 +96,7 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
 
                 LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mListRecyclerView);
                 if (state == LoadingFooter.State.Loading) {
-                    DebugUtil.d("AddProductsActivity onBotton the state is Loading, just wait..");
+                    DebugUtil.d("AddProductsActivity onBottom the state is Loading, just wait..");
                     return;
                 }
 
@@ -112,7 +117,7 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
 
     @Override
     public void onLoadFailure() {
-
+        mListRecyclerView.refreshComplete();
     }
 
     @Override

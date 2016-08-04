@@ -2,9 +2,12 @@ package com.strangedog.weylen.mthc.activity.shelvesgoos;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.strangedog.weylen.mthc.BasePresenter;
+import com.strangedog.weylen.mthc.activity.addgoods.AddGoodsData;
+import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
@@ -40,12 +43,12 @@ public class InSellingPresenter implements BasePresenter{
      * @param keyword 商品搜索关键字 不传则获取默认的商品列表
      * @param status 上架为1 下架为2
      */
-    public void load(String keyword, int status){
+    public void load(String keyword, int status, String kindId){
         InSellingData.INSTANCE.reset();
         InSellingData.INSTANCE.keyword = keyword;
         InSellingData.INSTANCE.status = status;
         goodsView.onStartLoading();
-        getRemoteData(keyword, status, 1);
+        getRemoteData(keyword, status, 1, kindId);
     }
 
     /**
@@ -54,17 +57,19 @@ public class InSellingPresenter implements BasePresenter{
     public void loadMore(){
         goodsView.onStartLoadMore();
         getRemoteData(InSellingData.INSTANCE.keyword,  InSellingData.INSTANCE.status,
-                ShelvesGoodsData.INSTANCE.pageNum + 1);
+                ShelvesGoodsData.INSTANCE.pageNum + 1,
+                InSellingData.INSTANCE.kindId);
     }
 
     public void refresh(){
         goodsView.onStartRefresh();
-        getRemoteData(InSellingData.INSTANCE.keyword,  InSellingData.INSTANCE.status, 1);
+        getRemoteData(InSellingData.INSTANCE.keyword,  InSellingData.INSTANCE.status, 1,
+                InSellingData.INSTANCE.kindId);
     }
 
-    private void getRemoteData(String keyword, int status, int pageNum){
+    private void getRemoteData(String keyword, int status, int pageNum, String kindId){
         RetrofitFactory.getRetrofit().create(HttpService.class)
-                .getShopGoods(keyword, status, pageNum)
+                .getShopGoods(keyword, status, pageNum, kindId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -173,7 +178,7 @@ public class InSellingPresenter implements BasePresenter{
 
                     @Override
                     public void onNext(JsonObject s) {
-                        DebugUtil.d("SellingGoodsPresenter getRemoteData onNext s:" + s);
+                        DebugUtil.d("SellingGoodsPresenter requestDownGoods onNext s:" + s);
                         if (ResponseMgr.getStatus(s) != 1){
                             goodsView.onUpGoodsFailure();
                         }else {
@@ -181,5 +186,81 @@ public class InSellingPresenter implements BasePresenter{
                         }
                     }
                 });
+    }
+
+    /**
+     * 加载品种
+     */
+    public void loadKindData(){
+        goodsView.onStartLoadKinds();
+        // 检查缓存
+        if (AddGoodsData.INSTANCE.kindData != null){
+            doParseKindData();
+            return;
+        }
+
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .getKind()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        goodsView.onLoadKindsFailure();
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        if (ResponseMgr.getStatus(jsonObject) != 1){
+                            goodsView.onLoadKindsFailure();
+                        }else {
+                            AddGoodsData.INSTANCE.kindData = jsonObject;
+                            doParseKindData();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 解析大类数据
+     */
+    private void doParseKindData(){
+        JsonObject allKindData = AddGoodsData.INSTANCE.kindData;
+        // 获取所有数据中的data字段
+        JsonObject allKindDataObject = ResponseMgr.getData(allKindData);
+        // 获取最大父类数据
+        JsonArray largeTypeArray = allKindDataObject.get("0").getAsJsonArray();
+        Gson gson = new Gson();
+        // 解析所有大类的数据
+        List<KindDataEntity> kindData = gson.fromJson(largeTypeArray,
+                new TypeToken<List<KindDataEntity>>(){}.getType());
+
+        KindDataEntity allKind = new KindDataEntity();
+        allKind.setName("全部");
+        allKind.setPid("-1");
+        allKind.setId("-1");
+        kindData.add(0, allKind);
+        goodsView.onLoadKindsSuccess(kindData);
+    }
+
+    /**
+     * 获取父类里面的所有小类
+     * @param pid
+     */
+    public void getSmallType(String pid){
+        JsonObject allKindData = AddGoodsData.INSTANCE.kindData;
+        // 获取所有数据中的data字段
+        JsonObject allKindDataObject = ResponseMgr.getData(allKindData);
+        // 获取指定父类的所有数据
+        JsonArray largeTypeArray = allKindDataObject.get(pid).getAsJsonArray();
+        Gson gson = new Gson();
+        // 解析所有大类的数据
+        List<KindDataEntity> largeTypeArrayData = gson.fromJson(largeTypeArray,
+                new TypeToken<List<KindDataEntity>>(){}.getType());
+        // 回调数据
+        goodsView.onLoadKindsSuccess(largeTypeArrayData);
     }
 }

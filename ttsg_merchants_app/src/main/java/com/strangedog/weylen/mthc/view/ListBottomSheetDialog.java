@@ -1,6 +1,7 @@
 package com.strangedog.weylen.mthc.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
@@ -69,6 +70,8 @@ public class ListBottomSheetDialog extends BottomSheetDialog {
             if (itemClickListener != null){itemClickListener.onItemClicked(position);}
         });
         mRecyclerView.setAdapter(arrayAdapter);
+
+        getWindow().findViewById(R.id.design_bottom_sheet).setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -86,7 +89,7 @@ public class ListBottomSheetDialog extends BottomSheetDialog {
 
         @Override
         public A onCreateViewHolder(ViewGroup parent, int viewType) {
-            A holder = new A(getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false),
+            A holder = new A(getLayoutInflater().inflate(R.layout.item_bottom_sheet, parent, false),
                     itemClickListener);
             return holder;
         }

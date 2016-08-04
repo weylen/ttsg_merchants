@@ -1,10 +1,15 @@
 package com.strangedog.weylen.mthc.activity.shelvesgoos;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,12 +21,15 @@ import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseFragment;
 import com.strangedog.weylen.mthc.adapter.ProductInTheSaleAdapter;
 import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
+import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.view.ListBottomSheetDialog;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import butterknife.Bind;
@@ -41,11 +49,13 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
     @Bind(R.id.text_checked) TextView mTextCheckedView;
     @Bind(R.id.bottom_layout) LinearLayout mBottomLayout;
     @Bind(R.id.upDownGoodsBtn) Button downGoodsBtn;
+    @Bind(R.id.checkedAllView) CheckBox checkBox;
 
     private static final int STATUS = 1;
 
     private ProductInTheSaleAdapter adapter;
     private ZWrapperAdapter zWrapperAdapter;
+    private SearchView searchView;
 
     private InSellingPresenter presenter;
 
@@ -75,7 +85,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         presenter = new InSellingPresenter(this);
         init();
 
-        presenter.load(Constants.EMPTY_STR, STATUS);
+        presenter.load(Constants.EMPTY_STR, STATUS, Constants.EMPTY_STR);
     }
 
     private void init() {
@@ -86,6 +96,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         zWrapperAdapter = new ZWrapperAdapter(getActivity(), adapter);
         // 设置适配器
         mListRecyclerView.setAdapter(zWrapperAdapter);
+        mListRecyclerView.addItemDecoration(null);
         // 设置空视图
         mListRecyclerView.setEmptyView(emptyView);
         // 设置刷新模式 设置必须在设置适配器之后
@@ -142,27 +153,99 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_products, menu);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        initSearchView();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_multi) {
             isMultiChooseShow = !isMultiChooseShow;
             item.setTitle(isMultiChooseShow ? "取消" : "多选");
             onMultiChooseClick();
             return true;
+        }else if (item.getItemId() == R.id.action_flow){
+            presenter.loadKindData();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initSearchView(){
+        searchView.setQueryHint("搜索商品关键字");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                doMySearch(query);
+                searchView.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        SearchView.SearchAutoComplete textView = (SearchView.SearchAutoComplete) searchView
+                .findViewById(R.id.search_src_text);
+        textView.setTextColor(Color.WHITE);
+        setSearchViewTextCusor(textView);
+        View view = searchView.findViewById(R.id.search_plate);
+        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_input_bg));
+    }
+
+    private void setSearchViewTextCusor(SearchView.SearchAutoComplete view) {
+        try {
+            Class<?> mTextViewClass = view.getClass().getSuperclass()
+                    .getSuperclass().getSuperclass().getSuperclass();
+            Field mCursorDrawableRes = mTextViewClass.getDeclaredField("mCursorDrawableRes");
+            mCursorDrawableRes.setAccessible(true);
+            mCursorDrawableRes.set(view, R.mipmap.icon_cursor);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 执行搜索
+    private void doMySearch(String query) {
+        presenter.load(query, STATUS, Constants.EMPTY_STR);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem item = menu.findItem(R.id.action_multi);
-
+        item.setTitle(isMultiChooseShow ? "取消" : "多选");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    // 显示BottomSheet对话框
+    private void showBottomSheetDialog(List<KindDataEntity> kindDataEntities) {
+        ListBottomSheetDialog bottomSheetDialog = new ListBottomSheetDialog(getContext());
+        bottomSheetDialog.setItemData(kindDataEntities);
+        bottomSheetDialog.setItemClickListener(position -> {
+            bottomSheetDialog.dismiss();
+            KindDataEntity entity = kindDataEntities.get(position);
+            // 大类
+            if ("0".equalsIgnoreCase(entity.getPid())){
+                presenter.getSmallType(entity.getId());
+                // 全部
+            }else if ("-1".equalsIgnoreCase(entity.getPid())){
+                presenter.load(Constants.EMPTY_STR, STATUS, Constants.EMPTY_STR);
+            }else {
+                presenter.load(Constants.EMPTY_STR, STATUS, entity.getId());
+            }
+        });
+        bottomSheetDialog.show();
     }
 
     private ItemViewClickListenerWrapper itemViewClickListener = new ItemViewClickListenerWrapper() {
@@ -247,7 +330,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
 
     @Override
     public void onStartUpGoods() {
-        showProgressDialog("上架中...");
+        showProgressDialog("下架中...");
     }
 
     @Override
@@ -263,14 +346,36 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         if (isActive()) {
             dismissProgressDialog();
             showSnakeView(containerView, "下架成功");
-            adapter.resetStatus();
             adapter.removeAll(upGoodsData);
+            adapter.resetStatus();
+            checkBox.setChecked(false);
         }
     }
 
     @Override
     public boolean isActive() {
         return isAdded();
+    }
+
+    @Override
+    public void onStartLoadKinds() {
+        showProgressDialog("获取分类数据中");
+    }
+
+    @Override
+    public void onLoadKindsSuccess(List<KindDataEntity> dataEntities) {
+        if (isActive()){
+            dismissProgressDialog();
+            showBottomSheetDialog(dataEntities);
+        }
+    }
+
+    @Override
+    public void onLoadKindsFailure() {
+        if (isActive()){
+            dismissProgressDialog();
+            showSnakeView(containerView, "获取分类数据失败，请重新操作");
+        }
     }
 
     @Override

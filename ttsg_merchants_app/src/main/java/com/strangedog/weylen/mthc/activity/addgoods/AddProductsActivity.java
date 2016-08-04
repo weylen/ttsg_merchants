@@ -79,7 +79,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         zWrapperAdapter = new ZWrapperAdapter(this, adapter);
         // 设置适配器
         mListRecylerView.setAdapter(zWrapperAdapter);
-
+        mListRecylerView.addItemDecoration(null);
         // 设置空视图
         mListRecylerView.setEmptyView(emptyView);
         // 设置刷新模式 设置必须在设置适配器之后

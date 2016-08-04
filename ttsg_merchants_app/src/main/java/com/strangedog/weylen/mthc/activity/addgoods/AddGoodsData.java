@@ -20,5 +20,5 @@ public enum AddGoodsData {
         typeId = "";
     }
 
-    JsonObject kindData = null;
+    public JsonObject kindData = null;
 }

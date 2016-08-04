@@ -7,7 +7,5 @@ public enum DoingOrderData {
 
     INSTANCE;
 
-    boolean isComplete;
-
-
+    boolean isComplete = true;
 }

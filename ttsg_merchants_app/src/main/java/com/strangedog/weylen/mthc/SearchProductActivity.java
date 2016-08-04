@@ -48,7 +48,7 @@ public class SearchProductActivity extends BaseActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(this, AppPrams.DIVIDER), 1));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(this, 5)));
 
         // 初始化空视图
         emptyViewHelper = new ZEmptyViewHelper(getLayoutInflater(), mRefreshView, (FrameLayout)findViewById(R.id.containerView));

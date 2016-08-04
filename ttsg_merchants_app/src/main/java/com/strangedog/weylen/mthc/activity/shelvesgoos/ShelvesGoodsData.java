@@ -10,6 +10,7 @@ public enum ShelvesGoodsData {
 
     JsonObject DATA; // 保存的数据
     String keyword; // 搜索的关键字
+    String kindId = "";
     int status = 2; //  状态值
     int pageNum = 1;
     boolean isComplete;
@@ -20,6 +21,7 @@ public enum ShelvesGoodsData {
         status = 2;
         pageNum = 1;
         isComplete = false;
+        kindId = "";
     }
 
 }

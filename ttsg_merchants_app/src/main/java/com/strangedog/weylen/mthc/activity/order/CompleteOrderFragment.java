@@ -51,7 +51,7 @@ public class CompleteOrderFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(getActivity(), AppPrams.DIVIDER), 1));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(getContext(), 5)));
 
         // 初始化空视图
         emptyViewHelper = new ZEmptyViewHelper(getLayoutInflater(), mRefreshView,

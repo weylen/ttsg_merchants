@@ -57,7 +57,15 @@ public class AddProductsAdapter extends ListBaseAdapter<ProductsEntity> {
      */
     public void selectAll(boolean isSelectAll){
         this.isSelectAll = isSelectAll;
-        checkedData = isSelectAll ? getDataList() : null;
+        if (isSelectAll){
+            if (checkedData == null){
+                checkedData = new ArrayList<>();
+            }
+            checkedData.clear();
+            checkedData.addAll(getDataList());
+        }else {
+            checkedData.clear();
+        }
         checkedStatus.clear();
         notifyDataSetChanged();
         checkedCount = isSelectAll ? getDataList().size() : 0;

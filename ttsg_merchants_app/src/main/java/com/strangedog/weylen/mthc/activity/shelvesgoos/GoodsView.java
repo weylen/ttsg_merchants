@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.shelvesgoos;
 
+import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 
 import java.util.List;
@@ -20,4 +21,8 @@ public interface GoodsView {
     void onUpGoodsFailure();
     void onUpGoodsSuccess(List<ProductsEntity> upGoodsData);
     boolean isActive();
+    void onStartLoadKinds();
+    void onLoadKindsSuccess(List<KindDataEntity> dataEntities);
+    void onLoadKindsFailure();
+
 }

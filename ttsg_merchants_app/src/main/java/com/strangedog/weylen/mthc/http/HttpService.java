@@ -52,7 +52,8 @@ public interface HttpService {
     Observable<JsonObject> getShopGoods(
             @Field("key") String keyword,
             @Field("cbList") int status,
-            @Field("pageNum") int pageNum
+            @Field("pageNum") int pageNum,
+            @Field("kind") String kindId
     );
 
     /**

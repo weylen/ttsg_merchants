@@ -10,6 +10,7 @@ public enum InSellingData {
 
     JsonObject DATA; // 保存的数据
     String keyword; // 搜索的关键字
+    String kindId = "";
     int status = 1; //  状态值
     int pageNum = 1;
     boolean isComplete;
@@ -20,5 +21,6 @@ public enum InSellingData {
         status = 1;
         pageNum = 1;
         isComplete = false;
+        kindId = "";
     }
 }

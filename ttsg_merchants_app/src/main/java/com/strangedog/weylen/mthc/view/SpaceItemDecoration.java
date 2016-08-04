@@ -9,15 +9,12 @@ import android.view.View;
  */
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     private int space;
-    private int num;
 
     /**
      * @param space 间距
-     * @param num 每一行的个数
      */
-    public SpaceItemDecoration(int space, int num) {
+    public SpaceItemDecoration(int space) {
         this.space = space;
-        this.num = num;
     }
 
     @Override

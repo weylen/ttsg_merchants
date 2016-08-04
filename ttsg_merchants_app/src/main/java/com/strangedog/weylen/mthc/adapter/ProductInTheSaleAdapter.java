@@ -17,6 +17,7 @@ import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.iinter.OnCheckedChangeListener;
+import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
 
 import java.util.ArrayList;
@@ -58,7 +59,15 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
 
     public void setCheckAll(boolean isSelectAll){
         this.isSelectAll = isSelectAll;
-        checkedData = isSelectAll ? getDataList() : null;
+        if (isSelectAll){
+            if (checkedData == null){
+                checkedData = new ArrayList<>();
+            }
+            checkedData.clear();
+            checkedData.addAll(getDataList());
+        }else {
+            checkedData.clear();
+        }
         checkedStatus.clear();
         notifyDataSetChanged();
         checkedCount = isSelectAll ? getDataList().size() : 0;
@@ -144,7 +153,8 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
                 checkedData.add(entity);
             }else {
                 checkedCount--;
-                checkedData.remove(entity);
+                boolean b = checkedData.remove(entity);
+                DebugUtil.d("ProductInTheSaleAdapter onBindViewHolder b:" + b);
             }
             onCheckedChange();
         });
