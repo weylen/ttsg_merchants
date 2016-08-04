@@ -135,6 +135,9 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
             boolean isChecked = holder.checkBox.isChecked();
             // 保存选择状态
             checkedStatus.put(position, isChecked);
+            if (checkedData == null){
+                checkedData = new ArrayList<>();
+            }
             // 添加或移除商品
             if (isChecked){
                 checkedCount++;

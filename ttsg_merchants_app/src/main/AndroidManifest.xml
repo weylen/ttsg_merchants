@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.strangedog.weylen.mthc.IndexActivity"
+            android:name="com.strangedog.weylen.mthc.activity.order.IndexActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
@@ -36,39 +36,39 @@
         <activity
             android:name="com.strangedog.weylen.mthc.SalesActivity"
             android:label="@string/Sales"
-            android:parentActivityName="com.strangedog.weylen.mthc.IndexActivity"
+            android:parentActivityName="com.strangedog.weylen.mthc.activity.order.IndexActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.strangedog.weylen.mthc.IndexActivity" />
+                android:value="com.strangedog.weylen.mthc.activity.order.IndexActivity" />
         </activity>
         <activity
             android:name="com.strangedog.weylen.mthc.ProductsActivity"
             android:label="@string/Products"
-            android:parentActivityName="com.strangedog.weylen.mthc.IndexActivity"
+            android:parentActivityName="com.strangedog.weylen.mthc.activity.order.IndexActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.strangedog.weylen.mthc.IndexActivity" />
+                android:value="com.strangedog.weylen.mthc.activity.order.IndexActivity" />
         </activity>
 
         <activity
             android:name="com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity"
             android:label="@string/AddProducts"
-            android:parentActivityName="com.strangedog.weylen.mthc.IndexActivity"
+            android:parentActivityName="com.strangedog.weylen.mthc.activity.order.IndexActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.strangedog.weylen.mthc.IndexActivity" />
+                android:value="com.strangedog.weylen.mthc.activity.order.IndexActivity" />
         </activity>
 
         <activity android:name="com.strangedog.weylen.mthc.SearchProductActivity"

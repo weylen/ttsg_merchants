@@ -1,4 +1,4 @@
-package com.strangedog.weylen.mthc.fragment;
+package com.strangedog.weylen.mthc.activity.order;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Administrator on 2016-07-02.
  */
-public class F_Order_Complete extends BaseFragment {
+public class CompleteOrderFragment extends BaseFragment {
 
     @Bind(R.id.recyclerView) ZRecyclerView mRecyclerView;
     @Bind(R.id.refreshView) ZRefreshView mRefreshView;

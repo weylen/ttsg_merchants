@@ -2,6 +2,7 @@ package com.strangedog.weylen.mthc.activity.shelvesgoos;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -143,12 +144,19 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_multi) {
-            item.setTitle(isMultiChooseShow ? "多选" : "取消");
             isMultiChooseShow = !isMultiChooseShow;
+            item.setTitle(isMultiChooseShow ? "取消" : "多选");
             onMultiChooseClick();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.action_multi);
+
     }
 
     @Override
@@ -255,6 +263,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         if (isActive()) {
             dismissProgressDialog();
             showSnakeView(containerView, "下架成功");
+            adapter.resetStatus();
             adapter.removeAll(upGoodsData);
         }
     }

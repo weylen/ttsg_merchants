@@ -1,4 +1,4 @@
-package com.strangedog.weylen.mthc;
+package com.strangedog.weylen.mthc.activity.order;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +14,10 @@ import android.view.View;
 
 import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
+import com.strangedog.weylen.mthc.ProductsActivity;
+import com.strangedog.weylen.mthc.SalesActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
-import com.strangedog.weylen.mthc.fragment.F_Order_Complete;
-import com.strangedog.weylen.mthc.fragment.F_Order_Doing;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
 import butterknife.Bind;
@@ -48,8 +48,8 @@ public class IndexActivity extends AppCompatActivity
 
         ZViewPager pager = (ZViewPager) findViewById(R.id.viewPager);
         final TabPagerAdapter adapter = new TabPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new F_Order_Doing(), "进行中");
-        adapter.addFragment(new F_Order_Complete(), "已完成");
+        adapter.addFragment(new DoingOrderFragment(), "进行中");
+        adapter.addFragment(new CompleteOrderFragment(), "已完成");
         pager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

@@ -14,13 +14,12 @@
             android:textSize="@dimen/size_14"
             />
 
-        <com.rey.material.widget.TextView
+        <TextView
             android:id="@+id/orderTimeView"
             style="@style/ContentTextView"
             android:text="2016-07-02 12:23"
             android:textColor="@color/grayText"
             android:layout_toRightOf="@id/orderStatusView"
-            android:paddingLeft="10dp"
             />
 
     </LinearLayout>
@@ -31,15 +30,36 @@
         android:layout_height="0.1dp"
         android:background="@color/divider"/>
 
-    <TextView
-        android:id="@+id/orderContentView"
-        style="@style/ContentTextView"
-        android:text="矿泉水    x1\n康师傅红烧牛肉面 x2"
-        android:textColor="@color/grayText"
-        android:lineSpacingExtra="1dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:id="@+id/orderContentView"
+            style="@style/ContentTextView"
+            android:text="矿泉水    x1\n康师傅红烧牛肉面 x2"
+            android:textColor="@color/grayText"
+            android:lineSpacingExtra="1dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_weight="1.0"
+            />
+
+        <TextView
+            android:id="@+id/orderReceive"
+            style="@style/SmallTextView"
+            android:text="确认接单"
+            android:textColor="@color/colorAccent"
+            android:background="@drawable/abc_border_btn"
+            android:paddingLeft="@dimen/item_padding_horizontal"
+            android:paddingRight="@dimen/item_padding_horizontal"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -74,9 +94,7 @@
             android:text="￥14.88"
             android:textColor="@color/blackText"
             android:textStyle="bold"
-
             />
-
     </LinearLayout>
 
 </LinearLayout>

@@ -95,6 +95,9 @@ public class AddProductsAdapter extends ListBaseAdapter<ProductsEntity> {
             boolean isChecked = holder.itemCheckedView.isChecked();
             // 保存选择状态
             checkedStatus.put(position, isChecked);
+            if (checkedData == null){
+                checkedData = new ArrayList<>();
+            }
             // 添加或移除商品
             if (isChecked){
                 checkedCount++;

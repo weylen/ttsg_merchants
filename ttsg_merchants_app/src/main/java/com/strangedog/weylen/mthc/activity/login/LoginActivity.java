@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
-import com.strangedog.weylen.mthc.IndexActivity;
+import com.strangedog.weylen.mthc.activity.order.IndexActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
