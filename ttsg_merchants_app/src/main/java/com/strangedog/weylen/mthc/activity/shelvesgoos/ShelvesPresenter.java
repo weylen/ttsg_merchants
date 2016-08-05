@@ -63,8 +63,10 @@ public class ShelvesPresenter implements BasePresenter{
                 ShelvesGoodsData.INSTANCE.kindId);
     }
 
-    public void refresh(){
-        goodsView.onStartRefresh();
+    public void refresh(boolean isShowProgress){
+        if (isShowProgress){
+            goodsView.onStartRefresh();
+        }
         getRemoteData(ShelvesGoodsData.INSTANCE.keyword,  ShelvesGoodsData.INSTANCE.status, 1,
                 ShelvesGoodsData.INSTANCE.kindId);
     }

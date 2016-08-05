@@ -60,7 +60,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         // 设置可无添加商品信息
         emptyView.setText(R.string.NoAddProducts);
 
-        emptyView.setOnClickListener(v->{presenter.refresh();});
+        emptyView.setOnClickListener(v-> presenter.refresh(true));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -90,7 +90,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
             @Override
             public void onRefresh() {
                 isRefresh = true;
-                presenter.refresh();
+                presenter.refresh(false);
             }
 
             @Override
@@ -265,12 +265,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         if (isActive()){
             dismissProgressDialog();
             RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView,
-                    Constants.REQUEST_COUNT, LoadingFooter.State.NetWorkError, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            presenter.loadMore();
-                        }
-                    });
+                    Constants.REQUEST_COUNT, LoadingFooter.State.NetWorkError, v -> presenter.loadMore());
         }
     }
 

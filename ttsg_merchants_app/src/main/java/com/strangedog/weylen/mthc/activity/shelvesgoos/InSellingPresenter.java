@@ -57,12 +57,14 @@ public class InSellingPresenter implements BasePresenter{
     public void loadMore(){
         goodsView.onStartLoadMore();
         getRemoteData(InSellingData.INSTANCE.keyword,  InSellingData.INSTANCE.status,
-                ShelvesGoodsData.INSTANCE.pageNum + 1,
+                InSellingData.INSTANCE.pageNum + 1,
                 InSellingData.INSTANCE.kindId);
     }
 
-    public void refresh(){
-        goodsView.onStartRefresh();
+    public void refresh(boolean isShowProgress){
+        if (isShowProgress){
+            goodsView.onStartRefresh();
+        }
         getRemoteData(InSellingData.INSTANCE.keyword,  InSellingData.INSTANCE.status, 1,
                 InSellingData.INSTANCE.kindId);
     }

@@ -1,6 +1,5 @@
 package com.strangedog.weylen.mthc;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.rey.material.app.Dialog;
-import com.rey.material.widget.ProgressView;
 import com.strangedog.weylen.mthc.view.ZProgressDialog;
 
 import java.lang.reflect.Field;
@@ -33,14 +30,14 @@ public abstract class BaseFragment extends Fragment{
         mToast.show();
     }
 
-    private ZProgressDialog progressDialog;
-    protected void showProgressDialog(String message){
-
+    private static ZProgressDialog progressDialog;
+    protected synchronized void showProgressDialog(String message){
+        dismissProgressDialog();
         progressDialog = ZProgressDialog.show(getActivity(), message);
     }
 
-    protected void dismissProgressDialog(){
-        if (progressDialog != null && progressDialog.isShowing()){
+    protected synchronized void dismissProgressDialog(){
+        if (progressDialog != null){
             progressDialog.dismiss();
         }
     }

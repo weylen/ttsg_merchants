@@ -22,12 +22,13 @@ public class BaseActivity extends AppCompatActivity{
         mToast.show();
     }
 
-    private ZProgressDialog progressDialog;
-    protected void showProgressDialog(String message){
+    private static ZProgressDialog progressDialog;
+    protected synchronized void showProgressDialog(String message){
+        dismissProgressDialog();
         progressDialog = ZProgressDialog.show(this, message);
     }
 
-    protected void dismissProgressDialog(){
+    protected synchronized void dismissProgressDialog(){
         if (progressDialog != null && progressDialog.isShowing()){
             progressDialog.dismiss();
         }
@@ -36,20 +37,4 @@ public class BaseActivity extends AppCompatActivity{
     protected void showSnakeBar(View containerView, String message){
         Snackbar.make(containerView, message, Snackbar.LENGTH_SHORT).show();
     }
-
-
-//    private boolean isInLeft;
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        float x = event.getX();
-//        int action = event.getAction();
-//        switch (action){
-//            case MotionEvent.ACTION_DOWN:
-//                if (x >= 0 && x <= 50){
-//                    isInLeft = true;
-//                }
-//                break;
-//        }
-//        return super.onTouchEvent(event);
-//    }
 }

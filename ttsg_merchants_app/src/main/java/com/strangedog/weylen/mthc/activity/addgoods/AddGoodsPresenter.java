@@ -51,7 +51,10 @@ public class AddGoodsPresenter implements BasePresenter {
     /**
      * 刷新
      */
-    public void refresh(){
+    public void refresh(boolean isShowProgress){
+        if (isShowProgress){
+            addGoodsView.onStartLoading();
+        }
         addGoodsList(AddGoodsData.INSTANCE.keyword, 1, AddGoodsData.INSTANCE.typeId);
     }
 
@@ -129,9 +132,6 @@ public class AddGoodsPresenter implements BasePresenter {
                     }
                 });
     }
-
-
-
     /**
      * 处理请求错误
      * @param pageNum 页面数

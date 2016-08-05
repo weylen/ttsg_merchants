@@ -75,7 +75,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
         ButterKnife.bind(this, view);
 
         emptyView.setText(R.string.NoShelvesProducts);
-        emptyView.setOnClickListener(v-> presenter.refresh());
+        emptyView.setOnClickListener(v-> presenter.refresh(true));
 
         presenter = new ShelvesPresenter(this);
         init();
@@ -102,7 +102,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
             @Override
             public void onRefresh() {
                 isRefresh = true;
-                presenter.refresh();
+                presenter.refresh(false);
             }
 
             @Override
@@ -318,7 +318,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
 
     @Override
     public void onStartRefresh() {
-
+        showProgressDialog("获取数据中");
     }
 
     @Override

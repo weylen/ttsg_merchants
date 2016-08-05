@@ -78,7 +78,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         ButterKnife.bind(this, view);
 
         emptyView.setText(R.string.NoInsellingGoods);
-        emptyView.setOnClickListener(v-> presenter.refresh());
+        emptyView.setOnClickListener(v-> presenter.refresh(true));
 
         downGoodsBtn.setText(R.string.DownGoods);
 
@@ -107,7 +107,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
             @Override
             public void onRefresh() {
                 isRefresh = true;
-                presenter.refresh();
+                presenter.refresh(false);
             }
 
             @Override
@@ -275,12 +275,11 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
     @Override
     public void onLoadSuccess(List<ProductsEntity> listData, boolean isComplete) {
         DebugUtil.d("InSellingFragment onLoadSuccess isComplete:" + isComplete);
+        dismissProgressDialog();
 
         if (isActive()) {
             isRefresh = false;
             mListRecyclerView.refreshComplete();
-            dismissProgressDialog();
-
             RecyclerViewStateUtils.setFooterViewState(getActivity(), mListRecyclerView,
                     Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);
 
@@ -291,10 +290,10 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
 
     @Override
     public void onLoadFailure() {
+        dismissProgressDialog();
         if (isActive()) {
             isRefresh = false;
             mListRecyclerView.refreshComplete();
-            dismissProgressDialog();
             adapter.clear();
         }
     }
@@ -325,7 +324,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
 
     @Override
     public void onStartRefresh() {
-
+        showProgressDialog("获取数据中");
     }
 
     @Override
