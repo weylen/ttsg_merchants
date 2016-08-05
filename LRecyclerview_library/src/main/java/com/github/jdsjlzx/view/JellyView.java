@@ -12,7 +12,7 @@ import android.view.View;
 import com.github.jdsjlzx.interfaces.BaseRefreshHeader;
 
 
-public class JellyView extends View  implements BaseRefreshHeader {
+public class JellyView extends View implements BaseRefreshHeader {
     Path path;
 
     Paint paint;

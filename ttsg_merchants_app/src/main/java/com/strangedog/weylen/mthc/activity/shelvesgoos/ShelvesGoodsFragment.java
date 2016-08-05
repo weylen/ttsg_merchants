@@ -110,6 +110,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
                 if (isRefresh) {
                     return;
                 }
+                DebugUtil.d("ShelvesGoodsFragment-onBottom ShelvesGoodsData.INSTANCE.isComplete :" + ShelvesGoodsData.INSTANCE.isComplete);
                 if (ShelvesGoodsData.INSTANCE.isComplete) {
                     RecyclerViewStateUtils.setFooterViewState(getActivity(), mListRecyclerView, Constants.REQUEST_COUNT, LoadingFooter.State.TheEnd, null);
                     return;
@@ -309,6 +310,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     @Override
     public void onLoadMoreSuccess(List<ProductsEntity> listData, boolean isComplete) {
         if (isActive()) {
+            DebugUtil.d("ShelvesGoodsFragment onLoadSuccess isComplete:" + isComplete);
             dismissProgressDialog();
             RecyclerViewStateUtils.setFooterViewState(getActivity(), mListRecyclerView,
                     Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);

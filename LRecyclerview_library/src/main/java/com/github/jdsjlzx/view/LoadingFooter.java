@@ -41,10 +41,8 @@ public class LoadingFooter extends RelativeLayout {
     }
 
     public void init(Context context) {
-
         inflate(context, R.layout.layout_recyclerview_list_footer, this);
         setOnClickListener(null);
-
         setState(State.Normal, true);
     }
 

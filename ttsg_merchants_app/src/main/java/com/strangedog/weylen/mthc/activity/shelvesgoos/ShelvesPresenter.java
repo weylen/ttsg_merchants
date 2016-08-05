@@ -115,7 +115,6 @@ public class ShelvesPresenter implements BasePresenter{
         List<ProductsEntity> data = gson.fromJson(s.get("data").getAsJsonArray(), new TypeToken<List<ProductsEntity>>(){}.getType());
         int maxPage = s.get("maxPage").getAsInt();
         int pageNum = s.get("pageNum").getAsInt();
-
         // 保存当前页面
         ShelvesGoodsData.INSTANCE.pageNum = pageNum;
         ShelvesGoodsData.INSTANCE.isComplete = maxPage == pageNum;

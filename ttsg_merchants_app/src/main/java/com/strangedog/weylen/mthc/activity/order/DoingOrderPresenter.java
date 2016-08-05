@@ -14,7 +14,10 @@ public class DoingOrderPresenter {
 
     public void startLoad(){}
 
-    public void refresh(){
+    public void refresh(boolean isShowProgress){
+        if (isShowProgress){
+            orderView.onStartRefresh();
+        }
         orderView.onLoadFailure();
     }
 

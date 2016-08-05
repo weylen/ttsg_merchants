@@ -246,8 +246,6 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
             isRefresh = false;
             mListRecylerView.refreshComplete();
             dismissProgressDialog();
-
-
             RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView,
                     Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);
             adapter.setDataList(data);

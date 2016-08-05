@@ -53,7 +53,7 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
         ButterKnife.bind(this, view);
 
         emptyView.setText("没有订单，点击刷新");
-        emptyView.setOnClickListener(v-> presenter.refresh());
+        emptyView.setOnClickListener(v-> presenter.refresh(true));
 
         presenter = new DoingOrderPresenter(this);
         init();
@@ -70,14 +70,13 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         mListRecyclerView.setArrowImageView(R.mipmap.icon_arrow_down);
-        mListRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
-        .color(Color.TRANSPARENT).size(DimensUtil.dp2px(getContext(), 10)).build());
+        mListRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(getContext(), 5)));
         // 设置刷新监听
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 isRefresh = true;
-                presenter.refresh();
+                presenter.refresh(false);
             }
 
             @Override

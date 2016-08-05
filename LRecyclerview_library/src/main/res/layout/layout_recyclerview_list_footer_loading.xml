@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    >
 
     <com.github.jdsjlzx.progressindicator.AVLoadingIndicatorView
         android:id="@+id/loading_progress"
@@ -23,5 +24,5 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:text="@string/list_footer_loading"
         android:textColor="@color/colorAccent"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_12" />
 </LinearLayout>

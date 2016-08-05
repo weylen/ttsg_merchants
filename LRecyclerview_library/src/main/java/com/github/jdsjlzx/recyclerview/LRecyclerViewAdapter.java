@@ -81,7 +81,6 @@ public class LRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.View
             ArrowRefreshHeader refreshHeader = new ArrowRefreshHeader(mContext);
             refreshHeader.setProgressStyle(mRefreshProgressStyle);
             mRefreshHeader = refreshHeader;
-
         }
     }
 
