@@ -47,6 +47,7 @@ public class InSellingPresenter implements BasePresenter{
         InSellingData.INSTANCE.reset();
         InSellingData.INSTANCE.keyword = keyword;
         InSellingData.INSTANCE.status = status;
+        InSellingData.INSTANCE.kindId = kindId;
         goodsView.onStartLoading();
         getRemoteData(keyword, status, 1, kindId);
     }

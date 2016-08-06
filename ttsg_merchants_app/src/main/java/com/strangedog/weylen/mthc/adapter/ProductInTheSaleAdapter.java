@@ -17,7 +17,9 @@ import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.iinter.OnCheckedChangeListener;
+import com.strangedog.weylen.mthc.util.AnimatorUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.DimensUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
 
 import java.util.ArrayList;
@@ -40,12 +42,14 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
     private boolean isVisible;
     private boolean isSelectAll;
     private int checkedCount;
+    private Context context;
 
     private SparseBooleanArray checkedStatus = new SparseBooleanArray();
     private List<ProductsEntity> checkedData = new ArrayList<>();
 
     public ProductInTheSaleAdapter(Context context){
         layoutInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     public void setCheckBoxVisible(boolean isVisible){
@@ -134,9 +138,13 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
             holder.promotionView.setVisibility(View.GONE);
         }
 
-        holder.actionShelvesView.setVisibility(isVisible ? View.GONE : View.VISIBLE );
-        // 设置CheckBox的显示状态
-        holder.checkBox.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (isVisible){
+            AnimatorUtil.translate(holder.itemView, DimensUtil.dp2px(context, 0), null);
+            AnimatorUtil.scaleShow(holder.checkBox, null);
+        }else {
+            AnimatorUtil.translate(holder.itemView, DimensUtil.dp2px(context, -40), null);
+            AnimatorUtil.scaleHide(holder.checkBox, null);
+        }
         // 设置选中效果
         holder.checkBox.setChecked(checkedStatus.get(position, isSelectAll));
         // 选中
@@ -153,8 +161,7 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
                 checkedData.add(entity);
             }else {
                 checkedCount--;
-                boolean b = checkedData.remove(entity);
-                DebugUtil.d("ProductInTheSaleAdapter onBindViewHolder b:" + b);
+                checkedData.remove(entity);
             }
             onCheckedChange();
         });

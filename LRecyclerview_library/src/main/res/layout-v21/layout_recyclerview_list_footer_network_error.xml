@@ -11,6 +11,7 @@
         android:layout_height="@dimen/dp_18"
         android:layout_marginRight="@dimen/dp_4"
         android:src="@drawable/ic_tip"
+        android:tint="@color/colorAccent"
         />
 
     <TextView

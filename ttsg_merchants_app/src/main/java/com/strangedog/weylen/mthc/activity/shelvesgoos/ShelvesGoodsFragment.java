@@ -3,6 +3,7 @@ package com.strangedog.weylen.mthc.activity.shelvesgoos;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
+import com.strangedog.weylen.mthc.util.AnimatorUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.view.ListBottomSheetDialog;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
@@ -256,10 +258,25 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     private void onMultiChooseClick() {
         adapter.setCheckBoxVisible(isMultiChooseShow);
         if (isMultiChooseShow){
-            mBottomLayout.setVisibility(View.VISIBLE);
+            AnimatorUtil.scaleShow(mBottomLayout, null);
         }else {
             adapter.resetStatus();
-            mBottomLayout.setVisibility(View.GONE);
+            AnimatorUtil.scaleHide(mBottomLayout, new ViewPropertyAnimatorListener() {
+                @Override
+                public void onAnimationStart(View view) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(View view) {
+                    mBottomLayout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(View view) {
+
+                }
+            });
         }
     }
 

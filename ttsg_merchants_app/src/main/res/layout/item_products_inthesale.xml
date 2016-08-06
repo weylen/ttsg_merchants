@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.strangedog.weylen.mthc.view.MyLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:button="@drawable/abc_box_selector"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/item_padding_horizontal"
-            android:visibility="gone"
+            android:visibility="invisible"
             />
 
         <ImageView
@@ -42,13 +42,11 @@
             <TextView
                 android:id="@+id/itemTitle"
                 style="@style/ContentTextView"
-                android:textColor="@color/blackText"
                 />
 
             <TextView
                 android:id="@+id/itemUnit"
                 style="@style/SmallTextView"
-                android:textColor="@color/grayText"
                 android:layout_marginTop="1dp"
                 />
 
@@ -56,7 +54,6 @@
                 android:id="@+id/text_stock"
                 style="@style/SmallTextView"
                 android:text="库存："
-                android:textColor="@color/grayText"
                 android:layout_marginTop="1dp"
                 />
 
@@ -74,10 +71,9 @@
                 >
                 <TextView
                     android:id="@+id/itemPrice"
-                    style="@style/SmallTextView"
+                    style="@style/ContentTextView"
                     android:textColor="@color/colorAccent"
                     android:layout_marginTop="2dp"
-                    android:textSize="@dimen/size_14"
                     />
                 <TextView
                     android:id="@+id/itemPromotionPrice"
@@ -102,7 +98,7 @@
 
     <com.rey.material.widget.TextView
         android:id="@+id/action_shelves"
-        style="@style/SmallTextView"
+        android:layout_width="40dp"
         android:text="下架"
         android:background="@drawable/abc_generic_pressed"
         android:textColor="@color/text_color_selector"
@@ -110,6 +106,7 @@
         android:paddingRight="@dimen/item_padding_horizontal"
         android:paddingLeft="@dimen/item_padding_horizontal"
         android:gravity="center"
+        android:textSize="@dimen/size_10"
         />
 
-</LinearLayout>
+</com.strangedog.weylen.mthc.view.MyLinearLayout>
