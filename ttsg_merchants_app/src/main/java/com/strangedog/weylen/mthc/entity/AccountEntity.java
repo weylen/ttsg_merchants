@@ -1,9 +1,12 @@
 package com.strangedog.weylen.mthc.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by weylen on 2016-07-21.
  */
-public class AccountEntity {
+public class AccountEntity implements Parcelable{
 
     private String account; // 支付或结算账号
     private String area; // 区域代码
@@ -12,6 +15,30 @@ public class AccountEntity {
     private String shoper; // 店铺名称
     private String sid; // sessionId
     private String uname; // 用户登录名称(电话号码)
+
+    protected AccountEntity(Parcel in) {
+        account = in.readString();
+        area = in.readString();
+        id = in.readString();
+        name = in.readString();
+        shoper = in.readString();
+        sid = in.readString();
+        uname = in.readString();
+    }
+
+    public AccountEntity(){}
+
+    public static final Creator<AccountEntity> CREATOR = new Creator<AccountEntity>() {
+        @Override
+        public AccountEntity createFromParcel(Parcel in) {
+            return new AccountEntity(in);
+        }
+
+        @Override
+        public AccountEntity[] newArray(int size) {
+            return new AccountEntity[size];
+        }
+    };
 
     public String getAccount() {
         return account;
@@ -80,5 +107,21 @@ public class AccountEntity {
                 ", sid='" + sid + '\'' +
                 ", uname='" + uname + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(account);
+        dest.writeString(area);
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(shoper);
+        dest.writeString(sid);
+        dest.writeString(uname);
     }
 }

@@ -66,7 +66,6 @@ public class AnimatorUtil {
     public static void translate(View view, int x,  ViewPropertyAnimatorListener viewPropertyAnimatorListener){
         ViewCompat.animate(view)
                 .x(x)
-                .alpha(1.0f)
                 .setDuration(300)
                 .setListener(viewPropertyAnimatorListener)
                 .setInterpolator(FAST_OUT_SLOW_IN_INTERPOLATOR)

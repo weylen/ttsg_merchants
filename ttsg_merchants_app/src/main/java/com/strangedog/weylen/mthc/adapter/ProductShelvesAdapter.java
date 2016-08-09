@@ -41,6 +41,7 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
     private boolean isVisible;
     private boolean isSelectAll;
     private int checkedCount;
+    private boolean isScroll;
     private Context context;
 
     private SparseBooleanArray checkedStatus = new SparseBooleanArray();
@@ -58,6 +59,10 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
 
     public void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
+    }
+
+    public void setScroll(boolean scroll) {
+        isScroll = scroll;
     }
 
     public void setCheckAll(boolean isSelectAll){
@@ -138,13 +143,12 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
         }
 
         if (isVisible){
-            AnimatorUtil.translate(holder.itemView, DimensUtil.dp2px(context, 0), null);
-            AnimatorUtil.scaleShow(holder.checkBox, null);
+            holder.checkBox.setVisibility(View.VISIBLE);
+            holder.actionResalesView.setVisibility(View.GONE);
         }else {
-            AnimatorUtil.translate(holder.itemView, DimensUtil.dp2px(context, -40), null);
-            AnimatorUtil.scaleHide(holder.checkBox, null);
+            holder.checkBox.setVisibility(View.GONE);
+            holder.actionResalesView.setVisibility(View.VISIBLE);
         }
-
         // 设置选中效果
         holder.checkBox.setChecked(checkedStatus.get(position, isSelectAll));
         // 选中

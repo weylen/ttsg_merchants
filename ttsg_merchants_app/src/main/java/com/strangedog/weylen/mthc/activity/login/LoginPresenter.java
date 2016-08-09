@@ -51,7 +51,7 @@ public class LoginPresenter implements BasePresenter{
 
                     @Override
                     public void onError(Throwable e) {
-                        DebugUtil.d(e.getMessage());
+                        DebugUtil.d("登录异常" + e.getMessage());
                         loginView.dismissWaitDialog();
                         loginView.loginFailed();
                     }

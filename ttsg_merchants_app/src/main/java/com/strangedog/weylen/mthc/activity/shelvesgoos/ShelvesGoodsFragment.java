@@ -99,6 +99,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         mListRecyclerView.setArrowImageView(R.mipmap.icon_arrow_down);
+
         // 设置刷新监听
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
@@ -263,18 +264,13 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
             adapter.resetStatus();
             AnimatorUtil.scaleHide(mBottomLayout, new ViewPropertyAnimatorListener() {
                 @Override
-                public void onAnimationStart(View view) {
-
-                }
-
+                public void onAnimationStart(View view) {}
                 @Override
                 public void onAnimationEnd(View view) {
                     mBottomLayout.setVisibility(View.GONE);
                 }
-
                 @Override
                 public void onAnimationCancel(View view) {
-
                 }
             });
         }

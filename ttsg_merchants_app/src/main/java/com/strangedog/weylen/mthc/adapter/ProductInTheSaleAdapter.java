@@ -139,11 +139,11 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
         }
 
         if (isVisible){
-            AnimatorUtil.translate(holder.itemView, DimensUtil.dp2px(context, 0), null);
-            AnimatorUtil.scaleShow(holder.checkBox, null);
+            holder.checkBox.setVisibility(View.VISIBLE);
+            holder.actionShelvesView.setVisibility(View.GONE);
         }else {
-            AnimatorUtil.translate(holder.itemView, DimensUtil.dp2px(context, -40), null);
-            AnimatorUtil.scaleHide(holder.checkBox, null);
+            holder.checkBox.setVisibility(View.GONE);
+            holder.actionShelvesView.setVisibility(View.VISIBLE);
         }
         // 设置选中效果
         holder.checkBox.setChecked(checkedStatus.get(position, isSelectAll));

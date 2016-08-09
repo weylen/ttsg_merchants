@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.activity.order.IndexActivity;
+import com.strangedog.weylen.mthc.prefs.LoginPrefs;
+import com.strangedog.weylen.mthc.util.DebugUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +34,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (LoginData.INSTANCE.isLogin(this)){
+            peekInHome();
+            return;
+        }
         setContentView(R.layout.activity_login);
         setTitle(getString(R.string.LoginText));
         ButterKnife.bind(this);
@@ -61,9 +67,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @OnClick(R.id.account_sign_in_button)
     void onLogin() {
-//        Intent intent = new Intent(this, IndexActivity.class);
-//        startActivity(intent);
-//        finish();
         attemptLogin();
     }
 
@@ -106,9 +109,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void loginSuccess() {
-        Intent intent = new Intent(this, IndexActivity.class);
-        startActivity(intent);
-        finish();
+        // 保存数据
+        LoginPrefs.saveAccount(this, LoginData.INSTANCE.getAccountEntity());
+        DebugUtil.d("LoginActivity loginSuccess 保存数据");
+        peekInHome();
     }
 
     @Override
@@ -119,6 +123,12 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void setPresenter(LoginPresenter presenter) {
 
+    }
+
+    private void peekInHome(){
+        Intent intent = new Intent(this, IndexActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 
