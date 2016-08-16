@@ -16,20 +16,49 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@mipmap/img_default_head" />
+        android:src="@mipmap/icon_user_m" />
 
-    <com.rey.material.widget.TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Android Studio"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        >
 
-    <com.rey.material.widget.TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="android.studio@android.com"
-        />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1.0"
+            >
+
+            <com.rey.material.widget.TextView
+                android:id="@+id/text_shop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <com.rey.material.widget.TextView
+                android:id="@+id/text_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="账户余额："
+                />
+
+        </LinearLayout>
+
+        <com.rey.material.widget.Button
+            android:id="@+id/btn_withdrawal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/LightFlatButtonRippleStyle"
+            android:minHeight="30dp"
+            android:text="提现"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/abc_themecolor_border_btn"
+            />
+    </LinearLayout>
 
 </LinearLayout>

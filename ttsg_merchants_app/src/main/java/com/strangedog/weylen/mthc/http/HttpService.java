@@ -19,6 +19,13 @@ public interface HttpService {
             @Field("upass") String pwd // 密码
     );
 
+    /**
+     * 注销
+     * @return
+     */
+    @POST("scca-logout")
+    Observable<JsonObject> logout();
+
     @POST("scca-getKind")
     Observable<JsonObject> getKind();
 
@@ -54,6 +61,16 @@ public interface HttpService {
             @Field("cbList") int status,
             @Field("pageNum") int pageNum,
             @Field("kind") String kindId
+    );
+
+    /**
+     * 修改商品信息
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cpma-update")
+    Observable<JsonObject> alertGoodsInfo(
+            @Field("cbList") String info
     );
 
     /**

@@ -3,10 +3,12 @@ package com.strangedog.weylen.mthc.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by weylen on 2016-07-21.
  */
-public class AccountEntity implements Parcelable{
+public class AccountEntity implements Parcelable, Serializable{
 
     private String account; // 支付或结算账号
     private String area; // 区域代码

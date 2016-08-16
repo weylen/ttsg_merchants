@@ -3,6 +3,7 @@ package com.strangedog.weylen.mthc.prefs;
 import android.content.Context;
 
 import com.strangedog.weylen.mthc.entity.AccountEntity;
+import com.strangedog.weylen.mthc.util.DebugUtil;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;

@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.shelvesgoos;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseFragment;
+import com.strangedog.weylen.mthc.activity.productsdetails.ProductsDetailsActivity;
 import com.strangedog.weylen.mthc.adapter.ProductShelvesAdapter;
 import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
 import com.strangedog.weylen.mthc.entity.KindDataEntity;
@@ -91,6 +93,11 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
         adapter.setItemViewClickListenerWrapper(itemViewClickListener);
         adapter.setOnCheckedChangeListener(count -> mTextCheckedView.setText("选中了" + count + "件商品"));
         zWrapperAdapter = new ZWrapperAdapter(getActivity(), adapter);
+        zWrapperAdapter.setOnItemClickListener(position -> {
+            Intent intent = new Intent(getActivity(), ProductsDetailsActivity.class);
+            intent.putExtra(ProductsDetailsActivity.ENTITY_KEY, adapter.getItem(position));
+            startActivity(intent);
+        });
         // 设置适配器
         mListRecyclerView.setAdapter(zWrapperAdapter);
         // 设置空视图

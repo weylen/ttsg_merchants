@@ -131,7 +131,7 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
             String info = entity.getBegin() + "~" + entity.getEnd() + " " + entity.getInfo();
             holder.promotionView.setText(info);
             holder.promotionPriceView.setText("￥"+entity.getSalePrice());
-            holder.promotionPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
+            holder.promotionPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG); //中划线
             holder.promotionView.setVisibility(View.VISIBLE);
         }else{
             holder.priceView.setText("￥" + entity.getSalePrice());

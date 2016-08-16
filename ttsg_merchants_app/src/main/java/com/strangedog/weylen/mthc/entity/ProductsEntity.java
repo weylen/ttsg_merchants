@@ -20,6 +20,7 @@ public class ProductsEntity implements Parcelable{
     private String promote; // 促销价格
     private String begin; // 促销开始时间
     private String end; // 促销结束时间
+    private String stauts; // 状态 1是上架 2是下架
 
     public ProductsEntity() {
     }
@@ -37,6 +38,7 @@ public class ProductsEntity implements Parcelable{
         promote = in.readString();
         begin = in.readString();
         end = in.readString();
+        stauts = in.readString();
     }
 
     public static final Creator<ProductsEntity> CREATOR = new Creator<ProductsEntity>() {
@@ -147,6 +149,14 @@ public class ProductsEntity implements Parcelable{
         this.end = end;
     }
 
+    public String getStauts() {
+        return stauts;
+    }
+
+    public void setStauts(String stauts) {
+        this.stauts = stauts;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -166,5 +176,6 @@ public class ProductsEntity implements Parcelable{
         dest.writeString(promote);
         dest.writeString(begin);
         dest.writeString(end);
+        dest.writeString(stauts);
     }
 }

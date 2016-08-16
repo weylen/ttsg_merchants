@@ -1,17 +1,14 @@
 package com.strangedog.weylen.mthc;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.activity.shelvesgoos.InSellingGoodsFragment;
-import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.activity.shelvesgoos.ShelvesGoodsFragment;
+import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
 import butterknife.Bind;
@@ -51,7 +48,6 @@ public class ProductsActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onDestroy() {

@@ -2,30 +2,38 @@ package com.strangedog.weylen.mthc.activity.order;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.JsonObject;
 import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
+import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.ProductsActivity;
 import com.strangedog.weylen.mthc.SalesActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
+import com.strangedog.weylen.mthc.activity.login.LoginActivity;
+import com.strangedog.weylen.mthc.activity.login.LoginData;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
+import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.ResponseMgr;
+import com.strangedog.weylen.mthc.http.RetrofitFactory;
+import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class IndexActivity extends AppCompatActivity
+public class IndexActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     /******************** 绑定视图 *********************/
@@ -33,6 +41,7 @@ public class IndexActivity extends AppCompatActivity
     @Bind(R.id.nav_view) NavigationView navigationView;
     @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
     /******************* 定义属性 *********************/
+    private TextView balanceView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +72,18 @@ public class IndexActivity extends AppCompatActivity
             msg.setText("9");
         }
         drawerLayout.addDrawerListener(drawerListener);
+
+        View headerView = navigationView.getHeaderView(0);
+        // 店铺名字
+        TextView shopView = (TextView) headerView.findViewById(R.id.text_shop);
+        shopView.setText(LoginData.INSTANCE.getAccountEntity(this).getShoper());
+        // 余额
+        balanceView = (TextView) headerView.findViewById(R.id.text_balance);
+        // 提现
+        headerView.findViewById(R.id.btn_withdrawal)
+                .setOnClickListener(v -> {
+                    // TODO: 2016-08-15 提现操作
+                });
     }
 
     @Override
@@ -98,6 +119,12 @@ public class IndexActivity extends AppCompatActivity
                 isForward = true;
                 clazz = AddProductsActivity.class;
                 break;
+            case R.id.nav_logout:
+                DialogUtil.showAlertDialog(this, "确定要注销？", (dialog, which) -> {
+                    dialog.dismiss();
+                    logout();
+                });
+                break;
         }
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -124,5 +151,40 @@ public class IndexActivity extends AppCompatActivity
         if (drawerLayout != null){
             drawerLayout.removeDrawerListener(drawerListener);
         }
+    }
+
+    // 注销
+    private void logout(){
+        showProgressDialog("注销中...");
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .logout()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        showSnakeBar(mToolbar, "注销失败，请重新操作");
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        dismissProgressDialog();
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                            showToast("注销成功");
+                            LoginData.INSTANCE.logout(IndexActivity.this);
+                            Intent intent = new Intent(IndexActivity.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }else {
+                            showSnakeBar(mToolbar, "注销失败，请重新操作");
+                        }
+                    }
+                });
     }
 }

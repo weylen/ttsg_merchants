@@ -111,7 +111,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void loginSuccess() {
         // 保存数据
         LoginPrefs.saveAccount(this, LoginData.INSTANCE.getAccountEntity());
-        DebugUtil.d("LoginActivity loginSuccess 保存数据");
         peekInHome();
     }
 

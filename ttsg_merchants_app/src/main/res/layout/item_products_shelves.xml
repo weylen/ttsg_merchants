@@ -74,12 +74,13 @@
                     style="@style/ContentTextView"
                     android:textColor="@color/colorAccent"
                     android:layout_marginTop="2dp"
+                    android:textSize="@dimen/size_16"
                     />
                 <TextView
                     android:id="@+id/itemPromotionPrice"
                     style="@style/SmallTextView"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/size_12"
+                    android:textColor="@color/grayText"
+                    android:textSize="@dimen/size_14"
                     android:layout_marginTop="2dp"
                     android:layout_marginLeft="10dp"
                     />
