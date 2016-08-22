@@ -158,9 +158,6 @@
                         android:textSize="@dimen/size_14"
                         android:layout_marginTop="10dp"
                         app:et_labelPadding="5dp"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:clickable="false"
                         />
                 </FrameLayout>
                 <FrameLayout
@@ -184,9 +181,6 @@
                         android:textSize="@dimen/size_14"
                         android:layout_marginTop="10dp"
                         app:et_labelPadding="5dp"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:clickable="false"
                         />
 
                 </FrameLayout>

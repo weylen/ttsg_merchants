@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="all">
         <item
             android:id="@+id/nav_order"
             android:icon="@mipmap/ic_menu_order"
             android:title="@string/Order"
             app:actionLayout="@layout/layout_badge"
+            android:checked="true"
             />
         <item
             android:id="@+id/nav_sales"

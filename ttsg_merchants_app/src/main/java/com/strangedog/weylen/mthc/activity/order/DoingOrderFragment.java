@@ -1,9 +1,7 @@
 package com.strangedog.weylen.mthc.activity.order;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,8 +16,6 @@ import com.strangedog.weylen.mthc.entity.OrderEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DimensUtil;
-import com.strangedog.weylen.mthc.view.HorizontalDividerItemDecoration;
-import com.strangedog.weylen.mthc.view.ItemDividerDecoration;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
 
@@ -69,7 +65,7 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
         mListRecyclerView.setEmptyView(emptyView);
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
-        mListRecyclerView.setArrowImageView(R.mipmap.icon_arrow_down);
+        mListRecyclerView.setArrowImageView(R.mipmap.abc_refresh_arrow);
         mListRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(getContext(), 5)));
         // 设置刷新监听
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {

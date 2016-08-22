@@ -84,7 +84,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         mListRecylerView.setEmptyView(emptyView);
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecylerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
-        mListRecylerView.setArrowImageView(R.mipmap.icon_arrow_down);
+        mListRecylerView.setArrowImageView(R.mipmap.abc_arrow_down);
         // 设置刷新监听
         mListRecylerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override

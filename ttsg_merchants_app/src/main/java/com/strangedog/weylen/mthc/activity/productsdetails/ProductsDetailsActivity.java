@@ -1,10 +1,8 @@
 package com.strangedog.weylen.mthc.activity.productsdetails;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -29,11 +27,7 @@ import com.strangedog.weylen.mthc.util.CalendarUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
 
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -82,8 +76,9 @@ public class ProductsDetailsActivity extends BaseActivity {
         // 设置不可编辑的内容
         mItemProductsName.setEnabled(false);
         mItemInventory.setEnabled(false);
-        mItemPromotionStart.setEnabled(false);
-        mItemPromotionEnd.setEnabled(false);
+        mItemPromotionStart.setKeyListener(null);
+        mItemPromotionEnd.setKeyListener(null);
+
         enableOrDisableView();
 
         productsEntity = getIntent().getParcelableExtra(ENTITY_KEY);
@@ -140,8 +135,8 @@ public class ProductsDetailsActivity extends BaseActivity {
             mItemPrice.setEnabled(true);
             mItemPromotionPrice.setEnabled(true);
             mItemPromotion.setEnabled(true);
-            itemWrapStart.setEnabled(true);
-            itemWrapEnd.setEnabled(true);
+            mItemPromotionStart.setEnabled(true);
+            mItemPromotionEnd.setEnabled(true);
             mItemPromotionStart.setHint("点击设置促销开始时间");
             mItemPromotionEnd.setHint("点击设置促销开始时间");
         }else {
@@ -149,21 +144,25 @@ public class ProductsDetailsActivity extends BaseActivity {
             mItemPrice.setEnabled(false);
             mItemPromotionPrice.setEnabled(false);
             mItemPromotion.setEnabled(false);
-            itemWrapStart.setEnabled(false);
-            itemWrapEnd.setEnabled(false);
+            mItemPromotionStart.setEnabled(false);
+            mItemPromotionEnd.setEnabled(false);
             mItemPromotionStart.setHint("促销开始时间");
             mItemPromotionEnd.setHint("促销开始时间");
         }
     }
 
-    @OnClick(R.id.itemWrapStart)
+    @OnClick(R.id.itemPromotionStart)
     public void onStartDateClick(){
-        showDateDialog(1);
+        if (isEditable){
+            showDateDialog(1);
+        }
     }
 
-    @OnClick(R.id.itemWrapEnd)
+    @OnClick(R.id.itemPromotionEnd)
     public void onEndClick(){
-        showDateDialog(2);
+        if (isEditable){
+            showDateDialog(2);
+        }
     }
 
     private Calendar mCalendar;
@@ -177,11 +176,15 @@ public class ProductsDetailsActivity extends BaseActivity {
         datePickerDialog.dateRange(1,0,1970,31,11,2200);
         datePickerDialog.cancelable(false);
         datePickerDialog.date(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
-        datePickerDialog.negativeAction("确定").negativeActionClickListener(v -> {
+        datePickerDialog.positiveAction("确定").positiveActionClickListener(v -> {
             datePickerDialog.dismiss();
             mCalendar = datePickerDialog.getCalendar();
             showTimeDialog(status);
 
+        });
+        datePickerDialog.negativeAction("取消").negativeActionClickListener(v -> {
+            datePickerDialog.dismiss();
+            mCalendar = null;
         });
         datePickerDialog.show();
     }
@@ -196,7 +199,7 @@ public class ProductsDetailsActivity extends BaseActivity {
         pickerDialog.hour(calendar.get(Calendar.HOUR_OF_DAY));
         pickerDialog.cancelable(false);
         pickerDialog.minute(calendar.get(Calendar.MINUTE));
-        pickerDialog.negativeAction("确定").negativeActionClickListener(v -> {
+        pickerDialog.positiveAction("确定").positiveActionClickListener(v -> {
             pickerDialog.dismiss();
             if (mCalendar != null){
                 mCalendar.set(Calendar.MINUTE, pickerDialog.getMinute());
@@ -207,6 +210,11 @@ public class ProductsDetailsActivity extends BaseActivity {
                     mItemPromotionEnd.setText(CalendarUtil.getStandardDateTime(mCalendar));
                 }
             }
+        });
+
+        pickerDialog.negativeAction("取消").negativeActionClickListener(v -> {
+            pickerDialog.dismiss();
+            mCalendar = null;
         });
         pickerDialog.show();
     }
@@ -226,6 +234,7 @@ public class ProductsDetailsActivity extends BaseActivity {
                 finish();
             }else {
                 // 是编辑模式则进行取消操作 然后改变图标
+                setupInitMessage(); // 重置内容
                 mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white);
                 menuItemEdit.setIcon(R.mipmap.ic_edit_white);
                 isEditable = false;

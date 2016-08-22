@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -26,7 +27,6 @@ import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
 import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
-import com.strangedog.weylen.mthc.iinter.ItemClickListener;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.util.AnimatorUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -54,12 +54,14 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
     @Bind(R.id.bottom_layout) LinearLayout mBottomLayout;
     @Bind(R.id.upDownGoodsBtn) Button downGoodsBtn;
     @Bind(R.id.checkedAllView) CheckBox checkBox;
+    @Bind(R.id.text_currentType) TextView currentTypeView;
 
     private static final int STATUS = 1;
 
     private ProductInTheSaleAdapter adapter;
     private ZWrapperAdapter zWrapperAdapter;
     private SearchView searchView;
+    private MenuItem actionFlowItem;
 
     private InSellingPresenter presenter;
 
@@ -111,7 +113,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         mListRecyclerView.setEmptyView(emptyView);
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
-        mListRecyclerView.setArrowImageView(R.mipmap.icon_arrow_down);
+        mListRecyclerView.setArrowImageView(R.mipmap.abc_arrow_down);
         // 设置刷新监听
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
@@ -165,7 +167,24 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_products, menu);
-        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        actionFlowItem = menu.findItem(R.id.action_flow);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                actionFlowItem.setEnabled(false);
+                actionFlowItem.setIcon(R.mipmap.icon_menu_flow_disable);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                actionFlowItem.setEnabled(true);
+                actionFlowItem.setIcon(R.mipmap.icon_more_24dp);
+                return true;
+            }
+        });
         initSearchView();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -203,12 +222,12 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
         SearchView.SearchAutoComplete textView = (SearchView.SearchAutoComplete) searchView
                 .findViewById(R.id.search_src_text);
         textView.setTextColor(Color.WHITE);
-        setSearchViewTextCusor(textView);
-        View view = searchView.findViewById(R.id.search_plate);
-        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_input_bg));
+        setSearchViewTextCursor(textView);
+//        View view = searchView.findViewById(R.id.search_plate);
+//        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_input_bg));
     }
 
-    private void setSearchViewTextCusor(SearchView.SearchAutoComplete view) {
+    private void setSearchViewTextCursor(SearchView.SearchAutoComplete view) {
         try {
             Class<?> mTextViewClass = view.getClass().getSuperclass()
                     .getSuperclass().getSuperclass().getSuperclass();
@@ -222,6 +241,7 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
 
     // 执行搜索
     private void doMySearch(String query) {
+        currentTypeView.setText("当前搜索条件：" + query);
         presenter.load(query, STATUS, Constants.EMPTY_STR);
     }
 
@@ -250,8 +270,10 @@ public class InSellingGoodsFragment extends BaseFragment implements GoodsView {
                 presenter.getSmallType(entity.getId());
                 // 全部
             }else if ("-1".equalsIgnoreCase(entity.getPid())){
+                currentTypeView.setText("当前分类：全部");
                 presenter.load(Constants.EMPTY_STR, STATUS, Constants.EMPTY_STR);
             }else {
+                currentTypeView.setText("当前分类：" + entity.getName());
                 presenter.load(Constants.EMPTY_STR, STATUS, entity.getId());
             }
         });

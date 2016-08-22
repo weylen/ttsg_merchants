@@ -71,7 +71,7 @@ public class IndexActivity extends BaseActivity
         if (msg != null){
             msg.setText("9");
         }
-        drawerLayout.addDrawerListener(drawerListener);
+//        drawerLayout.addDrawerListener(drawerListener);
 
         View headerView = navigationView.getHeaderView(0);
         // 店铺名字
@@ -126,9 +126,16 @@ public class IndexActivity extends BaseActivity
                 });
                 break;
         }
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+
+        if (clazz != null && isForward){
+            Intent intent = new Intent(IndexActivity.this, clazz);
+            startActivity(intent);
         }
+        isForward = false;
+
+//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+//            drawerLayout.closeDrawer(GravityCompat.START);
+//        }
         return true;
     }
 
