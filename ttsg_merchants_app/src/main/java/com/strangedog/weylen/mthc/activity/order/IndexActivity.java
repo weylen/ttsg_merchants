@@ -1,7 +1,10 @@
 package com.strangedog.weylen.mthc.activity.order;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -10,13 +13,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 
 import com.google.gson.JsonObject;
 import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.ProductsActivity;
-import com.strangedog.weylen.mthc.SalesActivity;
+import com.strangedog.weylen.mthc.activity.sales.SalesActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginData;
@@ -24,6 +31,7 @@ import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
+import com.strangedog.weylen.mthc.util.AnimatorUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
@@ -42,6 +50,9 @@ public class IndexActivity extends BaseActivity
     @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
     /******************* 定义属性 *********************/
     private TextView balanceView;
+    private ImageView refreshImgView;
+    private Animation animation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +95,24 @@ public class IndexActivity extends BaseActivity
                 .setOnClickListener(v -> {
                     // TODO: 2016-08-15 提现操作
                 });
+
+        animation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setDuration(300);
+
+        // 刷新
+        refreshImgView = (ImageView) headerView.findViewById(R.id.img_refresh);
+        refreshImgView.setOnClickListener(v -> {
+            refreshImgView.startAnimation(animation);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    animation.cancel();
+                }
+            }, 2000);
+        });
+
     }
 
     @Override

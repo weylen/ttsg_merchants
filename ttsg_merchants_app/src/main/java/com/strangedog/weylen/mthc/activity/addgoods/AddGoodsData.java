@@ -13,11 +13,13 @@ public enum AddGoodsData {
     String typeId = "";
 
     int pageNum = 1;
+    boolean isComplete;
 
     void reset(){
         keyword = "";
         pageNum = 1;
         typeId = "";
+        isComplete = false;
     }
 
     public JsonObject kindData = null;

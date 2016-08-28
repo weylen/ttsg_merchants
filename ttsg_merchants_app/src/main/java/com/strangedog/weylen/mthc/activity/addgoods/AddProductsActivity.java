@@ -2,6 +2,7 @@ package com.strangedog.weylen.mthc.activity.addgoods;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -40,14 +41,17 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     @Bind(R.id.containerView) View containerView;
     @Bind(R.id.emptyView) TextView emptyView;
     @Bind(R.id.text_checked) TextView checkCountView;
+    @Bind(R.id.text_currentType) TextView currentTypeView;
 
     private AddProductsAdapter adapter;
     private ZWrapperAdapter zWrapperAdapter;
 
+    private MenuItem actionFlowItem;
+
     private AddGoodsPresenter presenter;
     private SearchView searchView;
     private boolean isActive;
-    private boolean isRefresh; // 是否正在刷新
+    private boolean isAutoRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         init();
 
         presenter.onLoad(Constants.EMPTY_STR, Constants.EMPTY_STR);
+        currentTypeView.setText("当前分类：全部");
     }
 
     private void init(){
@@ -89,25 +94,23 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         mListRecylerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                isRefresh = true;
-                presenter.refresh(false);
+                if (!isAutoRefresh){
+                    presenter.refresh(false);
+                }
+                isAutoRefresh = false;
             }
 
             @Override
             public void onBottom() {
-                if (isRefresh){return;}
-
                 LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mListRecylerView);
-                if(state == LoadingFooter.State.Loading) {
-                    DebugUtil.d("AddProductsActivity onBotton the state is Loading, just wait..");
+
+                if (AddGoodsData.INSTANCE.isComplete || state == LoadingFooter.State.TheEnd || state == LoadingFooter.State.Loading){
                     return;
                 }
 
                 if (state == LoadingFooter.State.Normal){
-                    RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView, Constants.REQUEST_COUNT, LoadingFooter.State.Loading, null);
+                    RecyclerViewStateUtils.setFooterViewState(mListRecylerView, LoadingFooter.State.Loading);
                     presenter.loadMore();
-                }else if (state == LoadingFooter.State.TheEnd){
-                    RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView, Constants.REQUEST_COUNT, LoadingFooter.State.TheEnd, null);
                 }
             }
         });
@@ -125,8 +128,10 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
                 presenter.getSmallType(entity.getId());
                 // 全部
             }else if ("-1".equalsIgnoreCase(entity.getPid())){
+                currentTypeView.setText("当前分类：全部");
                 presenter.onLoad(Constants.EMPTY_STR, Constants.EMPTY_STR);
             }else {
+                currentTypeView.setText("当前分类：" + entity.getName());
                 presenter.onLoad(Constants.EMPTY_STR, entity.getId());
             }
         });
@@ -151,7 +156,29 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_products, menu);
+        actionFlowItem = menu.findItem(R.id.action_flow);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                actionFlowItem.setEnabled(false);
+                actionFlowItem.setIcon(R.mipmap.icon_menu_flow_disable);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                actionFlowItem.setEnabled(true);
+                actionFlowItem.setIcon(R.mipmap.icon_more_24dp);
+                return true;
+            }
+        });
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        initSearchView();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void initSearchView(){
         searchView.setQueryHint("搜索商品关键字");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -170,13 +197,12 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
         SearchView.SearchAutoComplete textView = (SearchView.SearchAutoComplete) searchView
                 .findViewById(R.id.search_src_text);
         textView.setTextColor(Color.WHITE);
-        setSearchViewTextCusor(textView);
-        View view = searchView.findViewById(R.id.search_plate);
-        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_input_bg));
-        return super.onCreateOptionsMenu(menu);
+        setSearchViewTextCursor(textView);
+//        View view = searchView.findViewById(R.id.search_plate);
+//        view.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_input_bg));
     }
 
-    private void setSearchViewTextCusor(SearchView.SearchAutoComplete view) {
+    private void setSearchViewTextCursor(SearchView.SearchAutoComplete view) {
         try {
             Class<?> mTextViewClass = view.getClass().getSuperclass()
                     .getSuperclass().getSuperclass().getSuperclass();
@@ -191,6 +217,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     // 执行搜索
     private void doMySearch(String query) {
+        currentTypeView.setText("当前搜索条件：" + query);
         presenter.onLoad(query, Constants.EMPTY_STR);
     }
 
@@ -227,13 +254,13 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
 
     @Override
     public void onStartLoading() {
-        showProgressDialog("加载中...");
+        isAutoRefresh = true;
+        mListRecylerView.setRefreshing(true);
     }
 
     @Override
     public void onLoadFailure() {
         if (isActive()){
-            isRefresh = false;
             mListRecylerView.refreshComplete();
             dismissProgressDialog();
             adapter.clear();
@@ -243,11 +270,9 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     @Override
     public void onLoadSuccessful(List<ProductsEntity> data, boolean isComplete) {
         if (isActive()){
-            isRefresh = false;
             mListRecylerView.refreshComplete();
             dismissProgressDialog();
-            RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView,
-                    Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);
+            RecyclerViewStateUtils.setFooterViewState(mListRecylerView, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal);
             adapter.setDataList(data);
             mListRecylerView.scrollToPosition(0);
         }
@@ -271,9 +296,7 @@ public class AddProductsActivity extends BaseActivity implements AddGoodsView{
     public void onLoadmoreSuccessful(List<ProductsEntity> data, boolean isComplete) {
         if (isActive()){
             dismissProgressDialog();
-            RecyclerViewStateUtils.setFooterViewState(AddProductsActivity.this, mListRecylerView,
-                    Constants.REQUEST_COUNT, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal, null);
-
+            RecyclerViewStateUtils.setFooterViewState(mListRecylerView, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal);
             adapter.addAll(data);
         }
     }

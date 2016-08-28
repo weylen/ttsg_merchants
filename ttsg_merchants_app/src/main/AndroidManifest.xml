@@ -34,7 +34,7 @@
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
             />
         <activity
-            android:name="com.strangedog.weylen.mthc.SalesActivity"
+            android:name="com.strangedog.weylen.mthc.activity.sales.SalesActivity"
             android:label="@string/Sales"
             android:parentActivityName="com.strangedog.weylen.mthc.activity.order.IndexActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -80,6 +80,13 @@
         <activity android:name="com.strangedog.weylen.mthc.activity.productsdetails.ProductsDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/ProductsDetails"
+            android:screenOrientation="portrait"
+            android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
+            />
+
+        <activity android:name="com.strangedog.weylen.mthc.activity.orderdetails.OrderDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/OrderDetails"
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
             />

@@ -31,6 +31,14 @@
             android:gravity="center_horizontal"
             >
 
+            <TextView
+                android:id="@+id/text_currentType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="当前分类："
+                android:padding="5dp"
+                />
+
             <FrameLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"

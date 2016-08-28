@@ -63,6 +63,7 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
     private ShelvesPresenter presenter;
 
     private boolean isRefresh;
+    private boolean isAutoRefresh;
     private boolean isMultiChooseShow; // 多选是否打开
 
     @Override
@@ -113,8 +114,11 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                isRefresh = true;
-                presenter.refresh(false);
+                if (!isAutoRefresh){
+                    isRefresh = true;
+                    presenter.refresh(false);
+                }
+                isAutoRefresh = false;
             }
 
             @Override
@@ -307,7 +311,8 @@ public class ShelvesGoodsFragment extends BaseFragment implements GoodsView {
 
     @Override
     public void onStartLoading() {
-        showProgressDialog("获取数据中...");
+        isAutoRefresh = true;
+        mListRecyclerView.setRefreshing(true);
     }
 
     @Override

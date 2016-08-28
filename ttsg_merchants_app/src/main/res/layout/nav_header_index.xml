@@ -39,25 +39,44 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-            <com.rey.material.widget.TextView
-                android:id="@+id/text_balance"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="账户余额："
-                />
+                android:gravity="center"
+                >
+
+                <com.rey.material.widget.TextView
+                    android:id="@+id/text_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="账户余额："
+                    />
+
+                <ImageView
+                    android:id="@+id/img_refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_loading_rotate"
+                    android:layout_marginLeft="10dp"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <com.rey.material.widget.Button
+        <TextView
             android:id="@+id/btn_withdrawal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/LightFlatButtonRippleStyle"
-            android:minHeight="30dp"
             android:text="提现"
             android:textColor="@color/white"
             android:layout_gravity="center"
-            android:background="@drawable/abc_themecolor_border_btn"
+            android:background="@drawable/abc_themecolor_fill_btn"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             />
     </LinearLayout>
 

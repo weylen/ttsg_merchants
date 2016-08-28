@@ -23,10 +23,10 @@ import rx.schedulers.Schedulers;
 /**
  * Created by zhou on 2016/8/4.
  */
-public class DoingOrderPresenter {
+public class CompleteOrderPresenter {
 
     private OrderView orderView;
-    public DoingOrderPresenter(OrderView orderView){
+    public CompleteOrderPresenter(OrderView orderView){
         this.orderView = Preconditions.checkNotNull(orderView, "orderView cannot be null");
     }
 
@@ -51,7 +51,7 @@ public class DoingOrderPresenter {
 
     void remote(String begin, String end, int pageNum){
         RetrofitFactory.getRetrofit().create(HttpService.class)
-                .getOrders(begin, end, pageNum, 2)
+                .getOrders(begin, end, pageNum, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -62,7 +62,7 @@ public class DoingOrderPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        DebugUtil.d("DoingOrderPresenter 获取订单失败：" + e.getMessage());
+                        DebugUtil.d("DoingOrderPresenter 获取订单列表失败：" + e.getMessage());
                         error(pageNum);
                     }
 
@@ -90,6 +90,7 @@ public class DoingOrderPresenter {
         JsonObject dataObject = jsonObject.get("data").getAsJsonObject();
         int maxPage = jsonObject.get("maxPage").getAsInt();
         int currentPage = jsonObject.get("pageNum").getAsInt();
+        DebugUtil.d("DoingOrderPresenter maxPage:" + maxPage +", currentPage:" + currentPage);
         Gson gson = new Gson();
 
         List<OrderDetailsEntity> listOrders = new ArrayList<>();
@@ -128,38 +129,5 @@ public class DoingOrderPresenter {
         }else{ // 加载更多
             orderView.onLoadMoreSuccess(listOrders, isFinish);
         }
-    }
-
-    /**
-     * 修改订单状态
-     * @param orderId
-     * @param status "1"："订单完成" "2"："订单未支付" "3"："订单已支付未发货" "4"："客户退货" "5"："客户取消订单" "6"："支付结果确认中" "7"："商家已结单" "6"："商家已送达"
-     */
-    void alertOrderStatus(String orderId, int status, int position){
-        orderView.onStartAlertStatus();
-        RetrofitFactory.getRetrofit().create(HttpService.class)
-                .alertOrderStatus(orderId, String.valueOf(status))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        orderView.onAlertStatusFailure(position, status);
-                    }
-
-                    @Override
-                    public void onNext(JsonObject jsonObject) {
-                        if (ResponseMgr.getStatus(jsonObject) != 1){
-                            orderView.onAlertStatusFailure(position, status);
-                        }else{
-                            orderView.onAlertStatusSuccess(position, status);
-                        }
-                    }
-                });
     }
 }

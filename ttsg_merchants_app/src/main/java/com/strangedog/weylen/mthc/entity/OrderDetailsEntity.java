@@ -6,28 +6,20 @@ import java.util.ArrayList;
 /**
  * Created by weylen on 2016-08-14.
  */
-public class OrderEntity implements Serializable{
+public class OrderDetailsEntity implements Serializable{
 
     private String orderId;
     private String total;
     private String prepay_id;
-    private ArrayList<OrderProductsEntity> products;
+    private ArrayList<OrderDetailsProductsEntity> products;
 
-    public OrderEntity(){}
+    public OrderDetailsEntity(){}
 
-    public OrderEntity(String orderId, String total, String prepay_id, ArrayList<OrderProductsEntity> products) {
+    public OrderDetailsEntity(String orderId, String total, String prepay_id, ArrayList<OrderDetailsProductsEntity> products) {
         this.orderId = orderId;
         this.total = total;
         this.prepay_id = prepay_id;
         this.products = products;
-    }
-
-    public String getPrepay_id() {
-        return prepay_id;
-    }
-
-    public void setPrepay_id(String prepay_id) {
-        this.prepay_id = prepay_id;
     }
 
     public String getOrderId() {
@@ -46,12 +38,19 @@ public class OrderEntity implements Serializable{
         this.total = total;
     }
 
-    public ArrayList<OrderProductsEntity> getProducts() {
+    public ArrayList<OrderDetailsProductsEntity> getProducts() {
         return products;
     }
 
-    public void setProducts(ArrayList<OrderProductsEntity> products) {
+    public void setProducts(ArrayList<OrderDetailsProductsEntity> products) {
         this.products = products;
     }
 
+    public String getPrepay_id() {
+        return prepay_id;
+    }
+
+    public void setPrepay_id(String prepay_id) {
+        this.prepay_id = prepay_id;
+    }
 }

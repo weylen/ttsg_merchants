@@ -43,4 +43,8 @@ public class LocaleUtil {
         }
         return param;
     }
+
+    public static final boolean isListEmpty(List<?> data){
+        return data == null || data.size() == 0;
+    }
 }

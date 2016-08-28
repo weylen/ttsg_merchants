@@ -83,4 +83,62 @@ public interface HttpService {
     Observable<JsonObject> upDownGoods(
             @Field("Key") String str
     );
+
+    /**
+     * 获取订单列表
+     * @param begin 开始时间
+     * @param end 结束时间
+     * @param pageNum 页码
+     * @param type  传1表示完成订单，2表示进行中，不传表示全部
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("oda-saleDetail")
+    Observable<JsonObject> getOrders(
+            @Field("begin") String begin,
+            @Field("end") String end,
+            @Field("pageNum") int pageNum,
+            @Field("key") int type
+    );
+
+    /**
+     * 获取销售详情
+     * @param begin 开始时间
+     * @param end 结束时间
+     * @param pageNum 页码
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("psda-saleDetail")
+    Observable<JsonObject> getSaleDetails(
+            @Field("begin") String begin,
+            @Field("end") String end,
+            @Field("pageNum") int pageNum
+    );
+
+    /**
+     * 获取订单详情
+     * @param orderId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("oda-orderDetail")
+    Observable<JsonObject> getOrderDetails(
+            @Field("key") String orderId
+    );
+
+    /**
+     * 修改订单状态
+     * @param orderId 订单号
+     * @param status "1"："订单完成" "2"："订单未支付" "3"："订单已支付未发货" "4"："客户退货" "5"："客户取消订单" "6"："支付结果确认中" "7"："商家已结单" "6"："商家已送达"
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("oda-modify")
+    Observable<JsonObject> alertOrderStatus(
+            @Field("key") String orderId,
+            @Field("end") String status
+    );
+
+
 }

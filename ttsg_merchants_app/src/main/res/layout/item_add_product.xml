@@ -7,6 +7,7 @@
     android:paddingBottom="@dimen/item_padding_vertical"
     android:paddingTop="@dimen/item_padding_vertical"
     android:gravity="center_vertical"
+    android:background="@color/white"
     >
 
     <CheckBox

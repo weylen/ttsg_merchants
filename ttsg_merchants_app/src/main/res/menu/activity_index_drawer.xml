@@ -21,8 +21,13 @@
             android:title="@string/Products" />
         <item
             android:id="@+id/nav_addProducts"
-            android:icon="@mipmap/ic_menu_addproduct"
+            android:icon="@mipmap/ic_menu_addproducts"
             android:title="@string/AddProducts" />
+
+        <item
+            android:id="@+id/nav_setStock"
+            android:icon="@mipmap/ic_menu_stock"
+            android:title="@string/SetStock" />
     </group>
 
     <group android:id="@+id/groupAction">

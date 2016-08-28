@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.strangedog.weylen.mthc.SalesActivity">
+    tools:context="com.strangedog.weylen.mthc.activity.sales.SalesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -47,7 +47,6 @@
             <TextView
                 android:id="@+id/salesPriceView"
                 style="@style/TitleTextView"
-                android:text="160.00"
                 android:textColor="@color/colorAccent"
                 android:textStyle="bold"
                 android:layout_weight="1.0"
@@ -62,14 +61,32 @@
             android:layout_height="0.5dp"
             android:background="@color/divider"/>
 
-        <com.strangedog.weylen.mthc.view.ZRecyclerView
-            android:id="@+id/recyclerView"
-            android:orientation="vertical"
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@id/containerView"
             >
 
-        </com.strangedog.weylen.mthc.view.ZRecyclerView>
+            <com.strangedog.weylen.mthc.view.ListRecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <TextView
+                android:id="@+id/emptyView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/ic_empty"
+                android:drawablePadding="3dp"
+                android:layout_marginBottom="50dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="无数据"
+                android:visibility="gone"
+                />
+        </FrameLayout>
 
     </LinearLayout>
 

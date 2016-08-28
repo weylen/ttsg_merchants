@@ -41,7 +41,6 @@ public class OrderAdapter extends WrapperAdapterData<OrderEntity, OrderAdapter.A
         @Bind(R.id.orderStatusView)  TextView mOrderStatusView;
         @Bind(R.id.orderTimeView)  TextView mOrderTimeView;
         @Bind(R.id.orderContentView)  TextView mOrderContentView;
-        @Bind(R.id.orderAddrView)  TextView mOrderAddrView;
         @Bind(R.id.orderPriceView)  TextView mOrderPriceView;
 
         public A(View itemView) {

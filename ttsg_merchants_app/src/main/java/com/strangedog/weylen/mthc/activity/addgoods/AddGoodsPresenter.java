@@ -42,6 +42,7 @@ public class AddGoodsPresenter implements BasePresenter {
      */
     public void onLoad(String keyword, String typeId){
         // 保存当前搜索关键字
+        AddGoodsData.INSTANCE.reset();
         AddGoodsData.INSTANCE.keyword = keyword;
         AddGoodsData.INSTANCE.typeId = typeId;
         addGoodsView.onStartLoading();
@@ -185,10 +186,11 @@ public class AddGoodsPresenter implements BasePresenter {
         int pageNum = s.get("pageNum").getAsInt();
         // 保存当前页面
         AddGoodsData.INSTANCE.pageNum = pageNum;
+        AddGoodsData.INSTANCE.isComplete = pageNum == maxPage;
         if (pageNum > 1){
-            addGoodsView.onLoadmoreSuccessful(data, maxPage == pageNum);
+            addGoodsView.onLoadmoreSuccessful(data, AddGoodsData.INSTANCE.isComplete);
         }else{
-            addGoodsView.onLoadSuccessful(data, maxPage == pageNum);
+            addGoodsView.onLoadSuccessful(data, AddGoodsData.INSTANCE.isComplete);
         }
     }
 
