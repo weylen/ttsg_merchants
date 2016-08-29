@@ -29,4 +29,5 @@
     <string name="DownGoods">下架</string>
     <string name="SetStock">设置库存</string>
     <string name="OrderDetails">订单详情</string>
+    <string name="BalanceWithdrawal">余额转出</string>
 </resources>

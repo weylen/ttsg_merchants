@@ -27,11 +27,14 @@ import com.strangedog.weylen.mthc.activity.sales.SalesActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginData;
+import com.strangedog.weylen.mthc.activity.stock.StockActivity;
+import com.strangedog.weylen.mthc.activity.withdrawal.WithdrawalActivity;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.AnimatorUtil;
+import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
@@ -52,6 +55,7 @@ public class IndexActivity extends BaseActivity
     private TextView balanceView;
     private ImageView refreshImgView;
     private Animation animation;
+    private String balance; // 余额
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +97,9 @@ public class IndexActivity extends BaseActivity
         // 提现
         headerView.findViewById(R.id.btn_withdrawal)
                 .setOnClickListener(v -> {
-                    // TODO: 2016-08-15 提现操作
+                    Intent intent = new Intent(IndexActivity.this, WithdrawalActivity.class);
+                    intent.putExtra("Balance", balance);
+                    startActivity(intent);
                 });
 
         animation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -105,14 +111,8 @@ public class IndexActivity extends BaseActivity
         refreshImgView = (ImageView) headerView.findViewById(R.id.img_refresh);
         refreshImgView.setOnClickListener(v -> {
             refreshImgView.startAnimation(animation);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    animation.cancel();
-                }
-            }, 2000);
+            balance();
         });
-
     }
 
     @Override
@@ -154,6 +154,10 @@ public class IndexActivity extends BaseActivity
                     logout();
                 });
                 break;
+            case R.id.nav_setStock:
+                isForward = true;
+                clazz = StockActivity.class;
+                break;
         }
 
         if (clazz != null && isForward){
@@ -179,6 +183,12 @@ public class IndexActivity extends BaseActivity
             isForward = false;
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        balance();
+    }
 
     @Override
     protected void onDestroy() {
@@ -219,6 +229,35 @@ public class IndexActivity extends BaseActivity
                             startActivity(intent);
                         }else {
                             showSnakeBar(mToolbar, "注销失败，请重新操作");
+                        }
+                    }
+                });
+    }
+
+    private void balance(){
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .getBalance()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        animation.cancel();
+                        DebugUtil.d("IndexActivity 获取余额失败：" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        animation.cancel();
+                        DebugUtil.d("IndexActivity 获取余额成功：" + jsonObject);
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                            balance = jsonObject.get("data").getAsString();
+                            balanceView.setText(balance);
                         }
                     }
                 });

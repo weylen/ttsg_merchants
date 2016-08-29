@@ -90,6 +90,21 @@
             android:screenOrientation="portrait"
             android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
             />
+
+        <activity android:name="com.strangedog.weylen.mthc.activity.withdrawal.WithdrawalActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/BalanceWithdrawal"
+            android:screenOrientation="portrait"
+            android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
+            />
+
+        <activity android:name="com.strangedog.weylen.mthc.activity.stock.StockActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/SetStock"
+            android:screenOrientation="portrait"
+            android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
+			android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            />
     </application>
 
 </manifest>

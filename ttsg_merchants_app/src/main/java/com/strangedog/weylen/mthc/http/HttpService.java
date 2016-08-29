@@ -140,5 +140,7 @@ public interface HttpService {
             @Field("end") String status
     );
 
+    @POST("psda-csletm")
+    Observable<JsonObject> getBalance();
 
 }

@@ -57,7 +57,7 @@
                     android:id="@+id/img_refresh"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_loading_rotate"
+                    android:src="@mipmap/icon_small_refresh"
                     android:layout_marginLeft="10dp"
                     />
 
