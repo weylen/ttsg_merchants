@@ -19,31 +19,17 @@
         <TextView
             android:id="@+id/orderContentView"
             style="@style/ContentTextView"
-            android:text="矿泉水 x1"
             android:textColor="@color/grayText"
             android:lineSpacingExtra="1dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
             />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/SmallTextView"
-                android:text="单价："
-                android:textColor="@color/grayText"
-                />
-
-            <TextView
-                android:id="@+id/orderPriceView"
-                style="@style/ContentTextView"
-                android:text="￥14.88"
-                android:textColor="@color/blackText"
-                />
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/orderCountView"
+            style="@style/ContentTextView"
+            android:textColor="@color/blackText"
+            />
     </LinearLayout>
 
 

@@ -2,9 +2,7 @@ package com.strangedog.weylen.mthc.activity.sales;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -14,19 +12,15 @@ import com.github.jdsjlzx.util.RecyclerViewStateUtils;
 import com.github.jdsjlzx.view.LoadingFooter;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
-import com.strangedog.weylen.mthc.activity.order.DoingOrderData;
 import com.strangedog.weylen.mthc.adapter.SalesAdapter;
 import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
 import com.strangedog.weylen.mthc.entity.SalesEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
-import com.strangedog.weylen.mthc.util.DimensUtil;
-import com.strangedog.weylen.mthc.view.ItemDividerDecoration;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
+import com.strangedog.weylen.mthc.view.SaleQueryDialog;
 import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
-import com.strangedog.weylen.mthc.view.ZRecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -37,6 +31,7 @@ public class SalesActivity extends BaseActivity implements SalesView{
     @Bind(R.id.salesPriceView) TextView mSalesPriceView;
     @Bind(R.id.recyclerView) ListRecyclerView mListRecyclerView;
     @Bind(R.id.emptyView) TextView emptyView;
+    @Bind(R.id.text_time) TextView timeView;
 
     private SalesAdapter adapter;
     private ZWrapperAdapter zWrapperAdapter;
@@ -59,7 +54,9 @@ public class SalesActivity extends BaseActivity implements SalesView{
         init();
 
         salesPresenter = new SalesPresenter(this);
-        salesPresenter.start();
+        salesPresenter.start(Constants.EMPTY_STR, Constants.EMPTY_STR);
+
+        timeView.setText("时间段：全部");
     }
 
     void init(){
@@ -74,7 +71,7 @@ public class SalesActivity extends BaseActivity implements SalesView{
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         mListRecyclerView.setArrowImageView(R.mipmap.abc_refresh_arrow);
-        mListRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(this, 5)));
+        mListRecyclerView.addItemDecoration(new SpaceItemDecoration(1));
         // 设置刷新监听
         mListRecyclerView.setOnRefreshListener(new ListRecyclerView.OnRefreshListener() {
             @Override
@@ -119,8 +116,19 @@ public class SalesActivity extends BaseActivity implements SalesView{
         if (item.getItemId() == android.R.id.home){
             finish();
             return true;
+        }else if (item.getItemId() == R.id.action_search){
+            showQueryDialog();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showQueryDialog(){
+        SaleQueryDialog dialog = new SaleQueryDialog(this);
+        dialog.setOnDataListener((startTime, endTime) -> {
+            timeView.setText("时间段：" + startTime +" ~ " + endTime);
+            salesPresenter.start(startTime + Constants.TIME_START, endTime + Constants.TIME_END);
+        });
+        dialog.show();
     }
 
     @Override
@@ -140,15 +148,17 @@ public class SalesActivity extends BaseActivity implements SalesView{
         if (!isFinishing()){
             mListRecyclerView.refreshComplete();
             adapter.clear();
+            mSalesPriceView.setText(Constants.EMPTY_STR);
         }
     }
 
     @Override
-    public void onRequestSuccess(List<SalesEntity> data, boolean isComplete) {
+    public void onRequestSuccess(List<SalesEntity> data, String total, boolean isComplete) {
         if (!isFinishing()){
             mListRecyclerView.refreshComplete();
             adapter.setDataList(data);
-
+            // 设置销售总额
+            mSalesPriceView.setText(total);
             RecyclerViewStateUtils.setFooterViewState(mListRecyclerView, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal);
         }
     }
@@ -173,7 +183,7 @@ public class SalesActivity extends BaseActivity implements SalesView{
     }
 
     @Override
-    public void onLoadMoreSuccess(List<SalesEntity> data, boolean isComplete) {
+    public void onLoadMoreSuccess(List<SalesEntity> data, String total, boolean isComplete) {
         if (!isFinishing()){
             mListRecyclerView.refreshComplete();
             adapter.addAll(data);

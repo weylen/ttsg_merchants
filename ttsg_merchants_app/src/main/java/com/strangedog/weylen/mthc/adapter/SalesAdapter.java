@@ -41,9 +41,9 @@ public class SalesAdapter extends ListBaseAdapter<SalesEntity>{
     public void onBindViewHolder(RecyclerView.ViewHolder aHolder, int position) {
         A holder = (A) aHolder;
         SalesEntity entity = getItem(position);
-        holder.contentView.setText(entity.getName() + "    x" + entity.getAmount());
-        holder.priceView.setText("￥" + entity.getPrice());
-        holder.totalView.setText("￥" + entity.getTotal());
+        holder.contentView.setText(entity.getName());
+        holder.countView.setText("销售数量：" + entity.getSumamount());
+        holder.totalView.setText("￥" + entity.getSumprice());
 
         Glide.with(context)
                 .load(Constants.BASE_URL + entity.getImg())
@@ -63,7 +63,7 @@ public class SalesAdapter extends ListBaseAdapter<SalesEntity>{
     public static class A extends RecyclerView.ViewHolder{
         @Bind(R.id.imageView) ImageView imageView;
         @Bind(R.id.orderContentView) TextView contentView;
-        @Bind(R.id.orderPriceView) TextView priceView;
+        @Bind(R.id.orderCountView) TextView countView;
         @Bind(R.id.totalView) TextView totalView;
         public A(View itemView) {
             super(itemView);

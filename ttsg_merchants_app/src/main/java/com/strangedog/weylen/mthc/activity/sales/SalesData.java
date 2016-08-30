@@ -9,6 +9,9 @@ public enum SalesData {
     int pageNum = 1;
     boolean isComplete;
 
+    String startTime;
+    String endTime;
+
     void reset(){
         pageNum = 1;
         isComplete = false;

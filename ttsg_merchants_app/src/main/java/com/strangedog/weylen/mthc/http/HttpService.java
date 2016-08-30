@@ -143,4 +143,21 @@ public interface HttpService {
     @POST("psda-csletm")
     Observable<JsonObject> getBalance();
 
+    /**
+     * 销售统计 开始时间和结束时间不传获取的是全部数据
+     * @param proId 商品id
+     * @param startTime 开始时间：格式2016-10-10 00:00:00
+     * @param endTime 结束时间：格式2016-10-10 23:59:59
+     * @param pageNum
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("psda-salesStatistics")
+    Observable<JsonObject> salesStatistical(
+            @Field("proId") String proId,
+            @Field("begin") String startTime,
+            @Field("end") String endTime,
+            @Field("pageNum") int pageNum
+    );
+
 }

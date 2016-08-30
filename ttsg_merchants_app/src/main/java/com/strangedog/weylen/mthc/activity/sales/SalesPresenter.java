@@ -30,26 +30,30 @@ public class SalesPresenter {
     /**
      * 开始加载销售列表数据
      */
-    void start(){
+    void start(String startTime, String endTime){
         SalesData.INSTANCE.reset();
         salesView.onStartRequest();
-        remote(Constants.EMPTY_STR, Constants.EMPTY_STR, 1);
+        SalesData.INSTANCE.startTime = startTime;
+        SalesData.INSTANCE.endTime = endTime;
+        remote(Constants.EMPTY_STR, startTime, endTime, 1);
     }
 
     void refresh(){
         SalesData.INSTANCE.reset();
         salesView.onStartRefresh();
-        remote(Constants.EMPTY_STR, Constants.EMPTY_STR, 1);
+        remote(Constants.EMPTY_STR, SalesData.INSTANCE.startTime, SalesData.INSTANCE.endTime, 1);
     }
 
     void loadMore(){
         salesView.onStartLoadMore();
-        remote(Constants.EMPTY_STR, Constants.EMPTY_STR, SalesData.INSTANCE.pageNum + 1);
+        remote(Constants.EMPTY_STR, SalesData.INSTANCE.startTime, SalesData.INSTANCE.endTime, SalesData.INSTANCE.pageNum + 1);
     }
 
-    void remote(String begin, String end, int pageNum){
+    void remote(String proId,String begin, String end, int pageNum){
+        DebugUtil.d("SalesPresenter 开始时间：" + begin + ", 结束时间：" + end);
+
         RetrofitFactory.getRetrofit().create(HttpService.class)
-                .getSaleDetails(begin, end, pageNum)
+                .salesStatistical(proId, begin, end, pageNum)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -102,11 +106,13 @@ public class SalesPresenter {
                 entity.setImg(imgObject.get(imgId).getAsString().split(",")[0]);
             }
         }
+        // 获取销售总额
+        String total = dataObject.get("total").getAsString();
         // 处理结果
         if (pageNum > 1){
-            salesView.onLoadMoreSuccess(dataList, SalesData.INSTANCE.isComplete);
+            salesView.onLoadMoreSuccess(dataList, total, SalesData.INSTANCE.isComplete);
         }else {
-            salesView.onRequestSuccess(dataList, SalesData.INSTANCE.isComplete);
+            salesView.onRequestSuccess(dataList, total, SalesData.INSTANCE.isComplete);
         }
     }
 }

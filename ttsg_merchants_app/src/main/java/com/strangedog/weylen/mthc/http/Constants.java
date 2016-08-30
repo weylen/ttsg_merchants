@@ -18,6 +18,9 @@ public class Constants {
 
     public static HashMap<String, String> ORDER_PARAM = null;
 
+    public static final String TIME_START = " 00:00:00";
+    public static final String TIME_END = " 23:59:59";
+
     static {
         ORDER_PARAM = new HashMap<>();
         ORDER_PARAM.put("1", "订单已完成");

@@ -1,10 +1,7 @@
 package com.strangedog.weylen.mthc.activity.order;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -17,23 +14,22 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.JsonObject;
-import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.ProductsActivity;
-import com.strangedog.weylen.mthc.activity.sales.SalesActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginData;
+import com.strangedog.weylen.mthc.activity.sales.SalesActivity;
 import com.strangedog.weylen.mthc.activity.stock.StockActivity;
 import com.strangedog.weylen.mthc.activity.withdrawal.WithdrawalActivity;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
-import com.strangedog.weylen.mthc.util.AnimatorUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.view.ZViewPager;
@@ -257,7 +253,7 @@ public class IndexActivity extends BaseActivity
                         DebugUtil.d("IndexActivity 获取余额成功：" + jsonObject);
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             balance = jsonObject.get("data").getAsString();
-                            balanceView.setText(balance);
+                            balanceView.setText("账户余额：" + balance);
                         }
                     }
                 });

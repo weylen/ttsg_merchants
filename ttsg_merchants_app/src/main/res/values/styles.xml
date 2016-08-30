@@ -108,4 +108,18 @@
         <item name="android:paddingBottom">@dimen/item_padding_vertical</item>
     </style>
 
+    <style name="Dialog_Radio">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/dialog_sales_radio</item>
+        <item name="android:textColor">@color/dialog_radio_color_selector</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:paddingLeft">@dimen/dp_10</item>
+        <item name="android:paddingRight">@dimen/dp_10</item>
+        <item name="android:paddingTop">@dimen/dp_6</item>
+        <item name="android:paddingBottom">@dimen/dp_6</item>
+        <item name="android:layout_weight">1</item>
+    </style>
 </resources>

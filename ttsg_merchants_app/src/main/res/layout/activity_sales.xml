@@ -29,6 +29,17 @@
         android:layout_height="match_parent"
         >
 
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grayText"
+            android:textSize="@dimen/sp_12"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:background="@color/white"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,11 +47,12 @@
             android:gravity="center_vertical"
             android:background="@color/white"
             android:paddingLeft="15dp"
+            android:paddingBottom="10dp"
             >
 
             <TextView
                 style="@style/ContentTextView"
-                android:text="本日销售额：￥"
+                android:text="销售总额：￥"
                 android:textColor="@color/grayText"
                 />
 
@@ -50,8 +62,7 @@
                 android:textColor="@color/colorAccent"
                 android:textStyle="bold"
                 android:layout_weight="1.0"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                android:gravity="center_vertical"
                 />
 
         </LinearLayout>

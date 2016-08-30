@@ -10,9 +10,22 @@ import java.util.List;
 public interface SalesView {
     void onStartRequest();
     void onRequestFailure();
-    void onRequestSuccess(List<SalesEntity> data, boolean isComplete);
+
+    /**
+     * 获取销售数据成功
+     * @param data 数据
+     * @param total 总额
+     * @param isComplete 是否加载完所以的数据
+     */
+    void onRequestSuccess(List<SalesEntity> data, String total, boolean isComplete);
     void onStartRefresh();
     void onStartLoadMore();
     void onLoadMoreFailure();
-    void onLoadMoreSuccess(List<SalesEntity> data, boolean isComplete);
+    /**
+     * 获取更多销售数据成功
+     * @param data 数据
+     * @param total 总额
+     * @param isComplete 是否加载完所以的数据
+     */
+    void onLoadMoreSuccess(List<SalesEntity> data, String total, boolean isComplete);
 }
