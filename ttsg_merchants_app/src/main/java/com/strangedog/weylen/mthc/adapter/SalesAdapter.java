@@ -14,6 +14,7 @@ import com.strangedog.weylen.mthc.entity.OrderDetailsEntity;
 import com.strangedog.weylen.mthc.entity.SalesEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,7 +44,7 @@ public class SalesAdapter extends ListBaseAdapter<SalesEntity>{
         SalesEntity entity = getItem(position);
         holder.contentView.setText(entity.getName());
         holder.countView.setText("销售数量：" + entity.getSumamount());
-        holder.totalView.setText("￥" + entity.getSumprice());
+        holder.totalView.setText("￥" + LocaleUtil.formatMoney(entity.getSumprice()));
 
         Glide.with(context)
                 .load(Constants.BASE_URL + entity.getImg())

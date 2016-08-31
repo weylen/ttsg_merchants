@@ -14,6 +14,7 @@ import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -115,6 +116,6 @@ public class WithdrawalActivity extends BaseActivity {
     }
 
     private void result(){
-        enableBalanceView.setText(String.format("可用余额 %s元", balance == null ? "0" : balance));
+        enableBalanceView.setText(String.format("可用余额 %s元", balance == null ? "0" : LocaleUtil.formatMoney(balance)));
     }
 }

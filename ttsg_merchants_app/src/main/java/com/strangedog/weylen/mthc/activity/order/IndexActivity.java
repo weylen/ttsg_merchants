@@ -32,6 +32,7 @@ import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 
 import butterknife.Bind;
@@ -253,7 +254,7 @@ public class IndexActivity extends BaseActivity
                         DebugUtil.d("IndexActivity 获取余额成功：" + jsonObject);
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             balance = jsonObject.get("data").getAsString();
-                            balanceView.setText("账户余额：" + balance);
+                            balanceView.setText("￥ " + LocaleUtil.formatMoney(balance));
                         }
                     }
                 });

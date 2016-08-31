@@ -72,13 +72,9 @@ public class AnimatorUtil {
                 .start();
     }
 
-    public static void transalteHide(View view, int x,  ViewPropertyAnimatorListener viewPropertyAnimatorListener){
-        ViewCompat.animate(view)
-                .x(x)
-                .alpha(0)
-                .setDuration(500)
-                .setListener(viewPropertyAnimatorListener)
-                .setInterpolator(FAST_OUT_SLOW_IN_INTERPOLATOR)
-                .start();
+    public static void x(View view, float x){
+        ViewCompat.animate(view).x(x).setDuration(300).setInterpolator(FAST_OUT_SLOW_IN_INTERPOLATOR)
+                .setListener(null).start();
     }
+
 }

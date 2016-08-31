@@ -24,7 +24,8 @@ public class MyLinearLayout extends LinearLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec + DimensUtil.dp2px(getContext(), 40), heightMeasureSpec);
+//        super.onMeasure(widthMeasureSpec + DimensUtil.dp2px(getContext(), 40), heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override

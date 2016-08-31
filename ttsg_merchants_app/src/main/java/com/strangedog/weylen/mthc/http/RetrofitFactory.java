@@ -1,6 +1,5 @@
 package com.strangedog.weylen.mthc.http;
 
-import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.SessionUtil;
 
 import java.util.concurrent.TimeUnit;

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -46,5 +47,13 @@ public class LocaleUtil {
 
     public static final boolean isListEmpty(List<?> data){
         return data == null || data.size() == 0;
+    }
+
+    public static String formatMoney(String money){
+        if (TextUtils.isEmpty(money)){
+            return money;
+        }
+        BigDecimal bigDecimal = new BigDecimal(money);
+        return bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
     }
 }

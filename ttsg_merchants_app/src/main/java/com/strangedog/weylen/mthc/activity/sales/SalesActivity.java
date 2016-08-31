@@ -17,6 +17,7 @@ import com.strangedog.weylen.mthc.adapter.ZWrapperAdapter;
 import com.strangedog.weylen.mthc.entity.SalesEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 import com.strangedog.weylen.mthc.view.SaleQueryDialog;
 import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
@@ -158,7 +159,7 @@ public class SalesActivity extends BaseActivity implements SalesView{
             mListRecyclerView.refreshComplete();
             adapter.setDataList(data);
             // 设置销售总额
-            mSalesPriceView.setText(total);
+            mSalesPriceView.setText(LocaleUtil.formatMoney(total));
             RecyclerViewStateUtils.setFooterViewState(mListRecyclerView, isComplete ? LoadingFooter.State.TheEnd : LoadingFooter.State.Normal);
         }
     }
