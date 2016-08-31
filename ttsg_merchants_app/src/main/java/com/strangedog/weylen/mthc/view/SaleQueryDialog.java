@@ -60,6 +60,7 @@ public class SaleQueryDialog {
     public void onTodayClick(){
         customTimeGroup.clearCheck();
         status = Type.GENERIC;
+        clearTexts();
 
         Calendar calendar = Calendar.getInstance();
         endTime = CalendarUtil.getStandardDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
@@ -70,6 +71,7 @@ public class SaleQueryDialog {
     public void onMonthClick(){
         customTimeGroup.clearCheck();
         status = Type.GENERIC;
+        clearTexts();
 
         Calendar calendar = Calendar.getInstance();
         endTime = CalendarUtil.getStandardDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
@@ -81,11 +83,17 @@ public class SaleQueryDialog {
     public void onYearClick(){
         customTimeGroup.clearCheck();
         status = Type.GENERIC;
+        clearTexts();
 
         Calendar calendar = Calendar.getInstance();
         endTime = CalendarUtil.getStandardDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
         calendar.set(calendar.get(Calendar.YEAR), 0, 1);
         startTime = CalendarUtil.getStandardDate(calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+    }
+
+    private void clearTexts(){
+        startTimeView.setText(Constants.EMPTY_STR);
+        endTimeView.setText(Constants.EMPTY_STR);
     }
 
     private AlertDialog alertDialog;
@@ -108,11 +116,11 @@ public class SaleQueryDialog {
                             return;
                         }
                         if (status == Type.CUSTOM){
-                            if (TextUtils.isEmpty(startTime)){
+                            if (TextUtils.isEmpty(startTimeView.getText().toString())){
                                 setShow(dialog, false);
                                 Toast.makeText(context, "请选择开始时间", Toast.LENGTH_SHORT).show();
                                 return;
-                            }else if (TextUtils.isEmpty(endTime)){
+                            }else if (TextUtils.isEmpty(endTimeView.getText().toString())){
                                 setShow(dialog, false);
                                 Toast.makeText(context, "请选择结束时间", Toast.LENGTH_SHORT).show();
                                 return;
