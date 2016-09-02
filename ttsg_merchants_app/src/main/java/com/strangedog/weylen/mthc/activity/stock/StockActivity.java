@@ -5,9 +5,12 @@ import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
@@ -23,15 +26,18 @@ import com.strangedog.weylen.mthc.entity.StockEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DimensUtil;
+import com.strangedog.weylen.mthc.util.KeyboardUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by weylen on 2016-08-29.
@@ -40,6 +46,7 @@ public class StockActivity extends BaseActivity implements StockView{
 
     @Bind(R.id.recyclerView) ListRecyclerView mListRecyclerView;
     @Bind(R.id.emptyView) TextView emptyView;
+    @Bind(R.id.inputStock) EditText inputStock;
 
     private Activity activity;
     private StockAdapter adapter;
@@ -62,13 +69,6 @@ public class StockActivity extends BaseActivity implements StockView{
         presenter = new StockPresenter(this);
 
         init();
-        adapter.setDataList(test());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_sales, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -86,8 +86,21 @@ public class StockActivity extends BaseActivity implements StockView{
         ButterKnife.unbind(this);
     }
 
+    @OnClick(R.id.img_search)
+    public void onSearchClick(){
+        presenter.start(Constants.EMPTY_STR, inputStock.getText().toString());
+        KeyboardUtil.hide(this, inputStock);
+    }
 
     void init(){
+        inputStock.setOnEditorActionListener((v, actionId, event) -> {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                        onSearchClick();
+                        return true;
+                    }
+            return false;
+        });
+
         adapter = new StockAdapter(this);
         zWrapperAdapter = new ZWrapperAdapter(this, adapter);
         // 设置适配器
@@ -139,46 +152,45 @@ public class StockActivity extends BaseActivity implements StockView{
         });
     }
 
-    private List<StockEntity> test(){
-        List<StockEntity> data = new ArrayList<>();
-        for (int i = 0; i < 50; i++){
-            data.add(new StockEntity());
-        }
-        return data;
+    private void resetRefreshState(){
+        mListRecyclerView.setRefreshing(false);
+        mListRecyclerView.refreshComplete();
     }
 
     @Override
     public void onStartList() {
-
+        mListRecyclerView.setRefreshing(true);
     }
 
     @Override
     public void onListFailure() {
-
+        resetRefreshState();
+        showSnakeBar(mListRecyclerView, "获取数据失败");
+        adapter.clear();
     }
 
     @Override
     public void onListSuccess(List<StockEntity> data, boolean isComplete) {
-
+        resetRefreshState();
+        adapter.setDataList(data);
+        RecyclerViewStateUtils.setFooterViewState(mListRecyclerView, isComplete ?  LoadingFooter.State.TheEnd :
+                LoadingFooter.State.Normal);
     }
 
     @Override
     public void onLoadMoreFailure() {
-
+        showSnakeBar(mListRecyclerView, "加载更多失败");
+        RecyclerViewStateUtils.setFooterViewState(this, mListRecyclerView, Constants.REQUEST_COUNT, LoadingFooter.State.NetWorkError,
+                v -> {
+                    RecyclerViewStateUtils.setFooterViewState(mListRecyclerView, LoadingFooter.State.Loading);
+                    presenter.loadMore();
+                });
     }
 
     @Override
     public void onLoadMoreSuccess(List<StockEntity> data, boolean isComplete) {
-
-    }
-
-    @Override
-    public void onRefreshFailure() {
-
-    }
-
-    @Override
-    public void onRefreshSuccess(List<StockEntity> data, boolean isComplete) {
-
+        adapter.addAll(data);
+        RecyclerViewStateUtils.setFooterViewState(mListRecyclerView, isComplete ?  LoadingFooter.State.TheEnd :
+                LoadingFooter.State.Normal);
     }
 }

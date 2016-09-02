@@ -7,6 +7,7 @@ import java.util.HashMap;
  */
 public class Constants {
 
+    public static final String DEVICE_TOKEN = "2";
 
     public static final String BASE_URL = "http://s-280082.gotocdn.com/";
     // 测试网

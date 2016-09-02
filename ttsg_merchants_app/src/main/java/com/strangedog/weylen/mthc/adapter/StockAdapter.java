@@ -12,8 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.entity.StockEntity;
+import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 
 import butterknife.Bind;
@@ -26,7 +28,6 @@ public class StockAdapter extends ListBaseAdapter<StockEntity>{
 
     private LayoutInflater mLayoutInflater;
     private Context context;
-
 
     public StockAdapter(Context context) {
         this.context = context;
@@ -43,29 +44,18 @@ public class StockAdapter extends ListBaseAdapter<StockEntity>{
     public void onBindViewHolder(RecyclerView.ViewHolder aHolder, int position) {
         A holder = (A) aHolder;
         StockEntity entity = getItem(position);
+        holder.contentView.setText(entity.getName());
+        holder.priceView.setText(entity.getPrice());
+        holder.stockView.setText(entity.getAmount());
 
-        holder.stockEdit.setTag(entity);
-        holder.stockEdit.setText(String.valueOf(entity.getNumber()));
-        holder.stockEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int number = 0;
-                if (!TextUtils.isEmpty(s)){
-                    try {
-                        number = Integer.parseInt(s.toString());
-                    }catch (NumberFormatException e){}
-                }else {
-                    holder.stockEdit.setText(String.valueOf(0));
-                }
-                ((StockEntity)holder.stockEdit.getTag()).setNumber(number);
-            }
-        });
+        Glide.with(context)
+                .load(Constants.BASE_URL + entity.getImg().split(",")[0])
+                .fitCenter()
+                .placeholder(R.mipmap.img_default)
+                .crossFade()
+                .dontAnimate()
+                .error(R.mipmap.img_default)
+                .into(holder.imageView);
     }
 
     @Override
@@ -77,7 +67,7 @@ public class StockAdapter extends ListBaseAdapter<StockEntity>{
         @Bind(R.id.imageView) ImageView imageView;
         @Bind(R.id.orderContentView) TextView contentView;
         @Bind(R.id.orderPriceView) TextView priceView;
-        @Bind(R.id.text_stock) EditText stockEdit;
+        @Bind(R.id.text_stock) TextView stockView;
         public A(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

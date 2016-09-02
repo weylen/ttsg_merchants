@@ -13,6 +13,4 @@ public interface StockView {
     void onListSuccess(List<StockEntity> data, boolean isComplete);
     void onLoadMoreFailure();
     void onLoadMoreSuccess(List<StockEntity> data, boolean isComplete);
-    void onRefreshFailure();
-    void onRefreshSuccess(List<StockEntity> data, boolean isComplete);
 }

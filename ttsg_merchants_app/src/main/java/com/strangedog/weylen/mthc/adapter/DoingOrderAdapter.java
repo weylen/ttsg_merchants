@@ -69,10 +69,10 @@ public class DoingOrderAdapter extends ListBaseAdapter<OrderDetailsEntity>{
         String note = productsEntity.getNote();
         holder.mOrderNoteView.setText("备注：" + (TextUtils.isEmpty(note) ? "无":note));
 
-        holder.actionLayoutView.setVisibility(View.VISIBLE);
         // 3：已支付未发货 6：支付确认中 7：商家已结单 8：商家已送达
         if ("1".equalsIgnoreCase(status) || "8".equalsIgnoreCase(status)){ //
-            holder.actionLayoutView.setVisibility(View.GONE);
+            holder.actionConfirmGoodsView.setVisibility(View.GONE);
+            holder.actionDeliveryView.setVisibility(View.GONE);
         }else if ("3".equalsIgnoreCase(status)){
             holder.actionConfirmGoodsView.setVisibility(View.VISIBLE);
             holder.actionDeliveryView.setVisibility(View.GONE);
@@ -110,7 +110,6 @@ public class DoingOrderAdapter extends ListBaseAdapter<OrderDetailsEntity>{
         @Bind(R.id.orderNoteView) TextView mOrderNoteView;
         @Bind(R.id.action_confirm_goods) View actionConfirmGoodsView; // 确认接单
         @Bind(R.id.action_confirm_delivery) View actionDeliveryView; // 确认送达
-        @Bind(R.id.action_layout) View actionLayoutView;
 
         public A(View itemView) {
             super(itemView);

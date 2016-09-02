@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1.0"
-        android:textColor="@color/grayText"
+        android:textColor="@color/secondary_text"
         android:textSize="@dimen/size_14"
         android:text="火腿肠  x1"
         />
@@ -18,7 +18,7 @@
         android:id="@+id/text_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grayText"
+        android:textColor="@color/secondary_text"
         android:textSize="@dimen/size_14"
         android:text="￥3.0"
         />

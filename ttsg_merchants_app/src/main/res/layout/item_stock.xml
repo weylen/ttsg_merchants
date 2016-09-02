@@ -46,20 +46,10 @@
 
     </LinearLayout>
 
-
     <TextView
-        style="@style/TitleTextView"
-        android:text="库存"
-        android:textColor="@color/grayText"
-        android:textSize="@dimen/size_12"
-        />
-
-    <EditText
         android:id="@+id/text_stock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="50dp"
-        android:background="@drawable/abc_border_btn"
         android:layout_marginLeft="5dp"
         android:textSize="@dimen/size_16"
         android:textStyle="bold"

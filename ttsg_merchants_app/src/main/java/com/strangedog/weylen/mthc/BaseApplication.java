@@ -25,11 +25,7 @@ public class BaseApplication extends Application{
     // user your appid the key.
     private static final String APP_KEY = "5621750569999";
 
-    // 此TAG在adb logcat中检索自己所需要的信息， 只需在命令行终端输入 adb logcat | grep
-    // com.xiaomi.mipushdemo
     public static final String TAG = "zhou";
-
-    private static DemoHandler sHandler = null;
 
     @Override
     public void onCreate() {
@@ -61,9 +57,6 @@ public class BaseApplication extends Application{
             }
         };
         Logger.setLogger(this, newLogger);
-        if (sHandler == null) {
-            sHandler = new DemoHandler(getApplicationContext());
-        }
     }
 
     private boolean shouldInit() {
@@ -79,22 +72,4 @@ public class BaseApplication extends Application{
         return false;
     }
 
-    public static DemoHandler getHandler() {
-        return sHandler;
-    }
-
-    public static class DemoHandler extends Handler {
-
-        private Context context;
-
-        public DemoHandler(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            String s = (String) msg.obj;
-
-        }
-    }
 }

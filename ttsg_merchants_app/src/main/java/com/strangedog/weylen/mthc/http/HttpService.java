@@ -12,11 +12,21 @@ import rx.Observable;
  */
 public interface HttpService {
 
+    /**
+     * 登录
+     * @param name
+     * @param pwd
+     * @param sort 设备标识符，1苹果，2是安卓，3是其他
+     * @param deviceToken
+     * @return
+     */
     @FormUrlEncoded
     @POST("scca-slogin")
     Observable<JsonObject> login(
             @Field("uname") String name, // 用户名
-            @Field("upass") String pwd // 密码
+            @Field("upass") String pwd, // 密码
+            @Field("sort") String sort,
+            @Field("areaId") String deviceToken
     );
 
     /**
@@ -160,4 +170,11 @@ public interface HttpService {
             @Field("pageNum") int pageNum
     );
 
+    @FormUrlEncoded
+    @POST("psda-lowStock")
+    Observable<JsonObject> stockQuery(
+            @Field("name") String name,
+            @Field("limit") String limit,
+            @Field("pageNum") int pageNum
+    );
 }

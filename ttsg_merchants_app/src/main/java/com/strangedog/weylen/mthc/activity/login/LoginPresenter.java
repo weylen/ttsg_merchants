@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.login;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -7,10 +8,12 @@ import com.google.gson.JsonObject;
 import com.strangedog.weylen.mthc.BasePresenter;
 import com.google.common.base.Preconditions;
 import com.strangedog.weylen.mthc.entity.AccountEntity;
+import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.DeviceUtil;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,10 +40,12 @@ public class LoginPresenter implements BasePresenter{
      * @param user
      * @param pwd
      */
-    public void login(String user, String pwd){
+    public void login(Context context, String user, String pwd){
         loginView.showWaitDialog();
+        String uuid = DeviceUtil.INSTANCE.getDeviceUuid(context);
+        DebugUtil.d("LoginPresenter 设备号：" + uuid);
         RetrofitFactory.getRetrofit().create(HttpService.class)
-                .login(user, pwd)
+                .login(user, pwd, Constants.DEVICE_TOKEN, DeviceUtil.INSTANCE.getDeviceUuid(context))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {

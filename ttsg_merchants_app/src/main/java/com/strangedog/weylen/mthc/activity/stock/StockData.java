@@ -9,6 +9,9 @@ public enum StockData {
     int pageNum = 1;
     boolean isComplete;
 
+    String name;
+    String limit;
+
     void reset(){
         pageNum = 1;
         isComplete = false;

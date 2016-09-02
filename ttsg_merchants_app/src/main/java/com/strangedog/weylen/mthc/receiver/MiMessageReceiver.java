@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.strangedog.weylen.mthc.BaseApplication;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -111,6 +112,16 @@ public class MiMessageReceiver extends PushMessageReceiver {
     @Override  // 方法用来接收客户端向服务器发送命令后的响应结果。
     public void onCommandResult(Context context, MiPushCommandMessage message) {
         DebugUtil.d("onCommandResult is called. " + message.toString());
+        String command = message.getCommand();
+        List<String> arguments = message.getCommandArguments();
+        String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
+        if (MiPushClient.COMMAND_SET_ALIAS.equals(command)) {
+            if (message.getResultCode() == ErrorCode.SUCCESS) {
+                mAlias = cmdArg1;
+            }
+        }
+        DebugUtil.d("MiMessageReceiver 设置别名：" + mAlias);
+
 //        String command = message.getCommand();
 //        List<String> arguments = message.getCommandArguments();
 //        String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -186,24 +197,24 @@ public class MiMessageReceiver extends PushMessageReceiver {
     @Override // 方法用来接收客户端向服务器发送注册命令后的响应结果
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
         DebugUtil.d("onReceiveRegisterResult is called." + message.toString());
-//        String command = message.getCommand();
-//        List<String> arguments = message.getCommandArguments();
-//        String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
-//        String log;
-//        if (MiPushClient.COMMAND_REGISTER.equals(command)) {
-//            if (message.getResultCode() == ErrorCode.SUCCESS) {
-//                mRegId = cmdArg1;
-//                log = context.getString(R.string.register_success);
-//            } else {
-//                log = context.getString(R.string.register_fail);
-//            }
-//        } else {
-//            log = message.getReason();
-//        }
-//
-//        Message msg = Message.obtain();
-//        msg.obj = log;
-//        DemoApplication.getHandler().sendMessage(msg);
+        String command = message.getCommand(); // 获取注册的种类
+
+        List<String> arguments = message.getCommandArguments();
+        String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
+        String log;
+        // 注册服务
+        if (MiPushClient.COMMAND_REGISTER.equals(command)) {
+            if (message.getResultCode() == ErrorCode.SUCCESS) {
+                mRegId = cmdArg1;
+                MiPushClient.setAlias(context, DeviceUtil.INSTANCE.getDeviceUuid(context).toString(), null);
+                log = mRegId;
+            }else {
+                log = "不是注册服务";
+            }
+        } else {
+            log = message.getReason();
+        }
+        DebugUtil.d("MiMessageReceiver 注册服务：" + log);
     }
 
     @SuppressLint("SimpleDateFormat")

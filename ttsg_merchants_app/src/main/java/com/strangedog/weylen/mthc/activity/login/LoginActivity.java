@@ -88,7 +88,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             mLayoutPassword.requestFocus();
             return;
         }
-        loginPresenter.login(account, password);
+        loginPresenter.login(this, account, password);
     }
 
     @Override
