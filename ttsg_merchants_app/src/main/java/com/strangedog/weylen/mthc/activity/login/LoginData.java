@@ -2,6 +2,7 @@ package com.strangedog.weylen.mthc.activity.login;
 
 import android.content.Context;
 
+import com.strangedog.weylen.mthc.BaseApplication;
 import com.strangedog.weylen.mthc.entity.AccountEntity;
 import com.strangedog.weylen.mthc.prefs.LoginPrefs;
 
@@ -15,7 +16,7 @@ public enum LoginData {
     private AccountEntity accountEntity;
 
     public AccountEntity getAccountEntity() {
-        return accountEntity;
+        return getAccountEntity(BaseApplication.INSTANCE);
     }
 
     public AccountEntity getAccountEntity(Context context){

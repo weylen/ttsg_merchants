@@ -9,7 +9,7 @@ import com.strangedog.weylen.mthc.activity.login.LoginData;
  * Created by weylen on 2016-07-28.
  */
 public class SessionUtil {
-    private static String sessionId = null;
+    public static String sessionId = null;
 
     public static String getSessionId(){
         if (TextUtils.isEmpty(sessionId)){

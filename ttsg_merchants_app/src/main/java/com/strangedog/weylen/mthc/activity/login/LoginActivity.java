@@ -13,6 +13,9 @@ import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.activity.order.IndexActivity;
 import com.strangedog.weylen.mthc.prefs.LoginPrefs;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.DeviceUtil;
+import com.strangedog.weylen.mthc.util.SessionUtil;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,6 +38,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (LoginData.INSTANCE.isLogin(this)){
+            SessionUtil.sessionId = "JSESSIONID=" + LoginData.INSTANCE.getAccountEntity().getSid();
             peekInHome();
             return;
         }
@@ -109,8 +113,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void loginSuccess() {
-        // 保存数据
-        LoginPrefs.saveAccount(this, LoginData.INSTANCE.getAccountEntity());
         peekInHome();
     }
 

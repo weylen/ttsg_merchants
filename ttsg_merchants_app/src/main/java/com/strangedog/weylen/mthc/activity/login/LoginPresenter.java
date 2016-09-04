@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.strangedog.weylen.mthc.BaseApplication;
 import com.strangedog.weylen.mthc.BasePresenter;
 import com.google.common.base.Preconditions;
 import com.strangedog.weylen.mthc.entity.AccountEntity;
@@ -12,8 +13,11 @@ import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
+import com.strangedog.weylen.mthc.prefs.LoginPrefs;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
+import com.strangedog.weylen.mthc.util.SessionUtil;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -84,8 +88,9 @@ public class LoginPresenter implements BasePresenter{
             AccountEntity entity = gson.fromJson(ResponseMgr.getData(source), AccountEntity.class);
             // 保存登录信息
             LoginData.INSTANCE.setAccountEntity(entity);
+            LoginPrefs.saveAccount(BaseApplication.INSTANCE, entity);
+            SessionUtil.sessionId = "JSESSIONID=" + entity.getSid();
             loginView.loginSuccess();
-
             DebugUtil.d("LoginPresenter parseLoginData 登录信息：" + entity);
         }
     }

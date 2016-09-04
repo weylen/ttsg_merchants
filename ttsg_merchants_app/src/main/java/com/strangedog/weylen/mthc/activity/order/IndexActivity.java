@@ -8,6 +8,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
+import com.strangedog.weylen.mthc.BaseApplication;
 import com.strangedog.weylen.mthc.ProductsActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginActivity;
@@ -31,9 +33,11 @@ import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
+import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
 import com.strangedog.weylen.mthc.view.ZViewPager;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -110,6 +114,13 @@ public class IndexActivity extends BaseActivity
             refreshImgView.startAnimation(animation);
             balance();
         });
+
+        // 注册别名
+        if (!TextUtils.isEmpty(MiPushClient.getRegId(this))){
+            MiPushClient.setAlias(this, DeviceUtil.INSTANCE.getDeviceUuid(this), null);
+        }else {
+            MiPushClient.registerPush(this, BaseApplication.APP_ID, BaseApplication.APP_KEY);
+        }
     }
 
     @Override
@@ -120,7 +131,6 @@ public class IndexActivity extends BaseActivity
             super.onBackPressed();
         }
     }
-
 
     private boolean isForward;
     Class<?> clazz = null;
@@ -219,6 +229,7 @@ public class IndexActivity extends BaseActivity
                     public void onNext(JsonObject jsonObject) {
                         dismissProgressDialog();
                         if (ResponseMgr.getStatus(jsonObject) == 1){
+                            clearAlias();
                             showToast("注销成功");
                             LoginData.INSTANCE.logout(IndexActivity.this);
                             Intent intent = new Intent(IndexActivity.this, LoginActivity.class);
@@ -258,5 +269,9 @@ public class IndexActivity extends BaseActivity
                         }
                     }
                 });
+    }
+
+    private void clearAlias(){
+        MiPushClient.unsetAlias(this, DeviceUtil.INSTANCE.getDeviceUuid(this), null);
     }
 }

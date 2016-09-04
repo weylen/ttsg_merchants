@@ -140,7 +140,7 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
         if ("3".equalsIgnoreCase(status)){
             showDialog("确认接单？", orderId, 7);
         }else if ("7".equalsIgnoreCase(status)) {
-            showDialog("确认送达？", orderId, 7);
+            showDialog("确认送达？", orderId, 8);
         }
     }
 
@@ -237,6 +237,7 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
     public void onRequestOrderDetailsSuccess(List<OrderDetailsEntity> data) {
         zRefreshingView.setRefreshing(false);
         this.detailsEntities = data;
+        isAutoRefresh = false;
         if (data == null){
             showEmptyView();
         }else {
@@ -249,6 +250,7 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
     @Override
     public void onRequestOrderDetailsFailure() {
         zRefreshingView.setRefreshing(false);
+        isAutoRefresh = false;
         showEmptyView();
     }
 

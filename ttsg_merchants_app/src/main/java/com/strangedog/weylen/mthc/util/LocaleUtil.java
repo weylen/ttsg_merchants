@@ -1,5 +1,8 @@
 package com.strangedog.weylen.mthc.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
@@ -55,5 +58,20 @@ public class LocaleUtil {
         }
         BigDecimal bigDecimal = new BigDecimal(money);
         return bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+    }
+
+    /**
+     * 判断网络是否可用
+     * @param context
+     * @return
+     */
+    public static boolean isNetworkConnected(Context context){
+        boolean isConnFlag = false;
+        ConnectivityManager conManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = conManager.getActiveNetworkInfo();
+        if(network != null){
+            isConnFlag = conManager.getActiveNetworkInfo().isAvailable();
+        }
+        return isConnFlag;
     }
 }

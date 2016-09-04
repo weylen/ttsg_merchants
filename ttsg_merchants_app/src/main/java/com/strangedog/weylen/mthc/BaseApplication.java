@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
@@ -13,6 +14,7 @@ import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,15 +23,22 @@ import java.util.List;
 public class BaseApplication extends Application{
 
     // user your appid the key.
-    private static final String APP_ID = "2882303761517505999";
+    public static final String APP_ID = "2882303761517505999";
     // user your appid the key.
-    private static final String APP_KEY = "5621750569999";
+    public static final String APP_KEY = "5621750569999";
 
     public static final String TAG = "zhou";
+
+    public static Context INSTANCE;
+
+    private static List<Activity> activityList = new ArrayList<>();
+
+    private static Activity mainActivity;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        INSTANCE = getApplicationContext();
 
         ThemeManager.init(this, 2, 0, null);
 
@@ -72,4 +81,30 @@ public class BaseApplication extends Application{
         return false;
     }
 
+    public static void setMainActivity(Activity mainActivity) {
+        BaseApplication.mainActivity = mainActivity;
+    }
+
+    public static Activity getMainActivity() {
+        return mainActivity;
+    }
+
+    public void addActivity(Activity activity){
+        activityList.add(activity);
+    }
+
+    public void removeActivity(Activity activity){
+        if (activity != null){
+            activityList.remove(activity);
+        }
+    }
+
+    public static void exit(){
+        for (Activity activity : activityList){
+            if (activity != null){
+                activity.finish();
+            }
+        }
+        activityList.clear();
+    }
 }
