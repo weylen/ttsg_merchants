@@ -112,7 +112,7 @@ public class StockActivity extends BaseActivity implements StockView{
         // 设置刷新模式 设置必须在设置适配器之后
         mListRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         mListRecyclerView.setArrowImageView(R.mipmap.abc_refresh_arrow);
-        mListRecyclerView.addItemDecoration(new SpaceItemDecoration(DimensUtil.dp2px(this, 5)));
+        mListRecyclerView.addItemDecoration(new SpaceItemDecoration(1));
         mListRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -159,6 +159,7 @@ public class StockActivity extends BaseActivity implements StockView{
 
     @Override
     public void onStartList() {
+        isAutoRefresh = true;
         mListRecyclerView.setRefreshing(true);
     }
 

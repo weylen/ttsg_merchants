@@ -57,6 +57,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
     @Override // 接收服务器向客户端发送的透传消息
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         DebugUtil.d("onReceivePassThroughMessage is called. " + message.toString());
+        doMessage(context, message);
     }
 
     @Override // 来接收服务器向客户端发送的通知消息， 这个回调方法会在用户手动点击通知后触发
@@ -67,29 +68,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
     @Override // 方法用来接收服务器向客户端发送的通知消息，这个回调方法是在通知消息到达客户端时触发。另外应用在前台时不弹出通知的通知消息到达客户端也会触发这个回调函数
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         DebugUtil.d("onNotificationMessageArrived is called. " + message.toString());
-        String content = message.getContent();
-        Gson gson = new Gson();
-        int status = -1;
-        try{
-            JsonObject jsonObject = gson.fromJson(content, JsonObject.class);
-            status = jsonObject.get("stauts").getAsInt();
-            DebugUtil.d("MiMessageReceiver status:" + status);
-            switch (status){
-                case 1: // 异地登录
-                    LoginData.INSTANCE.logout(context);
-                    showAnotherPlaceDialog(context);
-                    break;
-                case 2: // 新订单
-
-                    break;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            // 如果弹出对话框失败， 就直接跳转到登录页面
-            if (status == 1){
-                reLogin(context);
-            }
-        }
+//        doMessage(context, message);
     }
 
     @Override  // 方法用来接收客户端向服务器发送命令后的响应结果。
@@ -155,6 +134,32 @@ public class MiMessageReceiver extends PushMessageReceiver {
             dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         });
+    }
+
+    private void doMessage(Context context, MiPushMessage message){
+        String content = message.getContent();
+        Gson gson = new Gson();
+        int status = -1;
+        try{
+            JsonObject jsonObject = gson.fromJson(content, JsonObject.class);
+            status = jsonObject.get("stauts").getAsInt();
+            DebugUtil.d("MiMessageReceiver status:" + status);
+            switch (status){
+                case 1: // 异地登录
+                    LoginData.INSTANCE.logout(context);
+                    showAnotherPlaceDialog(context);
+                    break;
+                case 2: // 新订单
+
+                    break;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            // 如果弹出对话框失败， 就直接跳转到登录页面
+            if (status == 1){
+                reLogin(context);
+            }
+        }
     }
 
     /**

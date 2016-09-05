@@ -45,7 +45,7 @@ public class StockAdapter extends ListBaseAdapter<StockEntity>{
         A holder = (A) aHolder;
         StockEntity entity = getItem(position);
         holder.contentView.setText(entity.getName());
-        holder.priceView.setText(entity.getPrice());
+        holder.priceView.setText("￥ " + entity.getPrice());
         holder.stockView.setText(entity.getAmount());
 
         Glide.with(context)

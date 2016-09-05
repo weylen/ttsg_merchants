@@ -82,6 +82,7 @@ public class StockPresenter {
         int pageNum = jsonObject.get("pageNum").getAsInt();
         int maxPage = jsonObject.get("maxPage").getAsInt();
         StockData.INSTANCE.isComplete = pageNum == maxPage;
+        StockData.INSTANCE.pageNum = pageNum;
 
         JsonObject dataObject = jsonObject.get("data").getAsJsonObject();
         JsonObject imgObject = dataObject.get("img").getAsJsonObject();
