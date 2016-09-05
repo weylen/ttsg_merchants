@@ -1,11 +1,18 @@
 package com.strangedog.weylen.mthc.receiver;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -14,6 +21,8 @@ import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.BaseApplication;
 import com.strangedog.weylen.mthc.activity.login.LoginActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginData;
+import com.strangedog.weylen.mthc.activity.order.IndexActivity;
+import com.strangedog.weylen.mthc.activity.orderdetails.OrderDetailsActivity;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -23,6 +32,7 @@ import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * 1、PushMessageReceiver 是个抽象类，该类继承了 BroadcastReceiver。<br/>
@@ -150,7 +160,11 @@ public class MiMessageReceiver extends PushMessageReceiver {
                     showAnotherPlaceDialog(context);
                     break;
                 case 2: // 新订单
-
+                    showNewOrderNf(context);
+                    break;
+                case 3: // 用户确认收货
+                    String orderId = jsonObject.get("data").getAsString();
+                    showConfirmGoodsNf(context, orderId);
                     break;
             }
         }catch (Exception e){
@@ -182,7 +196,47 @@ public class MiMessageReceiver extends PushMessageReceiver {
         builder.setTicker("您有新订单");
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher_icon));
-
         builder.setWhen(System.currentTimeMillis());
+        builder.setAutoCancel(true);
+
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        builder.setContentIntent(pendingIntent);
+        builder.setContentTitle("天天闪购提示您");
+        builder.setContentText("您有新订单，点击立即查看");
+
+        Notification notification = builder.build();
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(100, notification);
     }
+
+    /**
+     * 显示客户收货的通知
+     * @param context
+     * @param orderId
+     */
+    private void showConfirmGoodsNf(Context context, String orderId){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.icon_message);
+        builder.setTicker("您的订单" + orderId + "已确认收货");
+        builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher_icon));
+        builder.setWhen(System.currentTimeMillis());
+        builder.setAutoCancel(true);
+
+        Intent intent = new Intent(context, OrderDetailsActivity.class);
+        intent.putExtra(OrderDetailsActivity.ORDER_KEY, orderId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        builder.setContentIntent(pendingIntent);
+        builder.setContentTitle("天天闪购提示您");
+        builder.setContentText("您的订单" + orderId + "已确认收货，点击查看详情");
+
+        Notification notification = builder.build();
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(new Random().nextInt(), notification);
+    }
+
 }
