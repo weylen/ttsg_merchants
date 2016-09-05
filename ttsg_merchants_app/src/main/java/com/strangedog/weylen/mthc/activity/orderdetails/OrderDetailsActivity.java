@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.orderdetails;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
+import com.strangedog.weylen.mthc.activity.login.LoginActivity;
+import com.strangedog.weylen.mthc.activity.login.LoginData;
 import com.strangedog.weylen.mthc.entity.OrderDetailsEntity;
 import com.strangedog.weylen.mthc.entity.OrderDetailsProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
@@ -63,6 +66,15 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!LoginData.INSTANCE.isLogin(this)){
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            LoginData.INSTANCE.logout(this);
+            startActivity(intent);
+            finish();
+        }
+
+
         setContentView(R.layout.activity_buyorder);
 
         ButterKnife.bind(this);
