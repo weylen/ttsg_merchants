@@ -171,7 +171,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
                 case 2: // 新订单
                     showNewOrderNf(context);
                     break;
-                case 3: // 用户确认收货
+                case 5: // 用户确认收货
                     String orderId = jsonObject.get("data").getAsString();
                     showConfirmGoodsNf(context, orderId);
                     break;
