@@ -64,6 +64,10 @@ import java.util.Random;
  */
 public class MiMessageReceiver extends PushMessageReceiver {
 
+    public static final int LOGIN_ID = 4001;
+    public static final int USER_CONFIRM_ID = 4002;
+    public static final int NEW_ORDER_ID = 4003;
+
     @Override // 接收服务器向客户端发送的透传消息
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         DebugUtil.d("onReceivePassThroughMessage is called. " + message.toString());
@@ -156,8 +160,13 @@ public class MiMessageReceiver extends PushMessageReceiver {
             DebugUtil.d("MiMessageReceiver status:" + status);
             switch (status){
                 case 1: // 异地登录
+                    // 判断当前程序是否在前端执行 如果在则显示对话框 如果不在则弹出通知
                     LoginData.INSTANCE.logout(context);
-                    showAnotherPlaceDialog(context);
+                    if (DeviceUtil.isRunning(context)){
+                        showAnotherPlaceDialog(context);
+                    }else {
+                        showAnotherNf(context);
+                    }
                     break;
                 case 2: // 新订单
                     showNewOrderNf(context);
@@ -191,25 +200,25 @@ public class MiMessageReceiver extends PushMessageReceiver {
      * 显示新订单的通知消息
      */
     private void showNewOrderNf(Context context){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.icon_message);
-        builder.setTicker("您有新订单");
-        builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher_icon));
-        builder.setWhen(System.currentTimeMillis());
-        builder.setAutoCancel(true);
+        if (!LoginData.INSTANCE.isLogin(context)){
+            DebugUtil.d("MiMessageReceiver showReceiveOrder 用户未登录 不进行通知展示");
+            return;
+        }
+        Intent intent = new Intent(context, IndexActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        String ticker = "您有新订单";
+        String message = "您有新订单，点击立即查看";
+        showNf(context, ticker, message, intent, NEW_ORDER_ID);
+    }
 
+    /**
+     * 显示异地登录的通知消息
+     */
+    private void showAnotherNf(Context context){
         Intent intent = new Intent(context, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        builder.setContentIntent(pendingIntent);
-        builder.setContentTitle("天天闪购提示您");
-        builder.setContentText("您有新订单，点击立即查看");
-
-        Notification notification = builder.build();
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(100, notification);
+        String ticker = "您的账号在另外一台设备上登录，如果不是本人操作，请您尽快修改密码";
+        showNf(context, ticker, ticker, intent, LOGIN_ID);
     }
 
     /**
@@ -218,25 +227,34 @@ public class MiMessageReceiver extends PushMessageReceiver {
      * @param orderId
      */
     private void showConfirmGoodsNf(Context context, String orderId){
+        if (!LoginData.INSTANCE.isLogin(context)){
+            DebugUtil.d("MiMessageReceiver showConfirmGoodsNf 用户未登录 不进行通知展示");
+            return;
+        }
+        Intent intent = new Intent(context, OrderDetailsActivity.class);
+        intent.putExtra(OrderDetailsActivity.ORDER_KEY, orderId);
+        String ticker = "您的订单" + orderId + "已确认收货";
+        String message = "您的订单" + orderId + "已确认收货，点击查看详情";
+        showNf(context, ticker, message, intent, USER_CONFIRM_ID);
+    }
+
+    private void showNf(Context context, String ticker, String message, Intent intent, int notifyId){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setSmallIcon(R.mipmap.icon_message);
-        builder.setTicker("您的订单" + orderId + "已确认收货");
+        builder.setTicker(ticker);
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.launcher_icon));
         builder.setWhen(System.currentTimeMillis());
         builder.setAutoCancel(true);
 
-        Intent intent = new Intent(context, OrderDetailsActivity.class);
-        intent.putExtra(OrderDetailsActivity.ORDER_KEY, orderId);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, notifyId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(pendingIntent);
         builder.setContentTitle("天天闪购提示您");
-        builder.setContentText("您的订单" + orderId + "已确认收货，点击查看详情");
+        builder.setContentText(message);
 
         Notification notification = builder.build();
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(new Random().nextInt(), notification);
+        manager.notify(notifyId, notification);
     }
-
 }

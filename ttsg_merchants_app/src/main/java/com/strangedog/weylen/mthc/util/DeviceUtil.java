@@ -1,11 +1,13 @@
 package com.strangedog.weylen.mthc.util;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -54,5 +56,19 @@ public enum DeviceUtil {
             create(context);
         }
         return uuid.toString();
+    }
+
+    public static boolean isRunning(Context context){
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
+        boolean isAppRunning = false;
+        String MY_PKG_NAME = context.getPackageName();
+        for (ActivityManager.RunningTaskInfo info : list) {
+            if (info.topActivity.getPackageName().equals(MY_PKG_NAME) || info.baseActivity.getPackageName().equals(MY_PKG_NAME)) {
+                isAppRunning = true;
+                break;
+            }
+        }
+        return isAppRunning;
     }
 }
