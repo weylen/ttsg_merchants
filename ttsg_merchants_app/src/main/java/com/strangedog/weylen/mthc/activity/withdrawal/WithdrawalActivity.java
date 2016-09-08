@@ -84,6 +84,7 @@ public class WithdrawalActivity extends BaseActivity {
     @OnClick(R.id.text_all_balance)
     void onAllBalanceClick(){
         balanceEdit.setText(LocaleUtil.formatMoney(balance));
+        balanceEdit.setSelection(balanceEdit.length());
     }
 
     /**
