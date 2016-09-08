@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.productsdetails;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -149,6 +150,24 @@ public class ProductsDetailsActivity extends BaseActivity {
             mItemPromotionStart.setHint("促销开始时间");
             mItemPromotionEnd.setHint("促销开始时间");
         }
+    }
+
+    /**
+     * 清除促销信息
+     */
+    @OnClick(R.id.fab)
+    public void onClearPromotionClick(){
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("确定要清除促销信息吗？")
+                .setNegativeButton("取消", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton("确定", (dialog, which) -> {
+                    dialog.dismiss();
+                    alertGoodsInfo(true);
+                })
+                .show();
     }
 
     @OnClick(R.id.itemPromotionStart)
@@ -308,7 +327,7 @@ public class ProductsDetailsActivity extends BaseActivity {
             // showAlertDialog
             showAlertDialog();
         }else {
-            alertGoodsInfo();
+            alertGoodsInfo(true);
         }
     }
 
@@ -322,7 +341,7 @@ public class ProductsDetailsActivity extends BaseActivity {
                 })
                 .setPositiveButton("确定", (dialog, which) -> {
                     dialog.dismiss();
-                    alertGoodsInfo();
+                    alertGoodsInfo(false);
                 })
                 .show();
 
@@ -331,9 +350,9 @@ public class ProductsDetailsActivity extends BaseActivity {
     /**
      * 修改商品信息
      */
-    private void alertGoodsInfo(){
+    private void alertGoodsInfo(boolean isClearPromotion){
         showProgressDialog("保存中...");
-        String param = map();
+        String param = map(isClearPromotion);
         DebugUtil.d("ProductsDetailsActivity 保存参数：" + param);
         RetrofitFactory.getRetrofit().create(HttpService.class)
                 .alertGoodsInfo(param)
@@ -358,6 +377,7 @@ public class ProductsDetailsActivity extends BaseActivity {
                             isEditable = !isEditable;
                             enableOrDisableView();
                             showSnakeView("保存成功");
+                            doSuccess(isClearPromotion);
                         }else {
                             doError();
                         }
@@ -365,13 +385,13 @@ public class ProductsDetailsActivity extends BaseActivity {
                 });
     }
 
-    private String map(){
+    private String map(boolean isClearPromotion){
         String salePrice = mItemPrice.getText().toString();
         String promotionPrice = mItemPromotionPrice.getText().toString();
         String promotionStart = mItemPromotionStart.getText().toString();
         String promotionEnd = mItemPromotionEnd.getText().toString();
         String info = mItemPromotion.getText().toString();
-        if (TextUtils.isEmpty(promotionPrice)){
+        if (TextUtils.isEmpty(promotionPrice) || isClearPromotion){
             promotionStart = Constants.EMPTY_STR;
             promotionEnd = Constants.EMPTY_STR;
             info = Constants.EMPTY_STR;
@@ -382,12 +402,24 @@ public class ProductsDetailsActivity extends BaseActivity {
         jsonObject.addProperty("id", productsEntity.getId());
         jsonObject.addProperty("salePrice", salePrice);
         jsonObject.addProperty("promote", promotionPrice);
-        jsonObject.addProperty("begin", promotionStart);
-        jsonObject.addProperty("end", promotionEnd);
+        if (!isClearPromotion){
+            jsonObject.addProperty("begin", promotionStart);
+            jsonObject.addProperty("end", promotionEnd);
+        }
         jsonObject.addProperty("info", info);
         jsonObject.addProperty("added", productsEntity.getStauts());
         array.add(jsonObject);
         return array.toString();
+    }
+
+    private void doSuccess(boolean isClearPromotion){
+        if (isClearPromotion){
+            mItemPromotion.setText("");
+            mItemPromotionPrice.setText("");
+            mItemPromotionStart.setText("");
+            mItemPromotionEnd.setText("");
+            mItemPromotionPrice.setTextColor(grayText);
+        }
     }
 
     private void doError(){

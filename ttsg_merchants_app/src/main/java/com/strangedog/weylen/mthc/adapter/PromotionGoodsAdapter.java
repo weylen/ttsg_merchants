@@ -15,11 +15,10 @@ import com.bumptech.glide.Glide;
 import com.rey.material.widget.TextView;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
+import com.strangedog.weylen.mthc.entity.PromotionEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.iinter.OnCheckedChangeListener;
-import com.strangedog.weylen.mthc.util.AnimatorUtil;
-import com.strangedog.weylen.mthc.util.DimensUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
 
 import java.util.ArrayList;
@@ -30,9 +29,9 @@ import butterknife.ButterKnife;
 
 /**
  * Created by Administrator on 2016-07-02.
- * 商品--下架商品
+ * 促销商品
  */
-public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
+public class PromotionGoodsAdapter extends ListBaseAdapter<ProductsEntity> {
 
     private ItemViewClickListenerWrapper itemViewClickListenerWrapper;
     private OnCheckedChangeListener onCheckedChangeListener;
@@ -42,13 +41,12 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
     private boolean isVisible;
     private boolean isSelectAll;
     private int checkedCount;
-    private boolean isScroll;
     private Context context;
 
     private SparseBooleanArray checkedStatus = new SparseBooleanArray();
     private List<ProductsEntity> checkedData = new ArrayList<>();
 
-    public ProductShelvesAdapter(Context context){
+    public PromotionGoodsAdapter(Context context){
         layoutInflater = LayoutInflater.from(context);
         this.context = context;
     }
@@ -60,10 +58,6 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
 
     public void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
-    }
-
-    public void setScroll(boolean scroll) {
-        isScroll = scroll;
     }
 
     public void setCheckAll(boolean isSelectAll){
@@ -116,9 +110,9 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
     }
 
     @Override
-    public ProductShelvesAdapter.A onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_products_shelves, parent, false);
-        ProductShelvesAdapter.A holder = new A(view);
+    public PromotionGoodsAdapter.A onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = layoutInflater.inflate(R.layout.item_promotion_goods, parent, false);
+        PromotionGoodsAdapter.A holder = new A(view);
         return holder;
     }
 
@@ -145,10 +139,10 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
 
         if (isVisible){
             holder.checkBox.setVisibility(View.VISIBLE);
-            holder.actionResalesView.setVisibility(View.GONE);
+            holder.clearPromotionView.setVisibility(View.GONE);
         }else {
             holder.checkBox.setVisibility(View.GONE);
-            holder.actionResalesView.setVisibility(View.VISIBLE);
+            holder.clearPromotionView.setVisibility(View.VISIBLE);
         }
         // 设置选中效果
         holder.checkBox.setChecked(checkedStatus.get(position, isSelectAll));
@@ -171,10 +165,10 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
             onCheckedChange();
         });
 
-        holder.actionResalesView.setOnClickListener(v->{
+        holder.clearPromotionView.setOnClickListener(v->{
             if (itemViewClickListenerWrapper != null){
                 itemViewClickListenerWrapper.onViewClick1(v, position);
-             }
+            }
         });
 
 
@@ -191,7 +185,7 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
 
 
     public static class A extends RecyclerView.ViewHolder {
-        @Bind(R.id.action_resales) TextView actionResalesView;
+        @Bind(R.id.action_clearPromotion) TextView clearPromotionView;
 
         @Bind(R.id.itemTitle) android.widget.TextView titleView;
         @Bind(R.id.itemUnit) android.widget.TextView unitView;
@@ -199,8 +193,10 @@ public class ProductShelvesAdapter extends ListBaseAdapter<ProductsEntity> {
         @Bind(R.id.itemPromotion) android.widget.TextView promotionView;
         @Bind(R.id.itemPromotionPrice) android.widget.TextView promotionPriceView;
         @Bind(R.id.text_stock) android.widget.TextView stockView;
-        @Bind(R.id.itemImage) ImageView imageView;
-        @Bind(R.id.itemChecked) CheckBox checkBox;
+        @Bind(R.id.itemImage)
+        ImageView imageView;
+        @Bind(R.id.itemChecked)
+        CheckBox checkBox;
 
         public A(View itemView) {
             super(itemView);

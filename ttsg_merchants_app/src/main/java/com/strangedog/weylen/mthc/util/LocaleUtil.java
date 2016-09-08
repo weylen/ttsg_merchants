@@ -21,7 +21,17 @@ public class LocaleUtil {
      * @return true 有促销
      */
     public static boolean hasPromotion(String promotionPrice){
-        return (!TextUtils.isEmpty(promotionPrice)) && (!"-1".equalsIgnoreCase(promotionPrice));
+        if (!TextUtils.isEmpty(promotionPrice)){
+            try{
+                double d = Double.valueOf(promotionPrice);
+                if (d > 0){
+                    return true;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
 

@@ -2,6 +2,7 @@ package com.strangedog.weylen.mthc.activity.order;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +18,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cd.weylen.appupdatelibrary.AppUpdate;
 import com.google.gson.JsonObject;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
@@ -25,6 +27,7 @@ import com.strangedog.weylen.mthc.ProductsActivity;
 import com.strangedog.weylen.mthc.activity.addgoods.AddProductsActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginActivity;
 import com.strangedog.weylen.mthc.activity.login.LoginData;
+import com.strangedog.weylen.mthc.activity.promotion_goods.PromotionGoodsActivity;
 import com.strangedog.weylen.mthc.activity.sales.SalesActivity;
 import com.strangedog.weylen.mthc.activity.stock.StockActivity;
 import com.strangedog.weylen.mthc.activity.withdrawal.WithdrawalActivity;
@@ -32,6 +35,7 @@ import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
+import com.strangedog.weylen.mthc.prefs.NewVersionData;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
@@ -165,6 +169,10 @@ public class IndexActivity extends BaseActivity
                 isForward = true;
                 clazz = StockActivity.class;
                 break;
+            case R.id.nav_promotion:
+                isForward = true;
+                clazz = PromotionGoodsActivity.class;
+                break;
         }
 
         if (clazz != null && isForward){
@@ -273,5 +281,48 @@ public class IndexActivity extends BaseActivity
 
     private void clearAlias(){
         MiPushClient.unsetAlias(this, DeviceUtil.INSTANCE.getDeviceUuid(this), null);
+    }
+
+    private void doNewVersion(){
+        NewVersionData data = NewVersionData.INSTANCE;
+        if (data.isNewVersion){
+            AppUpdate update = new AppUpdate.Builder(this).message(data.desc)
+                    .isMust(data.isMust)
+                    .downloadUrl(data.downloadUrl)
+                    .callback(new AppUpdate.OnUpdateCallbackListener() {
+                        @Override
+                        public void onCancel(boolean b) {
+                            if (b){
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void disableMemory(boolean b) {
+                            if (b){
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void downloadFailure(boolean isMust) {
+
+                        }
+                    }).create();
+            String savePath = DeviceUtil.getExternalCacheDir(this);
+            update.setSaveFile(savePath);
+            update.show();
+        }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doNewVersion();
+            }
+        }, 300);
     }
 }

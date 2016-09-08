@@ -131,6 +131,14 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             />
 
+        <activity android:name="com.strangedog.weylen.mthc.activity.promotion_goods.PromotionGoodsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/PromotionProducts"
+            android:screenOrientation="portrait"
+            android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            />
+
         <service
             android:name="com.xiaomi.push.service.XMJobService"
             android:enabled="true"

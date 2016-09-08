@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/item_padding_horizontal"
+        android:paddingTop="@dimen/item_padding_vertical"
+        android:paddingBottom="@dimen/item_padding_vertical"
+        android:layout_weight="1.0"
+        >
+
+        <CheckBox
+            android:id="@+id/itemChecked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/abc_box_selector"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/item_padding_horizontal"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/itemImage"
+            style="@style/Generic_ImageView"
+            android:src="@mipmap/img_default"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="@dimen/item_padding_horizontal"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1.0"
+            >
+            <TextView
+                android:id="@+id/itemTitle"
+                style="@style/ContentTextView"
+                />
+
+            <TextView
+                android:id="@+id/itemUnit"
+                style="@style/SmallTextView"
+                android:layout_marginTop="1dp"
+                />
+
+            <TextView
+                android:id="@+id/text_stock"
+                style="@style/SmallTextView"
+                android:text="库存："
+                android:layout_marginTop="1dp"
+                />
+
+            <TextView
+                android:id="@+id/itemPromotion"
+                style="@style/SmallTextView"
+                android:textColor="@color/redText"
+                android:layout_marginTop="1dp"
+                android:visibility="gone"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/itemPrice"
+                    style="@style/ContentTextView"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginTop="2dp"
+                    android:textSize="@dimen/size_16"
+                    />
+                <TextView
+                    android:id="@+id/itemPromotionPrice"
+                    style="@style/SmallTextView"
+                    android:textColor="@color/grayText"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="@dimen/size_14"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.1dp"
+            android:layout_height="match_parent"
+            android:background="@color/divider"
+            />
+
+    </LinearLayout>
+
+    <com.rey.material.widget.TextView
+        android:id="@+id/action_clearPromotion"
+        android:layout_width="40dp"
+        android:text="清除"
+        android:background="@drawable/abc_generic_pressed"
+        android:textColor="@color/text_color_selector"
+        android:layout_height="match_parent"
+        android:paddingRight="@dimen/item_padding_horizontal"
+        android:paddingLeft="@dimen/item_padding_horizontal"
+        android:gravity="center"
+        android:textSize="@dimen/size_10"
+        />
+
+</LinearLayout>

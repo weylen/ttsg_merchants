@@ -3,6 +3,7 @@ package com.strangedog.weylen.mthc.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,7 +129,7 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
         String promotePrice = entity.getPromote(); // 促销价
         if (LocaleUtil.hasPromotion(promotePrice)){
             holder.priceView.setText("￥"+promotePrice);
-            String info = entity.getBegin() + "~" + entity.getEnd() + " " + entity.getInfo();
+            String info = entity.getBegin() + "~" + entity.getEnd() + " " + (TextUtils.isEmpty(entity.getInfo())? "" : entity.getInfo());
             holder.promotionView.setText(info);
             holder.promotionPriceView.setText("￥"+entity.getSalePrice());
             holder.promotionPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG); //中划线

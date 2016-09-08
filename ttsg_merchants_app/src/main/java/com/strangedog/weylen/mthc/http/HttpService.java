@@ -200,4 +200,32 @@ public interface HttpService {
     Observable<JsonObject> withdrawRecord(
             @Field("pageNum") int pageNum
     );
+
+    /**
+     * 获取促销商品
+     * @param status 上架是1，下架是2
+     * @param name 商品名称
+     * @param id 小类类别id
+     * @param pageNum 页码 默认是1
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cpma-salePromote")
+    Observable<JsonObject> getPromotionProducts(
+            @Field("cbList") String status,
+            @Field("key") String name,
+            @Field("kind") String id,
+            @Field("pageNum") int pageNum
+     );
+
+    /**
+     * 检查新版本
+     * @param type 1是安卓商家版，2是安卓用户版
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("scca-getLatestVersion")
+    Observable<JsonObject> newVersion(
+            @Field("sort") int type
+    );
 }

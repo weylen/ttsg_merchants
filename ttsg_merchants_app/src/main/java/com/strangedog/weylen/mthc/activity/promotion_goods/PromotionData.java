@@ -9,8 +9,8 @@ public enum PromotionData {
     int pageNum = 1;
     boolean isComplete;
 
-    String name;
-    String limit;
+    String id;
+    String status;
 
     void reset(){
         pageNum = 1;

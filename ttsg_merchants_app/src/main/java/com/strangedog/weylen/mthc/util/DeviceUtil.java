@@ -3,9 +3,11 @@ package com.strangedog.weylen.mthc.util;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
@@ -70,5 +72,24 @@ public enum DeviceUtil {
             }
         }
         return isAppRunning;
+    }
+
+    /**
+     * 获取拓展存储Cache的绝对路径
+     *
+     * @param context
+     */
+    public static String getExternalCacheDir(Context context) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+            return null;
+        StringBuilder sb = new StringBuilder();
+        File file = context.getExternalCacheDir();
+        if (file != null) {
+            sb.append(file.getAbsolutePath()).append(File.separator);
+        } else {
+            sb.append(Environment.getExternalStorageDirectory().getPath()).append("/Android/data/").append(context.getPackageName())
+                    .append("/cache/").append(File.separator).toString();
+        }
+        return sb.toString();
     }
 }

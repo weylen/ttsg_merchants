@@ -1,6 +1,6 @@
 package com.strangedog.weylen.mthc.activity.promotion_goods;
 
-import com.strangedog.weylen.mthc.entity.PromotionEntity;
+import com.strangedog.weylen.mthc.entity.ProductsEntity;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public interface PromotionView {
     void onStartList();
     void onListFailure();
-    void onListSuccess(List<PromotionEntity> data, boolean isComplete);
+    void onListSuccess(List<ProductsEntity> data, boolean isComplete);
     void onLoadMoreFailure();
-    void onLoadMoreSuccess(List<PromotionEntity> data, boolean isComplete);
+    void onLoadMoreSuccess(List<ProductsEntity> data, boolean isComplete);
 }
