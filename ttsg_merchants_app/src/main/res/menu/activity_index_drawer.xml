@@ -28,6 +28,11 @@
             android:id="@+id/nav_setStock"
             android:icon="@mipmap/ic_menu_stock"
             android:title="@string/SetStock" />
+
+        <item
+            android:id="@+id/nav_promotion"
+            android:icon="@mipmap/ic_menu_stock"
+            android:title="@string/PromotionProducts" />
     </group>
 
     <group android:id="@+id/groupAction">

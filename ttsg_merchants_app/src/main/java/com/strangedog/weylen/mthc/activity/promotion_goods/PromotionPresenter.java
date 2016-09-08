@@ -1,11 +1,12 @@
-package com.strangedog.weylen.mthc.activity.withdraw_record;
+package com.strangedog.weylen.mthc.activity.promotion_goods;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.strangedog.weylen.mthc.activity.stock.StockData;
-import com.strangedog.weylen.mthc.activity.stock.StockView;
-import com.strangedog.weylen.mthc.entity.StockEntity;
+import com.strangedog.weylen.mthc.activity.withdraw_record.RecordData;
+import com.strangedog.weylen.mthc.activity.withdraw_record.RecordView;
+import com.strangedog.weylen.mthc.entity.ProductsEntity;
+import com.strangedog.weylen.mthc.entity.PromotionEntity;
 import com.strangedog.weylen.mthc.entity.WithdrawRecordEntity;
 import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
@@ -21,16 +22,16 @@ import rx.schedulers.Schedulers;
 /**
  * Created by weylen on 2016-08-29.
  */
-public class RecordPresenter {
+public class PromotionPresenter {
 
-    private RecordView recordView;
-    public RecordPresenter(RecordView recordView){
-        this.recordView = recordView;
+    private PromotionView promotionView;
+    public PromotionPresenter(PromotionView promotionView){
+        this.promotionView = promotionView;
     }
 
     public void start(){
-        RecordData.INSTANCE.pageNum = 1;
-        recordView.onStartList();
+        PromotionData.INSTANCE.pageNum = 1;
+        promotionView.onStartList();
         remote(1);
     }
 
@@ -39,7 +40,7 @@ public class RecordPresenter {
     }
 
     public void loadMore(){
-        remote(RecordData.INSTANCE.pageNum + 1);
+        remote(PromotionData.INSTANCE.pageNum + 1);
     }
 
     private void remote(int pageNum){
@@ -73,26 +74,26 @@ public class RecordPresenter {
 
     private void error(int pageNum){
         if (pageNum == 1){
-            recordView.onListFailure();
+            promotionView.onListFailure();
         }else {
-            recordView.onLoadMoreFailure();
+            promotionView.onLoadMoreFailure();
         }
     }
 
     private void map(JsonObject jsonObject){
         int pageNum = jsonObject.get("pageNum").getAsInt();
         int maxPage = jsonObject.get("maxPage").getAsInt();
-        RecordData.INSTANCE.isComplete = pageNum == maxPage;
-        RecordData.INSTANCE.pageNum = pageNum;
+        PromotionData.INSTANCE.isComplete = pageNum == maxPage;
+        PromotionData.INSTANCE.pageNum = pageNum;
 
         Gson gson = new Gson();
-        List<WithdrawRecordEntity> data = gson.fromJson(jsonObject.get("data").getAsJsonArray(),
-                new TypeToken<List<WithdrawRecordEntity>>(){}.getType());
+        List<PromotionEntity> data = gson.fromJson(jsonObject.get("data").getAsJsonArray(),
+                new TypeToken<List<PromotionEntity>>(){}.getType());
 
         if (pageNum == 1){
-            recordView.onListSuccess(data, RecordData.INSTANCE.isComplete);
+            promotionView.onListSuccess(data, PromotionData.INSTANCE.isComplete);
         }else {
-            recordView.onLoadMoreSuccess(data, RecordData.INSTANCE.isComplete);
+            promotionView.onLoadMoreSuccess(data, PromotionData.INSTANCE.isComplete);
         }
     }
 }
