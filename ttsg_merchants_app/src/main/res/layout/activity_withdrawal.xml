@@ -102,7 +102,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="24小时内到账，确认提现"
+        android:text="每周只能提现一次，提现下周一到账，确认提现"
         android:textColor="@color/colorAccent"
         android:padding="15dp"
         />

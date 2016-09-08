@@ -177,4 +177,27 @@ public interface HttpService {
             @Field("limit") String limit,
             @Field("pageNum") int pageNum
     );
+
+    /**
+     * 提现申请
+     * @param quota 申请金额
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("aeca-apply")
+    Observable<JsonObject> withdraw(
+            @Field("quota") String quota
+    );
+
+
+    /**
+     * 提现记录
+     * @param pageNum
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("aeca-")
+    Observable<JsonObject> withdrawRecord(
+            @Field("pageNum") int pageNum
+    );
 }

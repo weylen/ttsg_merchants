@@ -30,4 +30,5 @@
     <string name="SetStock">库存查询</string>
     <string name="OrderDetails">订单详情</string>
     <string name="BalanceWithdrawal">余额转出</string>
+    <string name="WithDrawRecord">转出记录</string>
 </resources>

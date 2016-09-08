@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/GenericItem" android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <TableRow android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="申请金额："
+            android:textColor="@color/blackText"
+            />
+
+        <TextView
+            android:id="@+id/item_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/redText"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            />
+    </TableRow>
+
+    <TableRow android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="申请时间："
+            android:textColor="@color/blackText"
+            />
+
+        <TextView
+            android:id="@+id/item_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blackText"
+            android:textSize="16sp"
+            android:paddingLeft="10dp"
+            />
+    </TableRow>
+
+    <TableRow android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="处理状态："
+            android:textColor="@color/blackText"
+            />
+
+        <TextView
+            android:id="@+id/item_text3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blackText"
+            android:textSize="16sp"
+            android:paddingLeft="10dp"
+            />
+    </TableRow>
+
+    <TableRow android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="处理时间："
+            android:textColor="@color/blackText"
+            />
+
+        <TextView
+            android:id="@+id/item_text4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blackText"
+            android:textSize="16sp"
+            android:paddingLeft="10dp"
+            />
+    </TableRow>
+
+</TableLayout>
