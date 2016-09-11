@@ -26,15 +26,58 @@
             android:layout_weight="1.0"
             >
 
-            <TextView
-                android:id="@+id/text_shop"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_18"
-                android:textColor="@color/white"
-                android:drawableTop="@mipmap/icon_user_m"
-                android:gravity="center"
-                />
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:id="@+id/text_shop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_18"
+                    android:textColor="@color/white"
+                    android:drawableTop="@mipmap/icon_user_m"
+                    android:gravity="center"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:id="@+id/status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:drawableRight="@mipmap/icon_arrow_r_w"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="10dp"
+                        android:text="设置营业状态"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:drawableRight="@mipmap/icon_arrow_r_w"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="10dp"
+                        android:drawablePadding="10dp"
+                        android:text="设置营业时间"
+                        />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -64,7 +107,6 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:text="100"
                     android:layout_centerVertical="true"
                     />
 

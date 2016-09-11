@@ -228,4 +228,38 @@ public interface HttpService {
     Observable<JsonObject> newVersion(
             @Field("sort") int type
     );
+
+
+    /**
+     * 获取商家的状态
+     * @param areaId 商家id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("scca-getTradeState")
+    Observable<JsonObject> getTradeState(
+            @Field("areaId") String areaId
+    );
+
+    /**
+     * 设置商家营业时间
+     * @param time 营业时间，如9:00~23:00
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cia-shopTradeState")
+    Observable<JsonObject> setTradeTimeState(
+            @Field("text") String time
+    );
+
+    /**
+     * 设置商家状态
+     * @param status 1是正常营业，2是停业，3是休业
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cia-shopTradeState")
+    Observable<JsonObject> setTradeState(
+            @Field("key") int status
+    );
 }

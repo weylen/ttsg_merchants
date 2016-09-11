@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
+import com.strangedog.weylen.mthc.view.TimeDialog;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -47,6 +49,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class IndexActivity extends BaseActivity
@@ -57,7 +60,7 @@ public class IndexActivity extends BaseActivity
     @Bind(R.id.nav_view) NavigationView navigationView;
     @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
     /******************* 定义属性 *********************/
-    private TextView balanceView;
+    private TextView balanceView, statusView, timeView;
     private ImageView refreshImgView;
     private Animation animation;
     private String balance; // 余额
@@ -94,6 +97,23 @@ public class IndexActivity extends BaseActivity
 //        drawerLayout.addDrawerListener(drawerListener);
 
         View headerView = navigationView.getHeaderView(0);
+        // 商家状态
+        statusView = (TextView) headerView.findViewById(R.id.status);
+        //
+        statusView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStatusPopup();
+            }
+        });
+        // 营业时间
+        timeView = (TextView) headerView.findViewById(R.id.time);
+        timeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimeDialog();
+            }
+        });
         // 店铺名字
         TextView shopView = (TextView) headerView.findViewById(R.id.text_shop);
         shopView.setText(LoginData.INSTANCE.getAccountEntity(this).getShoper());
@@ -125,6 +145,36 @@ public class IndexActivity extends BaseActivity
         }else {
             MiPushClient.registerPush(this, BaseApplication.APP_ID, BaseApplication.APP_KEY);
         }
+
+        // 获取商家状态
+        requestStatus();
+    }
+
+    private void showTimeDialog(){
+        ShopData shopData = ShopData.INSTANCE;
+        TimeDialog timeDialog = new TimeDialog(this, shopData.startTime, shopData.endTime);
+        timeDialog.setOnDataListener(new TimeDialog.OnDataListener() {
+            @Override
+            public void onDate(String startTime, String endTime) {
+                setTradeTime(startTime, endTime);
+            }
+        });
+        timeDialog.show();
+    }
+
+    private void showStatusPopup(){
+        PopupMenu p  = new PopupMenu(this, statusView);
+        p.getMenu().add(0, 1, 0, "正在营业");
+        p.getMenu().add(0, 2, 0, "停业中");
+        p.getMenu().add(0, 3, 0, "休息中");
+        p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                setTradeStatus(item.getItemId());
+                return false;
+            }
+        });
+        p.show();
     }
 
     @Override
@@ -324,5 +374,94 @@ public class IndexActivity extends BaseActivity
                 doNewVersion();
             }
         }, 300);
+    }
+
+    private void requestStatus(){
+        String areaId = LoginData.INSTANCE.getAccountEntity(this).getId();
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .getTradeState(areaId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<JsonObject>() {
+                    @Override
+                    public void call(JsonObject jsonObject) {
+                        DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+
+                        }
+                    }
+                });
+    }
+
+    private void setTradeTime(String startTime, String endTime){
+        showProgressDialog("修改中...");
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("start", startTime);
+        jsonObject.addProperty("end", endTime);
+        DebugUtil.d("IndexActivity 设置时间：" + jsonObject.toString());
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .setTradeTimeState(jsonObject.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        dismissProgressDialog();
+                        DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                            ShopData.INSTANCE.startTime = startTime;
+                            ShopData.INSTANCE.endTime = endTime;
+                            timeView.setText(getShowTime(startTime, endTime));
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 设置商家状态
+     * @param status 1是正常营业，2是停业，3是休业
+     * @return
+     */
+    private void setTradeStatus(int status){
+        showProgressDialog("修改中...");
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .setTradeState(status)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        dismissProgressDialog();
+                        DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                            ShopData.INSTANCE.status = status;
+                            statusView.setText(ShopData.INSTANCE.getStatus());
+                        }
+                    }
+                });
+    }
+
+    private static String getShowTime(String startTime, String endTime){
+        return startTime +" ~ " + endTime;
     }
 }
