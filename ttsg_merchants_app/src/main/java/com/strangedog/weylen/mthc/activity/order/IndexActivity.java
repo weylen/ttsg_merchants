@@ -377,7 +377,7 @@ public class IndexActivity extends BaseActivity
     }
 
     private void requestStatus(){
-        String areaId = LoginData.INSTANCE.getAccountEntity(this).getId();
+        String areaId = LoginData.INSTANCE.getAccountEntity(this).getArea();
         RetrofitFactory.getRetrofit().create(HttpService.class)
                 .getTradeState(areaId)
                 .observeOn(AndroidSchedulers.mainThread())
