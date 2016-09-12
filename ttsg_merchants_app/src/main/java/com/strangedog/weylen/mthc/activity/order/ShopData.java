@@ -12,7 +12,7 @@ public enum ShopData {
 
     String startTime = Constants.EMPTY_STR;
     String endTime = Constants.EMPTY_STR;
-    int status = 1;
+    int status = 3;
 
     private HashMap<Integer, String> statusStrs;
 
