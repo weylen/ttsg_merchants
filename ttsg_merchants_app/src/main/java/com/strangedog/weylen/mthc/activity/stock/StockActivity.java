@@ -138,7 +138,6 @@ public class StockActivity extends BaseActivity implements StockView{
 
                 LoadingFooter.State state = RecyclerViewStateUtils.getFooterViewState(mListRecyclerView);
                 if (state == LoadingFooter.State.Loading) {
-                    DebugUtil.d("AddProductsActivity onBottom the state is Loading, just wait..");
                     return;
                 }
 
@@ -166,7 +165,6 @@ public class StockActivity extends BaseActivity implements StockView{
     @Override
     public void onListFailure() {
         resetRefreshState();
-        showSnakeBar(mListRecyclerView, "获取数据失败");
         adapter.clear();
     }
 

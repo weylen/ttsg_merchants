@@ -1,6 +1,5 @@
 package com.strangedog.weylen.mthc.activity.order;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.cd.weylen.appupdatelibrary.AppUpdate;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
@@ -45,6 +44,7 @@ import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.strangedog.weylen.mthc.util.DialogUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
+import com.strangedog.weylen.mthc.util.MediaUtil;
 import com.strangedog.weylen.mthc.view.TimeDialog;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -53,7 +53,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class IndexActivity extends BaseActivity
@@ -143,6 +142,20 @@ public class IndexActivity extends BaseActivity
 
         // 获取商家状态
         requestStatus();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_index, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_volume_off){
+            MediaUtil.stop();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showTimeDialog(boolean isMust){

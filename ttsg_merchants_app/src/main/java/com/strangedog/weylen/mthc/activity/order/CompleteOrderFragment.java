@@ -141,7 +141,6 @@ public class CompleteOrderFragment extends BaseFragment implements OrderView{
 
     @Override
     public void onLoadSuccess(List<OrderDetailsEntity> orderEntityList, boolean isComplete) {
-        DebugUtil.d("DoingOrderFragment 订单数据：" + orderEntityList.size());
         if (isActive()){
             resetRefreshState();
             adapter.setDataList(orderEntityList);

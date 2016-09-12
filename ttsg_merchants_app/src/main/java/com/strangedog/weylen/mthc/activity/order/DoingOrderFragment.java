@@ -1,6 +1,7 @@
 package com.strangedog.weylen.mthc.activity.order;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DimensUtil;
+import com.strangedog.weylen.mthc.util.MediaUtil;
 import com.strangedog.weylen.mthc.view.ListRecyclerView;
 import com.strangedog.weylen.mthc.view.SpaceItemDecoration;
 
@@ -170,6 +172,7 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
         if (isActive()){
             resetRefreshState();
             mListRecyclerView.refreshComplete();
+            adapter.clear();
         }
     }
 
@@ -248,6 +251,7 @@ public class DoingOrderFragment extends BaseFragment implements OrderView{
             if (status == 7){ // 确定接单
                 showSnakeView(containerView, "接单成功");
                 adapter.getItem(position);
+                MediaUtil.stop();
             }else if (status == 8){
                 showSnakeView(containerView, "确认送达成功");
             }

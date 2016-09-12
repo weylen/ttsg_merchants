@@ -95,6 +95,11 @@ public class WithdrawalActivity extends BaseActivity {
         String input = balanceEdit.getText().toString();
         double inputBalance = Double.parseDouble(input);
         double total = TextUtils.isEmpty(balance) ? 0 : Double.parseDouble(balance);
+        if (inputBalance <= 0){
+            showToast("转出金额必须大于0");
+            return;
+        }
+
         if (inputBalance > total){
             showToast("转出金额超限");
             return;
@@ -162,7 +167,9 @@ public class WithdrawalActivity extends BaseActivity {
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             showSuccessDialog();
                         }else {
-                            showToast("转出申请失败，请重试");
+                            String message = jsonObject.get("data").getAsString();
+                            message = TextUtils.isEmpty(message) ? "转出申请失败，请重试" : message;
+                            showToast(message);
                         }
                     }
                 });

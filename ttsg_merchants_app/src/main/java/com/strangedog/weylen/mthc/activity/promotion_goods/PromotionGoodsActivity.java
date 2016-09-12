@@ -173,7 +173,6 @@ public class PromotionGoodsActivity extends BaseActivity implements PromotionVie
     @Override
     public void onListFailure() {
         resetRefreshState();
-        showSnakeBar(mListRecyclerView, "获取数据失败");
         adapter.clear();
     }
 

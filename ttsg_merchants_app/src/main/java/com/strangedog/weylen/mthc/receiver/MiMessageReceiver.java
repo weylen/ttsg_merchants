@@ -25,6 +25,7 @@ import com.strangedog.weylen.mthc.activity.order.IndexActivity;
 import com.strangedog.weylen.mthc.activity.orderdetails.OrderDetailsActivity;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
+import com.strangedog.weylen.mthc.util.MediaUtil;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -91,7 +92,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
-        String mAlias = null;
+        String mAlias;
         if (MiPushClient.COMMAND_SET_ALIAS.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mAlias = cmdArg1;
@@ -163,8 +164,10 @@ public class MiMessageReceiver extends PushMessageReceiver {
                     // 判断当前程序是否在前端执行 如果在则显示对话框 如果不在则弹出通知
                     LoginData.INSTANCE.logout(context);
                     if (DeviceUtil.isRunning(context)){
+                        DebugUtil.d("MiMessageReceiver app正在运行");
                         showAnotherPlaceDialog(context);
                     }else {
+                        DebugUtil.d("MiMessageReceiver app没有运行");
                         showAnotherNf(context);
                     }
                     break;
@@ -209,6 +212,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
         String ticker = "您有新订单";
         String message = "您有新订单，点击立即查看";
         showNf(context, ticker, message, intent, NEW_ORDER_ID);
+        MediaUtil.paly(context);
     }
 
     /**

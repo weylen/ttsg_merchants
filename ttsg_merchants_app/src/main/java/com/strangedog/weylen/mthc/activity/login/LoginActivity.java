@@ -65,8 +65,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
         setPresenter(loginPresenter);
 
         // 测试 模拟数据
-        mAccountView.setText("18108037736");
-        mPasswordView.setText("123456");
+        mAccountView.setText("1111");
+        mPasswordView.setText("1111");
     }
 
     @OnClick(R.id.account_sign_in_button)
