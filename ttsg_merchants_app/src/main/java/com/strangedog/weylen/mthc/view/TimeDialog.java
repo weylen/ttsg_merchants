@@ -35,6 +35,7 @@ public class TimeDialog {
     private String endTime;
     private Context context;
     private OnDataListener onDataListener;
+    private DialogInterface.OnCancelListener onCancelListener;
 
     @OnClick(R.id.radio_startTime)
     public void onStartTimeClick(){
@@ -65,6 +66,9 @@ public class TimeDialog {
                     .setNegativeButton("取消", (dialog, which) -> {
                         setShow(dialog, true);
                         dialog.dismiss();
+                        if (onCancelListener != null){
+                            onCancelListener.onCancel(dialog);
+                        }
                     })
                     .setPositiveButton("确定", (dialog, which) -> {
                         startTime = startTimeView.getText().toString();
@@ -82,7 +86,12 @@ public class TimeDialog {
                     }).create();
         }
         alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
+    }
+
+    public void setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
+        this.onCancelListener = onCancelListener;
     }
 
     private void setShow(DialogInterface dialog, boolean mShowing) {

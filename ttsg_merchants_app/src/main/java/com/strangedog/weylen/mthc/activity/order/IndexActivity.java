@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.order;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -20,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cd.weylen.appupdatelibrary.AppUpdate;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
@@ -93,6 +97,7 @@ public class IndexActivity extends BaseActivity
         TextView msg= (TextView) menuActionView.findViewById(R.id.msg);
         if (msg != null){
             msg.setText("9");
+            msg.setVisibility(View.GONE);
         }
 //        drawerLayout.addDrawerListener(drawerListener);
 
@@ -100,20 +105,10 @@ public class IndexActivity extends BaseActivity
         // 商家状态
         statusView = (TextView) headerView.findViewById(R.id.status);
         //
-        statusView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showStatusPopup();
-            }
-        });
+        statusView.setOnClickListener(v -> showStatusPopup());
         // 营业时间
         timeView = (TextView) headerView.findViewById(R.id.time);
-        timeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTimeDialog();
-            }
-        });
+        timeView.setOnClickListener(v -> showTimeDialog(false));
         // 店铺名字
         TextView shopView = (TextView) headerView.findViewById(R.id.text_shop);
         shopView.setText(LoginData.INSTANCE.getAccountEntity(this).getShoper());
@@ -150,13 +145,13 @@ public class IndexActivity extends BaseActivity
         requestStatus();
     }
 
-    private void showTimeDialog(){
+    private void showTimeDialog(boolean isMust){
         ShopData shopData = ShopData.INSTANCE;
         TimeDialog timeDialog = new TimeDialog(this, shopData.startTime, shopData.endTime);
-        timeDialog.setOnDataListener(new TimeDialog.OnDataListener() {
-            @Override
-            public void onDate(String startTime, String endTime) {
-                setTradeTime(startTime, endTime);
+        timeDialog.setOnDataListener((startTime, endTime) -> setTradeTime(startTime, endTime));
+        timeDialog.setOnCancelListener(dialog -> {
+            if (isMust){
+                finish();
             }
         });
         timeDialog.show();
@@ -167,14 +162,25 @@ public class IndexActivity extends BaseActivity
         p.getMenu().add(0, 1, 0, "正在营业");
         p.getMenu().add(0, 2, 0, "停业中");
         p.getMenu().add(0, 3, 0, "休息中");
-        p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                setTradeStatus(item.getItemId());
-                return false;
-            }
+        p.setOnMenuItemClickListener(item -> {
+            showStateDialog(item.getItemId(), item.getTitle().toString());
+            return false;
         });
         p.show();
+    }
+
+    private void showStateDialog(int state, String stateStr){
+        new  AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("确定设置营业状态为：" + stateStr)
+                .setNegativeButton("取消", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton("确定", (dialog, which) -> {
+                    dialog.dismiss();
+                    setTradeStatus(state);
+                })
+                .show();
     }
 
     @Override
@@ -368,12 +374,7 @@ public class IndexActivity extends BaseActivity
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doNewVersion();
-            }
-        }, 300);
+        new Handler().postDelayed(() -> doNewVersion(), 300);
     }
 
     private void requestStatus(){
@@ -382,15 +383,60 @@ public class IndexActivity extends BaseActivity
                 .getTradeState(areaId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<JsonObject>() {
-                    @Override
-                    public void call(JsonObject jsonObject) {
-                        DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
-                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                .subscribe(jsonObject -> {
+                    DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
+                    if (ResponseMgr.getStatus(jsonObject) == 1){
+                        JsonObject data = jsonObject.get("data").getAsJsonObject().get(areaId).getAsJsonObject();
+                        String stateStr = data.get("tradeState").getAsString();
+                        if (!TextUtils.isEmpty(stateStr)){
+                            int state = formatState(stateStr);
+                            if (state != -1){
+                                ShopData.INSTANCE.status = state;
+                                statusView.setText(ShopData.INSTANCE.getStatus());
+                            }
+                        }
+                        boolean isSetTime = false;
+                        String timeStr = data.get("tradeTime").getAsString();
+                        if (!TextUtils.isEmpty(timeStr)){
+                            Gson gson = new Gson();
+                            JsonObject timeObject = gson.fromJson(timeStr, JsonObject.class);
+                            ShopData.INSTANCE.startTime = timeObject.get("start").getAsString();
+                            ShopData.INSTANCE.endTime = timeObject.get("end").getAsString();
+                            timeView.setText(getShowTime(ShopData.INSTANCE.startTime, ShopData.INSTANCE.endTime));
+                            isSetTime = true;
+                        }
 
+                        if (isSetTime == false){
+                            showSetTimeDialog();
                         }
                     }
                 });
+    }
+
+    private void showSetTimeDialog(){
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("你必须设置营业时间才能营业，是否立即设置？")
+                .setNegativeButton("取消", (dialog1, which) -> {
+                    dialog1.dismiss();
+                    finish();
+                })
+                .setPositiveButton("确定", (dialog1, which) -> {
+                    dialog1.dismiss();
+                    showTimeDialog(true);
+                }).create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    private int formatState(String state){
+        try{
+            return Integer.parseInt(state);
+        }catch (Exception e){
+
+        }
+        return -1;
     }
 
     private void setTradeTime(String startTime, String endTime){
@@ -405,9 +451,7 @@ public class IndexActivity extends BaseActivity
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<JsonObject>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
+                    public void onCompleted() {}
 
                     @Override
                     public void onError(Throwable e) {
@@ -422,6 +466,7 @@ public class IndexActivity extends BaseActivity
                             ShopData.INSTANCE.startTime = startTime;
                             ShopData.INSTANCE.endTime = endTime;
                             timeView.setText(getShowTime(startTime, endTime));
+                            showToast("设置成功");
                         }
                     }
                 });
@@ -456,6 +501,7 @@ public class IndexActivity extends BaseActivity
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             ShopData.INSTANCE.status = status;
                             statusView.setText(ShopData.INSTANCE.getStatus());
+                            showToast("设置成功");
                         }
                     }
                 });
