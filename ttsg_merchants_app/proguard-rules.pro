@@ -65,8 +65,8 @@
 -keep class android.support.**{*;}
 -keep class okio.**{*;}
 # JAVA BEAN不能被混淆
--keep class com.strangedog.weylen.mtch.entity.** {* ;}
--keep class com.strangedog.weylen.mtch.receiver.** {* ;}
+-keep class com.strangedog.weylen.mthc.entity.** {* ;}
+-keep class com.strangedog.weylen.mthc.receiver.** {* ;}
 -keep class javax.** {* ;}
 
 #如果引用了v4或者v7包

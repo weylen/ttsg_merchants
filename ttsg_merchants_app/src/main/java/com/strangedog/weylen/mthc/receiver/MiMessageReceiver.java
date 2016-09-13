@@ -129,7 +129,6 @@ public class MiMessageReceiver extends PushMessageReceiver {
      * @param context
      */
     private void showAnotherPlaceDialog(Context context){
-        DebugUtil.d("MiMessageReceiver 显示对话框：" + BaseActivity.getCurrentContext());
         Handler handler = new Handler(context.getMainLooper());
         handler.post(() -> {
             AlertDialog dialog = new AlertDialog.Builder(BaseActivity.getCurrentContext())
@@ -162,6 +161,10 @@ public class MiMessageReceiver extends PushMessageReceiver {
             switch (status){
                 case 1: // 异地登录
                     // 判断当前程序是否在前端执行 如果在则显示对话框 如果不在则弹出通知
+                    if (!LoginData.INSTANCE.isLogin(context)){
+                        DebugUtil.d("MiMessageReceiver 异地登陆通知 用户未登录 不进行通知展示");
+                        return;
+                    }
                     LoginData.INSTANCE.logout(context);
                     if (DeviceUtil.isRunning(context)){
                         DebugUtil.d("MiMessageReceiver app正在运行");
@@ -212,7 +215,11 @@ public class MiMessageReceiver extends PushMessageReceiver {
         String ticker = "您有新订单";
         String message = "您有新订单，点击立即查看";
         showNf(context, ticker, message, intent, NEW_ORDER_ID);
-        MediaUtil.paly(context);
+        if (BaseApplication.INSTANCE != null){
+            MediaUtil.paly(BaseApplication.INSTANCE);
+        }else {
+            MediaUtil.paly(context);
+        }
     }
 
     /**

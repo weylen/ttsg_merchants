@@ -16,7 +16,7 @@ public class MediaUtil {
         player = MediaPlayer.create(context, R.raw.alarm);
         if (player != null){
             player.start();
-            player.setOnCompletionListener(mp -> mp.start());
+            player.setLooping(true);
         }
     }
 

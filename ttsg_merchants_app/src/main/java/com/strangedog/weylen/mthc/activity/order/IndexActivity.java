@@ -155,9 +155,16 @@ public class IndexActivity extends BaseActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    private boolean isPlay;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_volume_off){
+//            if (isPlay){
+//                MediaUtil.stop();
+//            }else {
+//                MediaUtil.paly(this);
+//            }
+//            isPlay =!isPlay;
             MediaUtil.stop();
         }
         return super.onOptionsItemSelected(item);
@@ -474,17 +481,19 @@ public class IndexActivity extends BaseActivity
                     @Override
                     public void onError(Throwable e) {
                         dismissProgressDialog();
+                        showToast("设置失败，请重试");
                     }
 
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         dismissProgressDialog();
-                        DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             ShopData.INSTANCE.startTime = startTime;
                             ShopData.INSTANCE.endTime = endTime;
                             timeView.setText(getShowTime(startTime, endTime));
                             showToast("设置成功");
+                        }else {
+                            showToast("设置失败，请重试");
                         }
                     }
                 });
@@ -510,16 +519,18 @@ public class IndexActivity extends BaseActivity
                     @Override
                     public void onError(Throwable e) {
                         dismissProgressDialog();
+                        showToast("设置失败，请重试");
                     }
 
                     @Override
                     public void onNext(JsonObject jsonObject) {
                         dismissProgressDialog();
-                        DebugUtil.d("IndexActivity 获取商家状态：" + jsonObject);
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             ShopData.INSTANCE.status = status;
                             statusView.setText(ShopData.INSTANCE.getStatus());
                             showToast("设置成功");
+                        }else {
+                            showToast("设置失败，请重试");
                         }
                     }
                 });

@@ -22,6 +22,7 @@ import com.strangedog.weylen.mthc.entity.OrderDetailsProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DimensUtil;
+import com.strangedog.weylen.mthc.util.MediaUtil;
 import com.strangedog.weylen.mthc.view.OrderProductsDetailsView;
 import com.strangedog.weylen.mthc.view.ZRefreshView;
 
@@ -280,5 +281,6 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
         dismissProgressDialog();
         detailsEntities.get(0).getProducts().get(0).setStauts(String.valueOf(status));
         setupMessages();
+        MediaUtil.stop();
     }
 }

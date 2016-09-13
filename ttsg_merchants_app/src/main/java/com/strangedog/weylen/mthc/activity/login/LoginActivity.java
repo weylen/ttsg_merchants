@@ -41,6 +41,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
             SessionUtil.sessionId = "JSESSIONID=" + LoginData.INSTANCE.getAccountEntity().getSid();
             peekInHome();
             return;
+        }else {
+            MiPushClient.unsetAlias(this, DeviceUtil.INSTANCE.getDeviceUuid(this), null);
         }
         setContentView(R.layout.activity_login);
         setTitle(getString(R.string.LoginText));
