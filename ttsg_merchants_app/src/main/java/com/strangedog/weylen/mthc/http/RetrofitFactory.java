@@ -43,6 +43,7 @@ public class RetrofitFactory {
                             .addHeader("Connection", "keep-alive")
                             .addHeader("Accept", "*/*")
                             .addHeader("Cookie", SessionUtil.getSessionId())
+                            .addHeader("DeviceType", "Android")
                             .build();
                     return chain.proceed(request);
                 })

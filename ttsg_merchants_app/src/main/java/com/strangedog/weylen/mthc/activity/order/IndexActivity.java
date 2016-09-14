@@ -39,6 +39,7 @@ import com.strangedog.weylen.mthc.activity.stock.StockActivity;
 import com.strangedog.weylen.mthc.activity.withdrawal.WithdrawalActivity;
 import com.strangedog.weylen.mthc.adapter.TabPagerAdapter;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.prefs.NewVersionData;
@@ -474,7 +475,7 @@ public class IndexActivity extends BaseActivity
                 .setTradeTimeState(jsonObject.toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {}
 
@@ -496,7 +497,7 @@ public class IndexActivity extends BaseActivity
                             showToast("设置失败，请重试");
                         }
                     }
-                });
+                }));
     }
 
     /**
@@ -510,7 +511,7 @@ public class IndexActivity extends BaseActivity
                 .setTradeState(status)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -533,7 +534,7 @@ public class IndexActivity extends BaseActivity
                             showToast("设置失败，请重试");
                         }
                     }
-                });
+                }));
     }
 
     private static String getShowTime(String startTime, String endTime){

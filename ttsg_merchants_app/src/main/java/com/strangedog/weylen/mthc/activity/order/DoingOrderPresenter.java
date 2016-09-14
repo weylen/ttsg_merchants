@@ -9,6 +9,7 @@ import com.strangedog.weylen.mthc.entity.OrderDetailsEntity;
 import com.strangedog.weylen.mthc.entity.OrderDetailsProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -54,7 +55,7 @@ public class DoingOrderPresenter {
                 .getOrders(begin, end, pageNum, 2)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -75,8 +76,10 @@ public class DoingOrderPresenter {
                             error(pageNum);
                         }
                     }
-                });
+                }));
     }
+
+
 
     private void error(int pageNum){
         if (pageNum > 1){
@@ -141,7 +144,7 @@ public class DoingOrderPresenter {
                 .alertOrderStatus(orderId, String.valueOf(status))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -160,6 +163,6 @@ public class DoingOrderPresenter {
                             orderView.onAlertStatusSuccess(position, status);
                         }
                     }
-                });
+                }));
     }
 }
