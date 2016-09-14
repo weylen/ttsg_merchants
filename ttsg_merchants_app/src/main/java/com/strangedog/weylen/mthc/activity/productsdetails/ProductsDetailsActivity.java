@@ -22,6 +22,7 @@ import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.CalendarUtil;
@@ -358,7 +359,7 @@ public class ProductsDetailsActivity extends BaseActivity {
                 .alertGoodsInfo(param)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {}
 
@@ -382,7 +383,7 @@ public class ProductsDetailsActivity extends BaseActivity {
                             doError();
                         }
                     }
-                });
+                }));
     }
 
     private String map(boolean isClearPromotion){

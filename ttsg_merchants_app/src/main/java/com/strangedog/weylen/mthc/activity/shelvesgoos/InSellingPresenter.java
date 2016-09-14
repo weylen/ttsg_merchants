@@ -10,6 +10,7 @@ import com.strangedog.weylen.mthc.activity.addgoods.AddGoodsData;
 import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -75,7 +77,7 @@ public class InSellingPresenter implements BasePresenter{
                 .getShopGoods(keyword, status, pageNum, kindId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {}
 
@@ -94,7 +96,7 @@ public class InSellingPresenter implements BasePresenter{
                             parse(s);
                         }
                     }
-                });
+                }));
     }
 
     /**

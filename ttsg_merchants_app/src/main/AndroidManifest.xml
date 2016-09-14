@@ -88,12 +88,6 @@
                 android:value="com.strangedog.weylen.mthc.activity.order.IndexActivity" />
         </activity>
 
-        <activity android:name="com.strangedog.weylen.mthc.SearchProductActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"
-            android:configChanges="screenSize|keyboard|orientation|uiMode|screenLayout"
-            />
-
         <activity android:name="com.strangedog.weylen.mthc.activity.productsdetails.ProductsDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/ProductsDetails"

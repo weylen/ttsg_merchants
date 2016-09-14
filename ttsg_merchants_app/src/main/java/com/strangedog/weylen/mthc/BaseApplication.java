@@ -10,6 +10,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.rey.material.app.ThemeManager;
+import com.strangedog.weylen.mthc.util.LocaleUtil;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -97,6 +98,13 @@ public class BaseApplication extends Application{
         if (activity != null){
             activityList.remove(activity);
         }
+    }
+
+    public static Activity getLast(){
+        if (!LocaleUtil.isListEmpty(activityList)){
+            return activityList.get(activityList.size()-1);
+        }
+        return null;
     }
 
     public static void exit(){

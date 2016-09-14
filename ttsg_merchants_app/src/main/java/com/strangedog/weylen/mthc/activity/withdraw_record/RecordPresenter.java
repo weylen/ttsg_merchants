@@ -8,6 +8,7 @@ import com.strangedog.weylen.mthc.activity.stock.StockView;
 import com.strangedog.weylen.mthc.entity.StockEntity;
 import com.strangedog.weylen.mthc.entity.WithdrawRecordEntity;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -47,7 +48,7 @@ public class RecordPresenter {
                 .withdrawRecord(pageNum)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -68,7 +69,7 @@ public class RecordPresenter {
                             error(pageNum);
                         }
                     }
-                });
+                }));
     }
 
     private void error(int pageNum){

@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.strangedog.weylen.mthc.entity.SalesEntity;
 import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -56,7 +57,7 @@ public class SalesPresenter {
                 .salesStatistical(proId, begin, end, pageNum)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -77,7 +78,7 @@ public class SalesPresenter {
                             error(pageNum);
                         }
                     }
-                });
+                }));
     }
 
     private void error(int pageNum){

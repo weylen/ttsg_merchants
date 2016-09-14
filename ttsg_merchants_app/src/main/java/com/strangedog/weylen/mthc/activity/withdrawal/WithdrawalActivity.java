@@ -15,6 +15,7 @@ import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.activity.withdraw_record.WithDrawRecordActivity;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -113,7 +114,7 @@ public class WithdrawalActivity extends BaseActivity {
                 .getBalance()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -135,7 +136,7 @@ public class WithdrawalActivity extends BaseActivity {
                         }
                         result();
                     }
-                });
+                }));
     }
 
     private void result(){

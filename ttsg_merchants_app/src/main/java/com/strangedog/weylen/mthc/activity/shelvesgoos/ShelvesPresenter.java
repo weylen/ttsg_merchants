@@ -10,6 +10,7 @@ import com.strangedog.weylen.mthc.activity.addgoods.AddGoodsData;
 import com.strangedog.weylen.mthc.entity.KindDataEntity;
 import com.strangedog.weylen.mthc.entity.ProductsEntity;
 import com.strangedog.weylen.mthc.http.HttpService;
+import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
 import com.strangedog.weylen.mthc.util.DebugUtil;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -76,9 +78,11 @@ public class ShelvesPresenter implements BasePresenter{
                 .getShopGoods(keyword, status, pageNum, kindId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
                     @Override
-                    public void onCompleted() {}
+                    public void onCompleted() {
+
+                    }
 
                     @Override
                     public void onError(Throwable e) {
@@ -87,15 +91,15 @@ public class ShelvesPresenter implements BasePresenter{
                     }
 
                     @Override
-                    public void onNext(JsonObject s) {
-                        DebugUtil.d("SellingGoodsPresenter getRemoteData onNext s:" + s);
-                        if (ResponseMgr.getStatus(s) != 1){
+                    public void onNext(JsonObject jsonObject) {
+                        DebugUtil.d("SellingGoodsPresenter getRemoteData onNext s:" + jsonObject);
+                        if (ResponseMgr.getStatus(jsonObject) != 1){
                             doError(pageNum);
                         }else {
-                            parse(s);
+                            parse(jsonObject);
                         }
                     }
-                });
+                }));
     }
 
     /**
