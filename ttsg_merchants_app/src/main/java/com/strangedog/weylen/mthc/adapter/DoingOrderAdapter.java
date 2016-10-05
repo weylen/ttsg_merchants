@@ -19,6 +19,7 @@ import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.view.OrderProductsDetailsView;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import butterknife.Bind;
@@ -57,7 +58,9 @@ public class DoingOrderAdapter extends ListBaseAdapter<OrderDetailsEntity>{
 
         holder.mOrderStatusView.setText(Constants.ORDER_PARAM.get(status));
         holder.mOrderTimeView.setText(productsEntity.getDate());
-        holder.mOrderPriceView.setText("￥" + orderEntity.getTotal());
+        holder.mOrderPriceView.setText("￥" +
+                new BigDecimal(orderEntity.getTotal()).add(new BigDecimal(productsEntity.getFare())).setScale(2, BigDecimal.ROUND_HALF_UP).toString()
+        );
         int totalCount = holder.mOrderContentView.setDataAndNotify2(productsEntities);
         // 总数量
         holder.mOrderCountView.setText(String.format("共%d件商品", totalCount));
@@ -68,6 +71,8 @@ public class DoingOrderAdapter extends ListBaseAdapter<OrderDetailsEntity>{
         // 备注
         String note = productsEntity.getNote();
         holder.mOrderNoteView.setText("备注：" + (TextUtils.isEmpty(note) ? "无":note));
+        // 配送费
+        holder.mDeliveryView.setText("配送费：￥" + productsEntity.getFare());
 
         // 3：已支付未发货 6：支付确认中 7：商家已结单 8：商家已送达
         if ("1".equalsIgnoreCase(status) || "8".equalsIgnoreCase(status)){ //
@@ -107,6 +112,7 @@ public class DoingOrderAdapter extends ListBaseAdapter<OrderDetailsEntity>{
         @Bind(R.id.orderAddressView) TextView mOrderAddressView;
         @Bind(R.id.orderContactsView) TextView mOrderContactsView;
         @Bind(R.id.orderCountView) TextView mOrderCountView;
+        @Bind(R.id.orderDeliveryView) TextView mDeliveryView;
         @Bind(R.id.orderNoteView) TextView mOrderNoteView;
         @Bind(R.id.action_confirm_goods) View actionConfirmGoodsView; // 确认接单
         @Bind(R.id.action_confirm_delivery) View actionDeliveryView; // 确认送达

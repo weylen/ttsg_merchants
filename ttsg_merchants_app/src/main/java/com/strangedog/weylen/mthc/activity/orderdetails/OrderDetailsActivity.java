@@ -26,6 +26,7 @@ import com.strangedog.weylen.mthc.util.MediaUtil;
 import com.strangedog.weylen.mthc.view.OrderProductsDetailsView;
 import com.strangedog.weylen.mthc.view.ZRefreshView;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import butterknife.Bind;
@@ -48,6 +49,7 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
     @Bind(R.id.orderPaymentView) TextView mOrderPaymentView;
     @Bind(R.id.orderContactsView) TextView mOrderContactsView;
     @Bind(R.id.orderAddressView) TextView mOrderAddressView;
+    @Bind(R.id.orderFreightPriceView) TextView mFreightView; // 配送费
     @Bind(R.id.layout_products) OrderProductsDetailsView orderProductsDetailsView;
     @Bind(R.id.layout_parent) FrameLayout parentLayout;
     @Bind(R.id.layout_main) View mainView;
@@ -176,8 +178,6 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
         OrderDetailsEntity detailsEntity = detailsEntities.get(0);
         // 订单号
         mOrderCodeView.setText(detailsEntity.getOrderId());
-        // 订单总金额
-        mOrderPaymentView.setText(detailsEntity.getTotal());
         // 获取商品列表信息
         List<OrderDetailsProductsEntity> products = detailsEntity.getProducts();
         OrderDetailsProductsEntity productsEntity = products.get(0);
@@ -208,6 +208,10 @@ public class OrderDetailsActivity extends BaseActivity implements OrderDetailsVi
         // 商品价格
         mOrderProductsPriceView.setText("￥" + detailsEntity.getTotal());
         orderProductsDetailsView.setDataAndNotify2(products);
+        // 配送费
+        mFreightView.setText("￥" + productsEntity.getFare());
+        // 实际支付
+        mOrderPaymentView.setText(new BigDecimal(detailsEntity.getTotal()).add(new BigDecimal(productsEntity.getFare())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         // 设置支付状态
         String status = productsEntity.getStauts();
 

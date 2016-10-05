@@ -40,6 +40,7 @@ public class OrderDetailsProductsEntity {
     private String orderId;
     private String fname;
     private String note;
+    private String fare;
 
     public String getTele() {
         return tele;
@@ -167,5 +168,13 @@ public class OrderDetailsProductsEntity {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getFare() {
+        return fare;
+    }
+
+    public void setFare(String fare) {
+        this.fare = fare;
     }
 }

@@ -268,7 +268,7 @@
                                 <TableRow android:paddingTop="6dp"
                                     android:paddingBottom="6dp">
                                     <TextView style="@style/ContentTextView"
-                                        android:text="运费"
+                                        android:text="配送费"
                                         android:textColor="@color/blackText"
                                         android:textSize="@dimen/size_14"
                                         android:layout_weight="1.0"
