@@ -1,5 +1,6 @@
 package com.strangedog.weylen.mthc.activity.order;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +54,7 @@ import com.strangedog.weylen.mthc.view.TimeDialog;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -255,6 +258,9 @@ public class IndexActivity extends BaseActivity
                 isForward = true;
                 clazz = PromotionGoodsActivity.class;
                 break;
+            case R.id.nav_settings:
+                showDeliveryDialog();
+                break;
         }
 
         if (clazz != null && isForward){
@@ -267,6 +273,64 @@ public class IndexActivity extends BaseActivity
 //            drawerLayout.closeDrawer(GravityCompat.START);
 //        }
         return true;
+    }
+
+    /**
+     * 显示配送费对话框
+     */
+    private void showDeliveryDialog(){
+        View layout = getLayoutInflater().inflate(R.layout.delivery_layout, null, false);
+        final EditText editText1 = (EditText) layout.findViewById(R.id.item_text1);
+        final EditText editText2 = (EditText) layout.findViewById(R.id.item_text2);
+        editText1.setText(ShopData.INSTANCE.fareLimit);
+        editText2.setText(ShopData.INSTANCE.fare);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("配送费设置")
+                .setView(layout)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setShow(dialog, true);
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String text1 = editText1.getText().toString();
+                        String text2 = editText2.getText().toString();
+                        setShow(dialog, false);
+                        if (TextUtils.isEmpty(text1) || TextUtils.isEmpty(text2)){
+                            showToast("请输入完整的数据");
+                            return;
+                        }
+                        if (LocaleUtil.isLessThanZero(text1) || LocaleUtil.isLessThanZero(text2)){
+                            showToast("输入的数字不能小于0");
+                            return;
+                        }
+                        setShow(dialog, true);
+                        dialog.dismiss();
+
+                        remoteDelivery(text2, text1);
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void setShow(DialogInterface dialog, boolean mShowing) {
+        try {
+            Field field = dialog.getClass().getSuperclass().getSuperclass()
+                    .getDeclaredField("mShowing");
+            field.setAccessible(true);
+            field.set(dialog, mShowing);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
     private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.SimpleDrawerListener(){
@@ -432,6 +496,10 @@ public class IndexActivity extends BaseActivity
                             isSetTime = true;
                         }
 
+                        // 配送费数据
+                        ShopData.INSTANCE.fare = data.get("fare").getAsString();
+                        ShopData.INSTANCE.fareLimit = data.get("fareLimit").getAsString();
+
                         if (isSetTime == false){
                             showSetTimeDialog();
                         }
@@ -539,6 +607,36 @@ public class IndexActivity extends BaseActivity
 
     private static String getShowTime(String startTime, String endTime){
         return startTime +" ~ " + endTime;
+    }
+
+    private void remoteDelivery(String delivery, String text){
+        showProgressDialog("设置中...");
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .deliverySetting(delivery, text)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        showToast("设置失败，请重试");
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        dismissProgressDialog();
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                            showToast("设置成功");
+                        }else {
+                            showToast("设置失败，请重试");
+                        }
+                    }
+                }));
     }
 
     @Override

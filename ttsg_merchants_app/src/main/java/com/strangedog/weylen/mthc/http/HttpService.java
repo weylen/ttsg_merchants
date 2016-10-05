@@ -262,4 +262,17 @@ public interface HttpService {
     Observable<JsonObject> setTradeState(
             @Field("key") int status
     );
+
+    /**
+     * 配送费设置
+     * @param delivery 配送费
+     * @param text 产生费用的下限金额
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cia-shopFareAmount")
+    Observable<JsonObject> deliverySetting(
+            @Field("key") String delivery,
+            @Field("text") String text
+    );
 }

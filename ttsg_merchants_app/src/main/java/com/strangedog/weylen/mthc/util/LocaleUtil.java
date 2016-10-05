@@ -35,6 +35,21 @@ public class LocaleUtil {
     }
 
 
+    public static boolean isLessThanZero(String str){
+        if (TextUtils.isEmpty(str)){
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(str);
+            if (d < 0){
+                return true;
+            }
+        }catch (Exception e){
+
+        }
+        return false;
+    }
+
     /**
      * 转换下架和上架的字符串
      * @param status

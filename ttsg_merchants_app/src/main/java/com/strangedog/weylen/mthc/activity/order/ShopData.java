@@ -13,6 +13,8 @@ public enum ShopData {
     String startTime = Constants.EMPTY_STR;
     String endTime = Constants.EMPTY_STR;
     int status = 3;
+    String fare = "0";
+    String fareLimit = "0";
 
     private HashMap<Integer, String> statusStrs;
 
