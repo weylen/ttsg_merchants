@@ -19,6 +19,7 @@ import com.strangedog.weylen.mthc.http.Constants;
 import com.strangedog.weylen.mthc.iinter.ItemViewClickListenerWrapper;
 import com.strangedog.weylen.mthc.iinter.OnCheckedChangeListener;
 import com.strangedog.weylen.mthc.util.AnimatorUtil;
+import com.strangedog.weylen.mthc.util.CalendarUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DimensUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
@@ -126,16 +127,27 @@ public class ProductInTheSaleAdapter extends ListBaseAdapter<ProductsEntity> {
         holder.titleView.setText(entity.getName()); // 商品名字
         holder.unitView.setText(entity.getStandard()); // 单位
         holder.stockView.setText("库存：" + entity.getStock()); // 库存
+
+        // 设置销售价格
+        holder.priceView.setText("￥"+ entity.getSalePrice());
+        // 设置促销信息
+        holder.promotionView.setText("");
+        // 取得促销价
         String promotePrice = entity.getPromote(); // 促销价
-        if (LocaleUtil.hasPromotion(promotePrice)){
+        // 判断是否有促销价，包括促销价格判断和结束时间判断
+        if (LocaleUtil.hasPromotion(promotePrice, entity.getEnd())){
             holder.priceView.setText("￥"+promotePrice);
-            String info = entity.getBegin() + "~" + entity.getEnd() + " " + (TextUtils.isEmpty(entity.getInfo())? "" : entity.getInfo());
+            // 取得促销信息
+            String info = CalendarUtil.getStandardDateTime(entity.getBegin()) + "~" +
+                    CalendarUtil.getStandardDateTime(entity.getEnd()) + " " + (TextUtils.isEmpty(entity.getInfo())? "" : entity.getInfo());
             holder.promotionView.setText(info);
-            holder.promotionPriceView.setText("￥"+entity.getSalePrice());
+            holder.promotionPriceView.setText("￥"+entity.getSalePrice()); // 设置原价格
             holder.promotionPriceView.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG); //中划线
+            // 设置促销信息可见
+            holder.promotionPriceView.setVisibility(View.VISIBLE);
             holder.promotionView.setVisibility(View.VISIBLE);
         }else{
-            holder.priceView.setText("￥" + entity.getSalePrice());
+            holder.promotionPriceView.setVisibility(View.GONE);
             holder.promotionView.setVisibility(View.GONE);
         }
 

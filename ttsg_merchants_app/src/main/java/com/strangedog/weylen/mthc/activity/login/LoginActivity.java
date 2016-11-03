@@ -12,6 +12,7 @@ import com.strangedog.weylen.mtch.R;
 import com.strangedog.weylen.mthc.BaseActivity;
 import com.strangedog.weylen.mthc.activity.order.IndexActivity;
 import com.strangedog.weylen.mthc.prefs.LoginPrefs;
+import com.strangedog.weylen.mthc.prefs.PhonePrefs;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.DeviceUtil;
 import com.strangedog.weylen.mthc.util.SessionUtil;
@@ -65,6 +66,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
         loginPresenter = new LoginPresenter(this);
         setPresenter(loginPresenter);
+        mAccountView.setText(PhonePrefs.getPhone(this));
+        if (!mAccountView.getText().toString().isEmpty()){
+            mPasswordView.requestFocus();
+        }
 //
 //        // 测试 模拟数据
 //        mAccountView.setText("1111");

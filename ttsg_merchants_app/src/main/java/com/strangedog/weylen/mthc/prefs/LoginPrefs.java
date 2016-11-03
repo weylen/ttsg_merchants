@@ -19,6 +19,10 @@ public class LoginPrefs {
 
     public static void saveAccount(Context context, AccountEntity accountEntity){
         try {
+            if (accountEntity != null){
+                PhonePrefs.savePhone(context, accountEntity.getUname());
+            }
+
             OutputStream os = context.openFileOutput(DB_NAME, Context.MODE_PRIVATE);
             ObjectOutputStream ois = new ObjectOutputStream(os);
             ois.writeObject(accountEntity);

@@ -55,4 +55,22 @@ public class CalendarUtil {
     }
 
 
+    /**
+     * 转换日期格式
+     * 原格式：yyyy-MM-dd HH:mm:ss.SSS
+     * 转换格式：yyyy-MM-dd HH:mm
+     * @param time
+     * @return
+     */
+    public static final String getStandardDateTime(String time){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        try {
+            Date d = sdf.parse(time);
+            sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+            return sdf.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return time;
+    }
 }

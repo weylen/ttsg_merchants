@@ -104,7 +104,7 @@ public class ProductsDetailsActivity extends BaseActivity {
         mItemInventory.setText(productsEntity.getStock());
         // 取得是否有促销信息
         String promotionPrice = productsEntity.getPromote();
-        boolean hasPromotion = LocaleUtil.hasPromotion(promotionPrice);
+        boolean hasPromotion = LocaleUtil.hasPromotion(promotionPrice, productsEntity.getEnd());
         // 设置促销内容
         if (hasPromotion){ // 有促销
             mItemPromotion.setText(productsEntity.getInfo());
