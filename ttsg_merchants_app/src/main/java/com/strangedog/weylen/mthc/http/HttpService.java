@@ -275,4 +275,15 @@ public interface HttpService {
             @Field("key") String delivery,
             @Field("text") String text
     );
+
+    /**
+     * 置顶和取消置顶
+     * @param key  商品id为1，如果置顶是1，取消是2则参数传递方式为：1-1或2-1
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("cpma-proTop")
+    Observable<JsonObject> alertTopStatus(
+            @Field("Key") String key
+    );
 }

@@ -37,6 +37,12 @@ public class TimeDialog {
     private OnDataListener onDataListener;
     private DialogInterface.OnCancelListener onCancelListener;
 
+    private int type;
+
+    public static final int TYPE_NIGHT = 1;
+    public static final int TYPE_DAY = 2;
+
+
     @OnClick(R.id.radio_startTime)
     public void onStartTimeClick(){
         showTimeDialog(startTimeView);
@@ -53,7 +59,8 @@ public class TimeDialog {
     }
 
     private AlertDialog alertDialog;
-    public void show(){
+    public void show(int type){
+        String title = type == TYPE_NIGHT? "设置直营时间" : "设置营业时间";
         if (alertDialog == null){
             View view = LayoutInflater.from(context).inflate(R.layout.dialog_time, null, false);
             ButterKnife.bind(this, view);
@@ -61,7 +68,7 @@ public class TimeDialog {
             endTimeView.setText(endTime);
 
             alertDialog = new AlertDialog.Builder(context)
-                    .setTitle("请选择时间段")
+                    .setTitle(title)
                     .setView(view)
                     .setNegativeButton("取消", (dialog, which) -> {
                         setShow(dialog, true);

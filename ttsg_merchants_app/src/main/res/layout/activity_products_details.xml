@@ -77,6 +77,22 @@
                     />
 
                 <com.rey.material.widget.EditText
+                    android:id="@+id/itemProductsRTop"
+                    style="@style/LightEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="置顶状态"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="未置顶"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/size_16"
+                    android:layout_marginTop="10dp"
+                    app:et_labelPadding="5dp"
+                    />
+
+                <com.rey.material.widget.EditText
                     android:id="@+id/itemPrice"
                     style="@style/LightEditText"
                     android:layout_width="match_parent"

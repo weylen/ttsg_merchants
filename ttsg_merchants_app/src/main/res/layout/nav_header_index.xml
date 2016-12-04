@@ -75,8 +75,6 @@
 
                 </LinearLayout>
 
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -103,6 +101,36 @@
                         android:layout_marginTop="5dp"
                         android:drawablePadding="10dp"
                         android:text="设置营业时间"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="5dp"
+                        android:drawablePadding="10dp"
+                        android:text="直营时间："
+                        />
+
+                    <TextView
+                        android:id="@+id/nightTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:drawableRight="@mipmap/icon_arrow_r_w"
+                        android:textColor="@color/white"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="5dp"
+                        android:drawablePadding="10dp"
+                        android:text="设置直营时间"
                         />
 
                 </LinearLayout>

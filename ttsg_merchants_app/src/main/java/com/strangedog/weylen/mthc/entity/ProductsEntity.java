@@ -21,6 +21,7 @@ public class ProductsEntity implements Parcelable{
     private String begin; // 促销开始时间
     private String end; // 促销结束时间
     private String stauts; // 状态 1是上架 2是下架
+    private boolean isTop; // 是否置顶
 
     public ProductsEntity() {
     }
@@ -39,6 +40,7 @@ public class ProductsEntity implements Parcelable{
         begin = in.readString();
         end = in.readString();
         stauts = in.readString();
+        isTop = in.readInt() == 1;
     }
 
     public static final Creator<ProductsEntity> CREATOR = new Creator<ProductsEntity>() {
@@ -157,6 +159,14 @@ public class ProductsEntity implements Parcelable{
         this.stauts = stauts;
     }
 
+    public boolean isTop() {
+        return isTop;
+    }
+
+    public void setTop(boolean top) {
+        isTop = top;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -177,5 +187,6 @@ public class ProductsEntity implements Parcelable{
         dest.writeString(begin);
         dest.writeString(end);
         dest.writeString(stauts);
+        dest.writeInt(isTop? 1 : 0);
     }
 }

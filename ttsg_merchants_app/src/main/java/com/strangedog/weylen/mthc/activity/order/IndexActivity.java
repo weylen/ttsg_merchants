@@ -54,7 +54,11 @@ import com.strangedog.weylen.mthc.view.TimeDialog;
 import com.strangedog.weylen.mthc.view.ZViewPager;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
+import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -72,7 +76,7 @@ public class IndexActivity extends BaseActivity
     @Bind(R.id.nav_view) NavigationView navigationView;
     @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
     /******************* 定义属性 *********************/
-    private TextView balanceView, statusView, timeView;
+    private TextView balanceView, statusView, timeView, nightTimeView;
     private ImageView refreshImgView;
     private Animation animation;
     private String balance; // 余额
@@ -101,12 +105,15 @@ public class IndexActivity extends BaseActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(pager);
 
-        View menuActionView = navigationView.getMenu().findItem(R.id.nav_order).getActionView();
-        TextView msg= (TextView) menuActionView.findViewById(R.id.msg);
-        if (msg != null){
-            msg.setText("9");
-            msg.setVisibility(View.GONE);
-        }
+//        View menuActionView = navigationView.getMenu().findItem(R.id.nav_order).getActionView();
+//        if (menuActionView != null){
+//            TextView msg= (TextView) menuActionView.findViewById(R.id.msg);
+//            if (msg != null){
+//                msg.setText("9");
+//                msg.setVisibility(View.GONE);
+//            }
+//        }
+
 //        drawerLayout.addDrawerListener(drawerListener);
 
         View headerView = navigationView.getHeaderView(0);
@@ -117,6 +124,9 @@ public class IndexActivity extends BaseActivity
         // 营业时间
         timeView = (TextView) headerView.findViewById(R.id.time);
         timeView.setOnClickListener(v -> showTimeDialog(false));
+        // 直营时间
+        nightTimeView = (TextView) headerView.findViewById(R.id.nightTime);
+        nightTimeView.setOnClickListener(v->showNightTimeDialog(false));
         // 店铺名字
         TextView shopView = (TextView) headerView.findViewById(R.id.text_shop);
         shopView.setText(LoginData.INSTANCE.getAccountEntity(this).getShoper());
@@ -177,13 +187,25 @@ public class IndexActivity extends BaseActivity
     private void showTimeDialog(boolean isMust){
         ShopData shopData = ShopData.INSTANCE;
         TimeDialog timeDialog = new TimeDialog(this, shopData.startTime, shopData.endTime);
-        timeDialog.setOnDataListener((startTime, endTime) -> setTradeTime(startTime, endTime));
+        timeDialog.setOnDataListener((startTime, endTime) -> setTradeTime(TimeDialog.TYPE_DAY, startTime, endTime));
         timeDialog.setOnCancelListener(dialog -> {
             if (isMust){
                 finish();
             }
         });
-        timeDialog.show();
+        timeDialog.show(TimeDialog.TYPE_DAY);
+    }
+
+    private void showNightTimeDialog(boolean isMust){
+        ShopData shopData = ShopData.INSTANCE;
+        TimeDialog timeDialog = new TimeDialog(this, shopData.nightStart, shopData.nightEnd);
+        timeDialog.setOnDataListener((startTime, endTime) -> setTradeTime(TimeDialog.TYPE_NIGHT, startTime, endTime));
+        timeDialog.setOnCancelListener(dialog -> {
+            if (isMust){
+                finish();
+            }
+        });
+        timeDialog.show(TimeDialog.TYPE_NIGHT);
     }
 
     private void showStatusPopup(){
@@ -496,12 +518,26 @@ public class IndexActivity extends BaseActivity
                             isSetTime = true;
                         }
 
+                        boolean isSetNightTime = false;
+                        String nightStr = data.get("night").getAsString();
+                        if (!TextUtils.isEmpty(nightStr)){
+                            Gson gson = new Gson();
+                            JsonObject timeObject = gson.fromJson(nightStr, JsonObject.class);
+                            ShopData.INSTANCE.nightStart = timeObject.get("start").getAsString();
+                            ShopData.INSTANCE.nightEnd = timeObject.get("end").getAsString();
+                            nightTimeView.setText(getShowTime(ShopData.INSTANCE.nightStart, ShopData.INSTANCE.nightEnd));
+                            isSetNightTime = true;
+                        }
+
                         // 配送费数据
                         ShopData.INSTANCE.fare = data.get("fare").getAsString();
                         ShopData.INSTANCE.fareLimit = data.get("fareLimit").getAsString();
 
                         if (isSetTime == false){
                             showSetTimeDialog();
+                        }
+                        if (isSetNightTime == false){
+                            showSetNightTimeDialog();
                         }
                     }
                 });
@@ -524,6 +560,23 @@ public class IndexActivity extends BaseActivity
         dialog.show();
     }
 
+    private void showSetNightTimeDialog(){
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("你必须设置直营时间才能营业，是否立即设置？")
+                .setNegativeButton("取消", (dialog1, which) -> {
+                    dialog1.dismiss();
+                    finish();
+                })
+                .setPositiveButton("确定", (dialog1, which) -> {
+                    dialog1.dismiss();
+                    showNightTimeDialog(true);
+                }).create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
     private int formatState(String state){
         try{
             return Integer.parseInt(state);
@@ -533,14 +586,38 @@ public class IndexActivity extends BaseActivity
         return -1;
     }
 
-    private void setTradeTime(String startTime, String endTime){
+    private void setTradeTime(int type, String startTime, String endTime){
         showProgressDialog("修改中...");
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("start", startTime);
-        jsonObject.addProperty("end", endTime);
-        DebugUtil.d("IndexActivity 设置时间：" + jsonObject.toString());
+        JSONObject param = new JSONObject();
+        try{
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("start", startTime);
+            jsonObject.put("end", endTime);
+            JSONObject oldTime = new JSONObject();
+
+            if (type == TimeDialog.TYPE_NIGHT){ // 设置直营时间 那么day不变
+                oldTime.put("start", ShopData.INSTANCE.startTime);
+                oldTime.put("end", ShopData.INSTANCE.endTime);
+                param.put("day", oldTime);
+                param.put("night", jsonObject);
+            }else if (type == TimeDialog.TYPE_DAY){
+                oldTime.put("start", ShopData.INSTANCE.nightStart);
+                oldTime.put("end", ShopData.INSTANCE.nightEnd);
+                param.put("day", jsonObject);
+                param.put("night", oldTime);
+            }
+        }catch (JSONException e){
+            DebugUtil.d("IndexActivity setTradeTime 出现异常");
+            return;
+        }
+
+        DebugUtil.d("IndexActivity 设置时间：" + param.toString());
+        HttpService hs = RetrofitFactory.getRetrofit().create(HttpService.class);
+        hs.setTradeTimeState(param.toString());
+
+
         RetrofitFactory.getRetrofit().create(HttpService.class)
-                .setTradeTimeState(jsonObject.toString())
+                .setTradeTimeState(param.toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
@@ -557,9 +634,16 @@ public class IndexActivity extends BaseActivity
                     public void onNext(JsonObject jsonObject) {
                         dismissProgressDialog();
                         if (ResponseMgr.getStatus(jsonObject) == 1){
-                            ShopData.INSTANCE.startTime = startTime;
-                            ShopData.INSTANCE.endTime = endTime;
-                            timeView.setText(getShowTime(startTime, endTime));
+                            if (type == TimeDialog.TYPE_DAY){
+                                ShopData.INSTANCE.startTime = startTime;
+                                ShopData.INSTANCE.endTime = endTime;
+                                timeView.setText(getShowTime(startTime, endTime));
+                            }else if(type == TimeDialog.TYPE_NIGHT){
+                                ShopData.INSTANCE.nightStart = startTime;
+                                ShopData.INSTANCE.nightEnd = endTime;
+                                nightTimeView.setText(getShowTime(startTime, endTime));
+                            }
+
                             showToast("设置成功");
                         }else {
                             showToast("设置失败，请重试");

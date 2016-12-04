@@ -25,6 +25,7 @@ import com.strangedog.weylen.mthc.http.HttpService;
 import com.strangedog.weylen.mthc.http.RespSubscribe;
 import com.strangedog.weylen.mthc.http.ResponseMgr;
 import com.strangedog.weylen.mthc.http.RetrofitFactory;
+import com.strangedog.weylen.mthc.util.AlertDialogUtil;
 import com.strangedog.weylen.mthc.util.CalendarUtil;
 import com.strangedog.weylen.mthc.util.DebugUtil;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
@@ -54,6 +55,7 @@ public class ProductsDetailsActivity extends BaseActivity {
     @Bind(R.id.itemPromotionPrice) EditText mItemPromotionPrice; // 促销价格
     @Bind(R.id.itemPromotionStart) EditText mItemPromotionStart; // 促销开始时间 只能选择
     @Bind(R.id.itemPromotionEnd) EditText mItemPromotionEnd; // 促销结束时间 只能选择
+    @Bind(R.id.itemProductsRTop) EditText mItemProductTop; // 商品置顶状态
     @Bind(R.id.itemWrapStart) View itemWrapStart;
     @Bind(R.id.itemWrapEnd) View itemWrapEnd;
 
@@ -77,6 +79,7 @@ public class ProductsDetailsActivity extends BaseActivity {
 
         // 设置不可编辑的内容
         mItemProductsName.setEnabled(false);
+        mItemProductTop.setEnabled(false);
         mItemInventory.setEnabled(false);
         mItemPromotionStart.setKeyListener(null);
         mItemPromotionEnd.setKeyListener(null);
@@ -98,6 +101,8 @@ public class ProductsDetailsActivity extends BaseActivity {
     private void setupInitMessage(){
         // 设置商品名称
         mItemProductsName.setText(productsEntity.getName());
+        // 设置商品置顶状态
+        mItemProductTop.setText(productsEntity.isTop()?"已置顶":"未置顶");
         // 设置商品价格
         mItemPrice.setText(productsEntity.getSalePrice());
         // 设置商品库存
@@ -151,6 +156,20 @@ public class ProductsDetailsActivity extends BaseActivity {
             mItemPromotionStart.setHint("促销开始时间");
             mItemPromotionEnd.setHint("促销开始时间");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (productsEntity != null && menuItemTop != null){
+            alertTopTitle();
+        }
+    }
+
+    private void alertTopTitle(){
+        // 设置标题
+        String title = productsEntity.isTop() ? "取消置顶" : "置顶";
+        menuItemTop.setTitle(title);
     }
 
     /**
@@ -239,11 +258,13 @@ public class ProductsDetailsActivity extends BaseActivity {
         pickerDialog.show();
     }
 
-    private MenuItem menuItemEdit;
+    private MenuItem menuItemEdit; // 编辑
+    private MenuItem menuItemTop; // 置顶
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_products_details, menu);
         menuItemEdit = menu.findItem(R.id.action_edit);
+        menuItemTop = menu.findItem(R.id.action_top);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -272,6 +293,34 @@ public class ProductsDetailsActivity extends BaseActivity {
                 item.setIcon(R.mipmap.ic_done_white);
                 isEditable = !isEditable;
                 enableOrDisableView();
+            }
+            // 点击置顶
+        }else if(item.getItemId() == R.id.action_top){
+            if (productsEntity != null){
+                // 如果当前是置顶状态 则取消置顶
+                if (productsEntity.isTop()){
+                    AlertDialogUtil.showAlertDialog(ProductsDetailsActivity.this,
+                            "提示",
+                            "确定取消置顶该商品？",
+                            "取消", (dialog, which) -> {
+                                dialog.dismiss();
+                            },
+                            "确定", (dialog, which) -> {
+                                dialog.dismiss();
+                                alertTopStatus(false);
+                            });
+                }else {
+                    AlertDialogUtil.showAlertDialog(ProductsDetailsActivity.this,
+                            "提示",
+                            "确定置顶该商品？",
+                            "取消", (dialog, which) -> {
+                                dialog.dismiss();
+                            },
+                            "确定", (dialog, which) -> {
+                                dialog.dismiss();
+                                alertTopStatus(true);
+                            });
+                }
             }
         }
         return super.onOptionsItemSelected(item);
@@ -352,7 +401,7 @@ public class ProductsDetailsActivity extends BaseActivity {
      * 修改商品信息
      */
     private void alertGoodsInfo(boolean isClearPromotion){
-        showProgressDialog("保存中...");
+        showProgressDialog("处理中...");
         String param = map(isClearPromotion);
         DebugUtil.d("ProductsDetailsActivity 保存参数：" + param);
         RetrofitFactory.getRetrofit().create(HttpService.class)
@@ -425,10 +474,50 @@ public class ProductsDetailsActivity extends BaseActivity {
 
     private void doError(){
         dismissProgressDialog();
-        showSnakeView("保存失败，请重新操作");
+        showSnakeView("操作失败，请重试");
     }
 
     private void showSnakeView(String message){
         showSnakeBar(mItemProductsName, message);
+    }
+
+    private void alertTopStatus(boolean isTop){
+        showProgressDialog("处理中...");
+        StringBuilder sb = new StringBuilder();
+        if (isTop){
+            sb.append("1"); // 置顶为1 取消为2
+        }else {
+            sb.append("2");
+        }
+        sb.append("-"+productsEntity.getId());
+        DebugUtil.d("ProductsDetailsActivity alertTopStatus 置顶参数：" + sb.toString());
+
+        RetrofitFactory.getRetrofit().create(HttpService.class)
+                .alertTopStatus(sb.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new RespSubscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        doError();
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        DebugUtil.d("ProductsDetailsActivity 修改结果：" + jsonObject);
+                        dismissProgressDialog();
+                        if (ResponseMgr.getStatus(jsonObject) == 1){
+                            productsEntity.setTop(isTop); // 修改置顶状态
+                            mItemProductTop.setText(isTop?"已置顶":"未置顶");
+                            alertTopTitle();
+                            showSnakeView(isTop? "置顶成功" : "取消置顶成功");
+                        }else {
+                            doError();
+                        }
+                    }
+                }));
     }
 }

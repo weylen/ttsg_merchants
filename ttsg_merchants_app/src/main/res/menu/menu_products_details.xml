@@ -10,4 +10,12 @@
         android:icon="@mipmap/ic_edit_white"
         app:showAsAction="always"
         />
+
+    <item
+        android:id="@+id/action_top"
+        android:orderInCategory="99"
+        android:title="置顶"
+        app:showAsAction="always"
+        android:visible="false"
+        />
 </menu>
