@@ -12,7 +12,7 @@ public class Constants {
     // 正式网
     public static final String BASE_URL = "http://s-280082.gotocdn.com/";
     // 测试网
-//    public static final String BASE_URL = "http://s-339005.abc188.com";
+//    public static final String BASE_URL = "http://s-339005.abc188.com/";
 
     public static final int REQUEST_COUNT = 20; // 每一页的数量
 

@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.rey.material.app.ThemeManager;
 import com.strangedog.weylen.mthc.util.LocaleUtil;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -43,6 +44,7 @@ public class BaseApplication extends Application{
 
         ThemeManager.init(this, 2, 0, null);
 
+        CrashReport.initCrashReport(this, "f3719a853c", true);
         // 注册push服务，注册成功后会向DemoMessageReceiver发送广播
         // 可以从DemoMessageReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
         if (shouldInit()) {

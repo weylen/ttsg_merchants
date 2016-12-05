@@ -716,6 +716,8 @@ public class IndexActivity extends BaseActivity
                         dismissProgressDialog();
                         if (ResponseMgr.getStatus(jsonObject) == 1){
                             showToast("设置成功");
+                            ShopData.INSTANCE.fare = delivery;
+                            ShopData.INSTANCE.fareLimit = text;
                         }else {
                             showToast("设置失败，请重试");
                         }
