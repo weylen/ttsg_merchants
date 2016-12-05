@@ -9,8 +9,8 @@ android {
         applicationId "com.strangedog.weylen.mtch"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 5
-        versionName "1.05"
+        versionCode 6
+        versionName "1.06"
     }
     signingConfigs {
         debug {
